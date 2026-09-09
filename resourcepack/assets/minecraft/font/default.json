@@ -2,49 +2,49 @@
   "providers": [
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/team_rot.png",
+      "file": "bastighg_challenges:font/team_rot.png",
       "ascent": 8,
       "height": 8,
       "chars": ["\uE001"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/team_blau.png",
+      "file": "bastighg_challenges:font/team_blau.png",
       "ascent": 8,
       "height": 8,
       "chars": ["\uE002"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/player.png",
+      "file": "bastighg_challenges:font/player.png",
       "ascent": 8,
       "height": 8,
       "chars": ["\uE003"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/wave.png",
+      "file": "bastighg_challenges:font/wave.png",
       "ascent": 8,
       "height": 8,
       "chars": ["\uE004"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/kills.png",
+      "file": "bastighg_challenges:font/kills.png",
       "ascent": 8,
       "height": 8,
       "chars": ["\uE005"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/no_team.png",
+      "file": "bastighg_challenges:font/no_team.png",
       "ascent": 8,
       "height": 8,
       "chars": ["\uE006"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/logo.png",
+      "file": "bastighg_challenges:font/logo.png",
       "ascent": 30,
       "height": 30,
       "chars": ["\uE010"]
@@ -66,21 +66,21 @@
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/panel_top.png",
+      "file": "bastighg_challenges:font/panel_top.png",
       "ascent": 23,
       "height": 39,
       "chars": ["\uE020"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/panel_mid.png",
+      "file": "bastighg_challenges:font/panel_mid.png",
       "ascent": 9,
       "height": 9,
       "chars": ["\uE021"]
     },
     {
       "type": "bitmap",
-      "file": "mobarmywars:font/panel_bottom.png",
+      "file": "bastighg_challenges:font/panel_bottom.png",
       "ascent": 30,
       "height": 40,
       "chars": ["\uE022"]

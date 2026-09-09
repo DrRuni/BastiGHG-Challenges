@@ -14,8 +14,10 @@ public class PlayerJoinListener implements Listener {
 
     private final ChallengeMain plugin;
 
-    private static final String RESOURCE_PACK_URL = "https://github.com/DrRuni/MobArmyWars/releases/download/v1.7/MobArmyWarsRP.zip";
-    private static final String RESOURCE_PACK_SHA1 = "08509a806eaa15ad2bb206d990b2a3b462532d22";
+    private static final String RESOURCE_PACK_URL =
+            "https://github.com/DrRuni/BastiGHG-Challenges/releases/download/V0.1/BastiGHG-Challenges-Fan-Projekt.zip";
+    private static final String RESOURCE_PACK_SHA1 =
+            "5e30419143534a7370f722dbed0310a5487bade9";
 
     public PlayerJoinListener(ChallengeMain plugin) {
         this.plugin = plugin;
@@ -49,7 +51,7 @@ public class PlayerJoinListener implements Listener {
                     .append(Component.text("custom graphics and icons.").color(NamedTextColor.AQUA))
                     .build();
 
-            player.setResourcePack(RESOURCE_PACK_URL, RESOURCE_PACK_SHA1, false, prompt);
+            player.setResourcePack(RESOURCE_PACK_URL, RESOURCE_PACK_SHA1, true, prompt);
         }, 20L);
 
         if (player.isOp() && !plugin.getLanguageManager().hasLanguage()) {
