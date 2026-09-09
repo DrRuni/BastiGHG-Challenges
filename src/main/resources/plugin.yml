@@ -1,0 +1,78 @@
+name: BastiGHG-Challenges
+version: '0.1'
+
+main: runi.myddns.challenges.ChallengeMain
+api-version: '26.2'
+load: POSTWORLD
+
+commands:
+
+  # ============================================================
+  # Global
+  # ============================================================
+
+  language:
+    description: Opens the language selection
+    usage: /language
+    aliases: [ sprache ]
+
+  # ============================================================
+  # MobArmyBattle
+  # ============================================================
+
+  arenasummary:
+    description: Shows the MobArmyBattle arena summary
+    usage: /arenasummary
+
+  mobarmy:
+    description: Main command for MobArmyBattle
+    usage: /mobarmy resume
+    aliases: [ma]
+    permission: mobarmybattle.admin
+    permission-message: "§c❌ You do not have permission!"
+
+  mobstatus:
+    description: Shows saved mobs for MobArmyBattle
+    usage: /mobstatus [rot|blau]
+
+  optionen:
+    description: Opens the MobArmyBattle options
+    usage: /optionen
+    permission: mobarmybattle.admin
+    permission-message: "§c❌ You do not have permission!"
+
+  resume:
+    description: Resume function for MobArmyBattle
+    usage: /resume mobarmy
+    aliases: [continue]
+    permission: mobarmybattle.admin
+    permission-message: "§c❌ You do not have permission!"
+
+  setphase:
+    description: Sets the MobArmyBattle event phase
+    usage: /setphase <lobby|teamwelt|waveauswahl|arena>
+    permission: mobarmybattle.admin
+    permission-message: "§c❌ You do not have permission!"
+
+  team:
+    description: MobArmyBattle team commands
+    usage: /team <join|leave> [rot|blau]
+
+  reset:
+    description: Reset commands for MobArmyBattle
+    usage: /reset <arena|lobby|teamworld|playerdata>
+    permission: mobarmybattle.admin
+    permission-message: "§c❌ You do not have permission!"
+
+permissions:
+
+  # ============================================================
+  # MobArmyBattle
+  # ============================================================
+
+  mobarmybattle.admin:
+    default: op
+
+  mobarmybattle.mobstatus.admin:
+    description: Allows viewing MobArmyBattle mob status for all teams
+    default: op
