@@ -314,8 +314,15 @@ public class LobbyButtonManager implements Listener {
 
         if (index == 1) {
 
-            plugin.getLogger().info(
-                    "LOAD wurde gedrückt"
+            plugin.getLogger().info("LOAD wurde gedrückt");
+
+            ChallengeGame game = gameManager.getSelectedGame();
+
+            if (game == null) return;
+
+            lobbyDisplayManager.setLoadStatus(
+                    game.getDisplayName() + " wird geladen...",
+                    0xFFAA00
             );
 
             gameManager.loadSelectedGame();

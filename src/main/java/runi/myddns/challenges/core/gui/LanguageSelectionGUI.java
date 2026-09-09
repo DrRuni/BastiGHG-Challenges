@@ -147,6 +147,7 @@ public class LanguageSelectionGUI implements Listener {
         switch (action) {
             case "de" -> setLanguage(player, "de", "language-selection.changed-de");
             case "en" -> setLanguage(player, "en", "language-selection.changed-en");
+            case "back" -> player.closeInventory();
         }
     }
 

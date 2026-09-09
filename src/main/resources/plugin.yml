@@ -16,6 +16,10 @@ commands:
     usage: /language
     aliases: [ sprache ]
 
+  lobby:
+    description: Teleports players back to the central lobby
+    usage: /lobby [all]
+
   # ============================================================
   # MobArmyBattle
   # ============================================================

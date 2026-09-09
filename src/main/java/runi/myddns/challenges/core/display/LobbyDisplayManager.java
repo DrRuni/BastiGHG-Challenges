@@ -141,7 +141,7 @@ public class LobbyDisplayManager {
     }
 
     public void setLoadUnloaded(String gameName) {
-        setLoadStatus(gameName + " entladen", 0x777777);
+        setLoadStatus(gameName + " entladen", 0xA61B1B);
     }
 
     private TextDisplay findTextDisplay(
@@ -746,22 +746,28 @@ public class LobbyDisplayManager {
         );
 
         if (gameNameDisplay == null) {
-
             plugin.getLogger().warning(
                     "Game-Name-Display ist NULL."
             );
-
             return;
         }
 
-        gameNameDisplay.text(
-                Component.text(
-                        gameName.toUpperCase(),
-                        TextColor.color(0xFF4FD8)
-                ).decorate(
-                        TextDecoration.BOLD
-                )
-        );
+        Component gameText;
+
+        if (gameName.equalsIgnoreCase("MobArmyWars")) {
+            gameText = gradientText(
+                    "  " + gameName.toUpperCase(),
+                    0xFF3333,
+                    0x3366FF
+            );
+        } else {
+            gameText = Component.text(
+                    "  " + gameName.toUpperCase(),
+                    TextColor.color(0xFF4FD8)
+            ).decorate(TextDecoration.BOLD);
+        }
+
+        gameNameDisplay.text(gameText);
     }
 
     private void protectDisplayEntities(
@@ -792,5 +798,34 @@ public class LobbyDisplayManager {
                 );
             }
         }
+    }
+
+    public void removeAllDisplayEntities() {
+        for (World world : plugin.getServer().getWorlds()) {
+            for (Entity entity : world.getEntities()) {
+
+                boolean lobbyDisplay =
+                        entity.getScoreboardTags().contains(DISPLAY_TAG)
+                                || entity.getScoreboardTags().contains(TITLE_TAG)
+                                || entity.getScoreboardTags().contains(GAME_LABEL_TAG)
+                                || entity.getScoreboardTags().contains(GAME_NAME_TAG)
+                                || entity.getScoreboardTags().contains(LOAD_CONSOLE_TAG)
+                                || entity.getScoreboardTags().contains(INTERACTION_TAG);
+
+                boolean lobbyButton =
+                        entity.getScoreboardTags().contains("challenge_lobby_button_visual")
+                                || entity.getScoreboardTags().stream()
+                                .anyMatch(tag -> tag.startsWith("challenge_lobby_button_"));
+
+                if (lobbyDisplay || lobbyButton) {
+                    entity.remove();
+                }
+            }
+        }
+
+        titleDisplay = null;
+        gameLabelDisplay = null;
+        gameNameDisplay = null;
+        loadConsoleDisplay = null;
     }
 }

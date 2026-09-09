@@ -3,13 +3,13 @@ package runi.myddns.challenges;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import runi.myddns.challenges.core.commands.LanguageCommand;
+import runi.myddns.challenges.core.commands.LobbyCommand;
 import runi.myddns.challenges.core.display.LobbyButtonManager;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.files.PluginFileManager;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.game.GameManager;
 import runi.myddns.challenges.core.game.GameStateManager;
-import runi.myddns.challenges.core.gui.GamesMenuManager;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.server.ServerIconManager;
 import runi.myddns.challenges.core.world.LobbyWorldManager;
@@ -62,101 +62,40 @@ public final class ChallengeMain extends JavaPlugin {
 
         gameStateManager = new GameStateManager(this);
 
-        gameManager =
-                new GameManager();
+        gameManager = new GameManager();
+        gameManager.registerGame(new MobArmyWarsGame(this, lobbyDisplayManager));
 
-        gameManager.registerGame(
-                new MobArmyWarsGame(
-                        this,
-                        lobbyDisplayManager
-                )
-        );
-
-
-        LobbyButtonManager lobbyButtonManager =
-                new LobbyButtonManager(
-                        this,
-                        lobbyDisplayManager,
-                        gameManager
-                );
-
-
-        GamesMenuManager gamesMenuManager =
-                new GamesMenuManager();
-
+        LobbyButtonManager lobbyButtonManager = new LobbyButtonManager(this, lobbyDisplayManager, gameManager);
 
         getServer().getPluginManager().registerEvents(languageSelectionGUI, this);
         getServer().getPluginManager().registerEvents(lobbyButtonManager, this);
+        getServer().getPluginManager().registerEvents(new LobbyRespawnListener(lobbyWorldManager), this);
+        getServer().getPluginManager().registerEvents(serverIconManager, this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getScheduler().runTaskLater(this, () -> {
 
-        getServer()
-                .getPluginManager()
-                .registerEvents(
-                        new LobbyRespawnListener(
-                                lobbyWorldManager
-                        ),
-                        this
-                );
+            lobbyDisplayManager.createShowcaseDisplay(lobbyWorldManager.getLobbyWorld());
 
-        getServer()
-                .getPluginManager()
-                .registerEvents(
-                        serverIconManager,
-                        this
-                );
+            lobbyButtonManager.createButtons(lobbyWorldManager.getLobbyWorld());
 
-        getServer()
-                .getPluginManager()
-                .registerEvents(
-                        gamesMenuManager,
-                        this
-                );
+            ChallengeGame selectedGame = gameManager.getSelectedGame();
 
-        getServer()
-                .getPluginManager()
-                .registerEvents(
-                        new PlayerJoinListener(this),
-                        this
-                );
+            if (selectedGame != null) {
+                lobbyDisplayManager.setSelectedGame(selectedGame.getDisplayName());
+            }
 
-
-        getServer()
-                .getScheduler()
-                .runTaskLater(
-                        this,
-                        () -> {
-
-                            lobbyDisplayManager
-                                    .createShowcaseDisplay(
-                                            lobbyWorldManager
-                                                    .getLobbyWorld()
-                                    );
-
-                            lobbyButtonManager
-                                    .createButtons(
-                                            lobbyWorldManager
-                                                    .getLobbyWorld()
-                                    );
-
-                            ChallengeGame selectedGame =
-                                    gameManager
-                                            .getSelectedGame();
-
-                            if (selectedGame != null) {
-
-                                lobbyDisplayManager
-                                        .setSelectedGame(
-                                                selectedGame
-                                                        .getDisplayName()
-                                        );
-                            }
-                        },
-                        2L
-                );
+        }, 2L);
 
         LanguageCommand languageCommand = new LanguageCommand(this);
 
         if (getCommand("language") != null) {
             getCommand("language").setExecutor(languageCommand);
+        }
+
+        LobbyCommand lobbyCommand = new LobbyCommand(this);
+
+        if (getCommand("lobby") != null) {
+            getCommand("lobby").setExecutor(lobbyCommand);
         }
 
         Bukkit.getConsoleSender().sendMessage("");
@@ -173,6 +112,9 @@ public final class ChallengeMain extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (lobbyDisplayManager != null) {
+            lobbyDisplayManager.removeAllDisplayEntities();
+        }
     }
 
     public LobbyWorldManager getLobbyWorldManager() {

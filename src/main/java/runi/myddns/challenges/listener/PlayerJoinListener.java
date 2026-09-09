@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import runi.myddns.challenges.ChallengeMain;
 
 public class PlayerJoinListener implements Listener {
@@ -23,36 +22,23 @@ public class PlayerJoinListener implements Listener {
         this.plugin = plugin;
     }
 
-
-    @EventHandler
-    public void onResourcePackStatus(PlayerResourcePackStatusEvent event) {
-        plugin.getLogger().info(
-                "Resourcepack-Status von " +
-                        event.getPlayer().getName() +
-                        ": " +
-                        event.getStatus()
-        );
-    }
-
-
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         player.teleport(plugin.getLobbyWorldManager().getSpawn());
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (!player.isOnline()) return;
-
-            Component prompt = Component.text()
-                    .append(Component.text("BastiGHG Challenges\n").color(NamedTextColor.GOLD))
-                    .append(Component.text("Optional resource pack for ").color(NamedTextColor.GRAY))
-                    .append(Component.text("custom graphics and icons.").color(NamedTextColor.AQUA))
-                    .build();
-
-            player.setResourcePack(RESOURCE_PACK_URL, RESOURCE_PACK_SHA1, true, prompt);
-        }, 20L);
+//        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+//            if (!player.isOnline()) return;
+//
+//            Component prompt = Component.text()
+//                    .append(Component.text("BastiGHG Challenges\n").color(NamedTextColor.GOLD))
+//                    .append(Component.text("Optional resource pack for ").color(NamedTextColor.GRAY))
+//                    .append(Component.text("custom graphics and icons.").color(NamedTextColor.AQUA))
+//                    .build();
+//
+//            player.setResourcePack(RESOURCE_PACK_URL, RESOURCE_PACK_SHA1, false, prompt);
+//        }, 20L);
 
         if (player.isOp() && !plugin.getLanguageManager().hasLanguage()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
