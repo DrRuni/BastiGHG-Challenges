@@ -20,6 +20,7 @@ import org.joml.Vector3f;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.game.GameManager;
+import runi.myddns.challenges.games.mobarmywars.MobArmyWarsGame;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -225,67 +226,37 @@ public class LobbyButtonManager implements Listener {
     }
 
     @EventHandler
-    public void onRightClick(
-            PlayerInteractEntityEvent event
-    ) {
+    public void onRightClick(PlayerInteractEntityEvent event) {
+        if (!(event.getRightClicked() instanceof Interaction interaction)) return;
 
-        if (!(event.getRightClicked()
-                instanceof Interaction interaction)) {
-            return;
-        }
-
-        Integer button =
-                getButtonIndex(interaction);
-
-        if (button == null) {
-            return;
-        }
+        Integer button = getButtonIndex(interaction);
+        if (button == null) return;
 
         event.setCancelled(true);
 
-        clickButton(button);
+        clickButton(event.getPlayer(), button);
     }
 
     @EventHandler
-    public void onLeftClick(
-            EntityDamageByEntityEvent event
-    ) {
+    public void onLeftClick(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player player)) return;
+        if (!(event.getEntity() instanceof Interaction interaction)) return;
 
-        if (!(event.getDamager()
-                instanceof Player)) {
-            return;
-        }
-
-        if (!(event.getEntity()
-                instanceof Interaction interaction)) {
-            return;
-        }
-
-        Integer button =
-                getButtonIndex(interaction);
-
-        if (button == null) {
-            return;
-        }
+        Integer button = getButtonIndex(interaction);
+        if (button == null) return;
 
         event.setCancelled(true);
 
-        clickButton(button);
+        clickButton(player, button);
     }
 
-    private void clickButton(int index) {
-
-        plugin.getLogger().info(
-                "BUTTON CLICK: " + index
-        );
-
+    private void clickButton(Player player, int index) {
 
         // =========================
         // SELECT
         // =========================
 
         if (index == 0) {
-            plugin.getLogger().info("SELECT wurde gedrückt");
 
             ChallengeGame currentGame = gameManager.getSelectedGame();
 
@@ -314,14 +285,16 @@ public class LobbyButtonManager implements Listener {
 
         if (index == 1) {
 
-            plugin.getLogger().info("LOAD wurde gedrückt");
-
             ChallengeGame game = gameManager.getSelectedGame();
 
             if (game == null) return;
 
             lobbyDisplayManager.setLoadStatus(
-                    game.getDisplayName() + " wird geladen...",
+                    plugin.getLanguageManager().get(
+                            "lobby-display.loading",
+                            "game",
+                            game.getDisplayName()
+                    ),
                     0xFFAA00
             );
 
@@ -335,27 +308,31 @@ public class LobbyButtonManager implements Listener {
 
         if (index == 2) {
 
-            plugin.getLogger().info(
-                    "START wurde gedrückt"
-            );
-
-            ChallengeGame game =
-                    gameManager.getSelectedGame();
+            ChallengeGame game = gameManager.getSelectedGame();
 
             if (game == null) {
+                lobbyDisplayManager.setLoadStatus(
+                        "Bitte zuerst ein Game auswählen.",
+                        0xFF5555
+                );
                 return;
             }
 
             if (!game.isLoaded()) {
+                lobbyDisplayManager.setLoadStatus(
+                        plugin.getLanguageManager().get("lobby-display.load-first"),
+                        0xFFAA00
+                );
                 return;
             }
 
-            World lobbyWorld =
-                    Bukkit.getWorld(
-                            "BastiGHG_Challenges_Lobby"
-                    );
+            World lobbyWorld = Bukkit.getWorld("BastiGHG_Challenges_Lobby");
 
             if (lobbyWorld == null) {
+                lobbyDisplayManager.setLoadStatus(
+                        plugin.getLanguageManager().get("lobby-display.lobby-world-missing"),
+                        0xFF5555
+                );
                 return;
             }
 
@@ -363,20 +340,34 @@ public class LobbyButtonManager implements Listener {
             game.startPlayers(lobbyWorld.getPlayers());
         }
 
-
         // =========================
         // SETTINGS
         // =========================
 
         if (index == 3) {
 
-            plugin.getLogger().info(
-                    "SETTINGS wurde gedrückt"
-            );
+            ChallengeGame game = gameManager.getSelectedGame();
 
-            // später
+            if (game == null) {
+                lobbyDisplayManager.setLoadStatus(
+                        plugin.getLanguageManager().get("lobby-display.no-game-selected"),
+                        0xFF5555
+                );
+                return;
+            }
+
+            if (!game.isLoaded()) {
+                lobbyDisplayManager.setLoadStatus(
+                        plugin.getLanguageManager().get("lobby-display.settings-load-first"),
+                        0xFFAA00
+                );
+                return;
+            }
+
+            if (game instanceof MobArmyWarsGame mobArmyWarsGame) {
+                mobArmyWarsGame.getOptionenGUI().open(player);
+            }
         }
-
 
         // =========================
         // NUR OPTISCHE REAKTION

@@ -268,11 +268,6 @@ public class TimerManager implements Listener {
             );
         }
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!bossBar.getPlayers().contains(player)) {
-                bossBar.addPlayer(player);
-            }
-        }
         updateBossBar();
     }
 

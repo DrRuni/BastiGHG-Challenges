@@ -7,14 +7,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import runi.myddns.challenges.games.mobarmywars.Managers.Event.TimerManager;
 import runi.myddns.challenges.games.mobarmywars.MobArmyWarsGame;
 import runi.myddns.challenges.games.mobarmywars.Utils.GradientText;
-import runi.myddns.challenges.games.mobarmywars.Managers.World.TeleportManager;
 
 public class PlayerJoinListener implements Listener {
 
@@ -22,49 +20,6 @@ public class PlayerJoinListener implements Listener {
 
     public PlayerJoinListener(MobArmyWarsGame game) {
         this.game = game;
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-            if (!player.isOnline()) return;
-
-            boolean restored =
-                    game.getEventResume().restorePlayerPosition(player);
-
-            if (!restored) {
-                TeleportManager.teleport(
-                        game,
-                        player,
-                        "world_mobarmy_lobby"
-                );
-            }
-
-            game.getPlayerEffectManager()
-                    .applyNightVision(player);
-
-            showWelcomeSequence(player);
-            showProjectNotice(player);
-
-            Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-                if (!player.isOnline()) return;
-
-                game.getTimerManager().ensureBossBarExists();
-                game.getTimerManager().addPlayerToBossBar(player);
-                game.getTimerManager().updatePauseState();
-
-                game.getTeamScoreboardManager().updateBoard();
-
-                for (Player online : Bukkit.getOnlinePlayers()) {
-                    game.getScoreboardSwitcher()
-                            .switchToTeam(online);
-                }
-            }, 20L * 7);
-
-        }, 80L);
-
     }
 
     @EventHandler
@@ -80,7 +35,7 @@ public class PlayerJoinListener implements Listener {
         }
     }
 
-    private void showWelcomeSequence(Player player) {
+    public void showWelcomeSequence(Player player) {
         Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
             if (!player.isOnline()) return;
 
@@ -153,58 +108,23 @@ public class PlayerJoinListener implements Listener {
             }, 60L);
         }, 20L);
     }
-
-    public void showProjectNotice(Player player) {
+    public void showHelpHint(Player player) {
         Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
             if (!player.isOnline()) return;
 
-            Component clickText = game.getLanguageManager()
-                    .getComponent("player-join-listener.notice.line-1")
-                    .clickEvent(
-                            ClickEvent.callback(audience -> {
-                                if (!(audience instanceof Player clickedPlayer)) {
-                                    return;
-                                }
-
-                                clickedPlayer.sendMessage(Component.empty());
-
-                                clickedPlayer.sendMessage(
-                                        game.getLanguageManager().getComponent(
-                                                "player-join-listener.notice.details-1"
-                                        )
-                                );
-
-                                clickedPlayer.sendMessage(
-                                        game.getLanguageManager().getComponent(
-                                                "player-join-listener.notice.details-2"
-                                        )
-                                );
-
-                                clickedPlayer.sendMessage(
-                                        game.getLanguageManager().getComponent(
-                                                "player-join-listener.notice.details-3"
-                                        )
-                                );
-
-                                clickedPlayer.sendMessage(
-                                        game.getLanguageManager().getComponent(
-                                                "player-join-listener.notice.details-4"
-                                        )
-                                );
-
-                                clickedPlayer.sendMessage(Component.empty());
-                            })
-                    )
+            Component message = game.getLanguageManager()
+                    .getComponent("player-join-listener.help-hint")
+                    .clickEvent(ClickEvent.runCommand("/info"))
                     .hoverEvent(
                             HoverEvent.showText(
                                     game.getLanguageManager().getComponent(
-                                            "player-join-listener.notice.hover"
+                                            "player-join-listener.help-hover"
                                     )
                             )
                     );
 
             player.sendMessage(Component.empty());
-            player.sendMessage(clickText);
+            player.sendMessage(message);
             player.sendMessage(Component.empty());
 
         }, 100L);

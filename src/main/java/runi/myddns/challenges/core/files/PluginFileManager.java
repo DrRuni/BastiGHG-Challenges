@@ -35,6 +35,11 @@ public class PluginFileManager {
             "game-state.yml"
     );
 
+    private static final List<String> LANGUAGE_FILES = List.of(
+            "de.yml",
+            "en.yml"
+    );
+
     private static final GameFiles MOB_ARMY_BATTLE = new GameFiles(
             "MobArmyBattle",
             "games/mobarmywars/",
@@ -64,6 +69,7 @@ public class PluginFileManager {
 
     public void checkFilesOnStartup() {
         checkRootFiles();
+        checkLanguageFiles();
 
         for (GameFiles game : GAMES) {
             checkGameFiles(game);
@@ -92,6 +98,30 @@ public class PluginFileManager {
 
         for (String fileName : ROOT_EMPTY_FILES) {
             createEmptyFileIfMissing(targetFolder, fileName);
+        }
+
+        Bukkit.getConsoleSender().sendMessage("");
+    }
+
+    private void checkLanguageFiles() {
+
+        File languageFolder = new File(plugin.getDataFolder(), "languages");
+
+        if (!languageFolder.exists() && !languageFolder.mkdirs()) {
+            plugin.getLogger().warning("Sprachordner konnte nicht erstellt werden.");
+            return;
+        }
+
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(
+                ConsoleColor.PURPLE +
+                        "        Prüfe Sprachdateien..." +
+                        ConsoleColor.RESET
+        );
+        Bukkit.getConsoleSender().sendMessage("");
+
+        for (String fileName : LANGUAGE_FILES) {
+            checkYamlFile(languageFolder, "languages/", fileName);
         }
 
         Bukkit.getConsoleSender().sendMessage("");

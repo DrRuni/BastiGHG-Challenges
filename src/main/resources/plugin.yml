@@ -1,5 +1,5 @@
 name: BastiGHG-Challenges
-version: '0.1'
+version: '0.2'
 
 main: runi.myddns.challenges.ChallengeMain
 api-version: '26.2'
@@ -67,6 +67,11 @@ commands:
     usage: /reset <arena|lobby|teamworld|playerdata>
     permission: mobarmybattle.admin
     permission-message: "§c❌ You do not have permission!"
+
+  info:
+    description: Zeigt Informationen zu MobArmyWars
+    usage: /info
+    aliases: [ help ]
 
 permissions:
 

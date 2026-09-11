@@ -259,6 +259,9 @@ public class MobArmyWarsGame implements ChallengeGame {
 
         ResetCommand resetCommand = new ResetCommand(this);
         registerCommand("reset", resetCommand, resetCommand);
+
+        InfoCommand infoCommand = new InfoCommand(this);
+        registerCommand("info", infoCommand, null);
     }
 
     @Override
@@ -300,6 +303,33 @@ public class MobArmyWarsGame implements ChallengeGame {
         plugin.getGameStateManager().setLoaded(false);
 
         lobbyDisplayManager.setLoadUnloaded(getDisplayName());
+    }
+
+    @Override
+    public void joinActiveGame(Player player) {
+
+        boolean restored = eventResume.restorePlayerPosition(player);
+
+        if (!restored) {
+            TeleportManager.teleport(this, player, "world_mobarmy_lobby");
+        }
+
+        playerEffectManager.applyNightVision(player);
+
+        playerJoinListener.showWelcomeSequence(player);
+        playerJoinListener.showHelpHint(player);
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (!player.isOnline()) return;
+
+            timerManager.ensureBossBarExists();
+            timerManager.addPlayerToBossBar(player);
+            timerManager.updatePauseState();
+
+            teamScoreboardManager.updateBoard();
+            scoreboardSwitcher.switchToTeam(player);
+
+        }, 20L * 7);
     }
 
     @Override
@@ -387,11 +417,67 @@ public class MobArmyWarsGame implements ChallengeGame {
     }
 
     @Override
+    public boolean hasOtherPlayers(Player ignoredPlayer) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            if (player.equals(ignoredPlayer)) continue;
+
+            String worldName = player.getWorld().getName();
+
+            if (worldName.equals("world_mobarmy_lobby")
+                    || worldName.equals("world_mobarmy_arena")
+                    || worldName.equals("world_rot")
+                    || worldName.equals("world_blau")
+                    || worldName.equals("world_rot_nether")
+                    || worldName.equals("world_blau_nether")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public void startPlayers(Collection<? extends Player> players) {
         if (!loaded) return;
 
         for (Player player : players) {
+
             TeleportManager.teleport(this, player, "world_mobarmy_lobby");
+
+            playerEffectManager.applyNightVision(player);
+
+            playerJoinListener.showWelcomeSequence(player);
+            playerJoinListener.showHelpHint(player);
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (!player.isOnline()) return;
+
+                timerManager.ensureBossBarExists();
+                timerManager.addPlayerToBossBar(player);
+                timerManager.updatePauseState();
+
+                teamScoreboardManager.updateBoard();
+                scoreboardSwitcher.switchToTeam(player);
+
+            }, 20L * 7);
+        }
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (worldManager != null) {
+                worldManager.preloadTeamWorlds();
+            }
+        }, 80L);
+    }
+
+    @Override
+    public void leavePlayer(Player player) {
+        if (scoreboardSwitcher != null) {
+            scoreboardSwitcher.removePlayer(player);
+        }
+
+        if (timerManager != null) {
+            timerManager.removeBossBarFor(player);
         }
     }
 

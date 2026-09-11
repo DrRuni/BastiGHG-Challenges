@@ -153,6 +153,7 @@ public class LanguageSelectionGUI implements Listener {
 
     private void setLanguage(Player player, String language, String messagePath) {
         plugin.getLanguageManager().setLanguage(language);
+        plugin.getLobbyDisplayManager().refreshLanguage();
 
         player.sendMessage(lang(messagePath));
         player.closeInventory();

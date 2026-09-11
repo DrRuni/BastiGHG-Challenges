@@ -1,4 +1,4 @@
-file-version: 1
+file-version: 3
 
 commands:
   arena-summary:
@@ -627,3 +627,25 @@ player-join-listener:
   welcome:
     title: "Welcome"
     to: "to"
+  help-hint: "<gold>Tip:</gold> <gray>Use </gray><aqua>/info</aqua><gray> for an overview of all functions.</gray>"
+  help-hover: "<yellow>Click for help</yellow>"
+
+info-command:
+  title: "<gold>MobArmyWars - Help</gold>"
+  goal: "<yellow>• Goal:</yellow> <gray>Prepare your team and defeat the selected waves.</gray>"
+  teams: "<yellow>• Teams:</yellow> <gray>Red and Blue play in their own team worlds.</gray>"
+  preparation: "<yellow>• Preparation:</yellow> <gray>Gather equipment and prepare for the arena.</gray>"
+  arena: "<yellow>• Arena:</yellow> <gray>Several mob waves are fought in the arena.</gray>"
+  team-join: "<aqua>• /team join red|blue</aqua> <gray>- Join a team</gray>"
+  team-leave: "<aqua>• /team leave</aqua> <gray>- Leave your team</gray>"
+  lobby: "<aqua>• /lobby</aqua> <gray>- return to the central lobby</gray>"
+
+lobby-display:
+  waiting-for-load: "WAITING FOR LOAD"
+  no-game-selected: "Please select a game first."
+  load-first: "Please press LOAD first."
+  settings-load-first: "Settings are available after LOAD."
+  lobby-world-missing: "Lobby world not found."
+  loading: "%game% is loading..."
+  unloaded: "%game% unloaded"
+  ready: "%game% READY"

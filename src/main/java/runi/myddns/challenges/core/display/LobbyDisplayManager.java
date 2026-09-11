@@ -11,7 +11,7 @@ import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.plugin.java.JavaPlugin;
+import runi.myddns.challenges.ChallengeMain;
 import org.bukkit.entity.Interaction;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
@@ -49,13 +49,13 @@ public class LobbyDisplayManager {
     private static final Material BACKGROUND_MATERIAL = Material.BLACK_CONCRETE;
     private static final Material GLASS_MATERIAL = Material.TINTED_GLASS;
 
-    private final JavaPlugin plugin;
+    private final ChallengeMain plugin;
     private TextDisplay titleDisplay;
     private TextDisplay gameLabelDisplay;
     private TextDisplay gameNameDisplay;
     private TextDisplay loadConsoleDisplay;
 
-    public LobbyDisplayManager(JavaPlugin plugin) {
+    public LobbyDisplayManager(ChallengeMain plugin) {
         this.plugin = plugin;
     }
 
@@ -100,7 +100,6 @@ public class LobbyDisplayManager {
                         LOAD_CONSOLE_TAG
                 );
 
-
         // Alle wichtigen Teile gefunden?
         if (titleDisplay != null
                 && gameLabelDisplay != null
@@ -124,10 +123,6 @@ public class LobbyDisplayManager {
         // KEIN VOLLSTÄNDIGES DISPLAY
         // =============================
 
-        plugin.getLogger().info(
-                "Kein vollständiges Lobby-Display gefunden. Erstelle neu."
-        );
-
         removeBrokenDisplay(world);
 
         createBackground(world);
@@ -141,7 +136,14 @@ public class LobbyDisplayManager {
     }
 
     public void setLoadUnloaded(String gameName) {
-        setLoadStatus(gameName + " entladen", 0xA61B1B);
+        setLoadStatus(
+                plugin.getLanguageManager().get(
+                        "lobby-display.unloaded",
+                        "game",
+                        gameName
+                ),
+                0xA61B1B
+        );
     }
 
     private TextDisplay findTextDisplay(
@@ -356,59 +358,20 @@ public class LobbyDisplayManager {
 
     private void createTexts(World world) {
 
-        Component welcomeTop =
-                Component.text(
-                        "WILLKOMMEN ZU",
-                        TextColor.color(0x20D5C2)
-                ).decorate(TextDecoration.BOLD);
+        Component title = Component.text("\uE030");
 
-        createText(
+        titleDisplay = createText(
                 world,
-                TEXT_CENTER_X + TEXT_CENTER_OFFSET_X,
-                START_Y + 5.15,
+                TEXT_CENTER_X + 0.0,
+                START_Y + 4.20,
                 START_Z + TEXT_Z_OFFSET,
-                0.70f,
-                welcomeTop,
-                800
+                2.00f,
+                title,
+                1000
         );
-
-
-        Component title =
-                gradientText(
-                        "BASTIGHG'S CHALLENGES",
-                        0x00BFAF,
-                        0xB8FF32
-                );
-
-        titleDisplay =
-                createText(
-                        world,
-                        TEXT_CENTER_X + TEXT_CENTER_OFFSET_X,
-                        START_Y + 4.20,
-                        START_Z + TEXT_Z_OFFSET,
-                        1.48f,
-                        title,
-                        1000
-                );
 
         titleDisplay.addScoreboardTag(
                 TITLE_TAG
-        );
-
-        Component fanProject =
-                Component.text(
-                        "FAN PROJECT",
-                        TextColor.color(0x67F5E8)
-                ).decorate(TextDecoration.BOLD);
-
-        createText(
-                world,
-                TEXT_CENTER_X + TEXT_CENTER_OFFSET_X,
-                START_Y + 3.35,
-                START_Z + TEXT_Z_OFFSET,
-                1.02f,
-                fanProject,
-                700
         );
 
         gameLabelDisplay =
@@ -466,7 +429,7 @@ public class LobbyDisplayManager {
                         0.58f,
 
                         Component.text(
-                                "> WARTET AUF LOAD",
+                                "> " + plugin.getLanguageManager().get("lobby-display.waiting-for-load"),
                                 TextColor.color(0x777777)
                         ),
 
@@ -531,7 +494,11 @@ public class LobbyDisplayManager {
                         )
                         .append(
                                 Component.text(
-                                        gameName + " READY",
+                                        plugin.getLanguageManager().get(
+                                                "lobby-display.ready",
+                                                "game",
+                                                gameName
+                                        ),
                                         TextColor.color(0xB8FF32)
                                 ).decorate(
                                         TextDecoration.BOLD
@@ -737,6 +704,18 @@ public class LobbyDisplayManager {
         }
 
         return result;
+    }
+
+    public void refreshLanguage() {
+
+        if (loadConsoleDisplay != null && loadConsoleDisplay.isValid()) {
+            loadConsoleDisplay.text(
+                    Component.text(
+                            "> " + plugin.getLanguageManager().get("lobby-display.waiting-for-load"),
+                            TextColor.color(0x777777)
+                    )
+            );
+        }
     }
 
     public void setSelectedGame(String gameName) {

@@ -117,9 +117,11 @@ public final class ChallengeMain extends JavaPlugin {
         }
     }
 
+    public GameManager getGameManager() { return gameManager; }
     public LobbyWorldManager getLobbyWorldManager() {
         return lobbyWorldManager;
     }
+    public LobbyDisplayManager getLobbyDisplayManager() { return lobbyDisplayManager;}
     public LanguageManager getLanguageManager() { return languageManager; }
     public LanguageSelectionGUI getLanguageSelectionGUI() { return languageSelectionGUI; }
     public GameStateManager getGameStateManager() { return gameStateManager; }

@@ -8,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.CachedServerIcon;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -116,16 +115,16 @@ public class ServerIconManager implements Listener {
 
     private Component createMotd() {
         return MiniMessage.miniMessage().deserialize(
-                "<bold><gradient:#20D5C2:#B8FF32>     BastiGHG's Challenges</gradient></bold> " +
+                "<bold><gradient:#FF5ACD:#8B5CFF:#20D5FF>     BastiGHG's Challenges</gradient></bold> " +
                         "<dark_gray>•</dark_gray> " +
-                        "<gray>Fan Project</gray>" +
+                        "<#C38CFF>Fan Project</#C38CFF>" +
                         "\n" +
-                        "<dark_aqua><obfuscated>XX</obfuscated></dark_aqua> " +
-                        "<bold><gradient:#00BFAF:#B7FF38>CHALLENGE NETWORK</gradient></bold> " +
+                        "<light_purple><obfuscated>XX</obfuscated></light_purple> " +
+                        "<bold><gradient:#FF4FD8:#8C63FF:#22D3FF>CHALLENGE NETWORK</gradient></bold> " +
                         "<dark_gray>┃</dark_gray> " +
-                        "<aqua>Paper</aqua> " +
+                        "<#22D3FF>Paper</#22D3FF> " +
                         "<bold><white>26.2</white></bold> " +
-                        "<green><obfuscated>XX</obfuscated></green>"
+                        "<aqua><obfuscated>XX</obfuscated></aqua>"
         );
     }
 }

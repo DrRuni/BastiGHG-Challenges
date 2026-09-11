@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.ChallengeMain;
+import runi.myddns.challenges.core.game.ChallengeGame;
 
 public class LobbyCommand implements CommandExecutor {
 
@@ -31,7 +32,14 @@ public class LobbyCommand implements CommandExecutor {
                 return true;
             }
 
+            ChallengeGame game = plugin.getGameManager().getSelectedGame();
+
             for (Player online : Bukkit.getOnlinePlayers()) {
+
+                if (game != null && game.isLoaded()) {
+                    game.leavePlayer(online);
+                }
+
                 online.teleport(plugin.getLobbyWorldManager().getSpawn());
             }
 
@@ -42,6 +50,12 @@ public class LobbyCommand implements CommandExecutor {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Dieser Befehl kann nur von Spielern verwendet werden.");
             return true;
+        }
+
+        ChallengeGame game = plugin.getGameManager().getSelectedGame();
+
+        if (game != null && game.isLoaded()) {
+            game.leavePlayer(player);
         }
 
         player.teleport(plugin.getLobbyWorldManager().getSpawn());

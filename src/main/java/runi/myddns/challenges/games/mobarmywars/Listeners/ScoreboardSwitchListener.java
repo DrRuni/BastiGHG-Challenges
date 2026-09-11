@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import runi.myddns.challenges.games.mobarmywars.Managers.Event.ScoreboardSwitcher;
 import runi.myddns.challenges.games.mobarmywars.MobArmyWarsGame;
 
 public class ScoreboardSwitchListener implements Listener {
@@ -33,9 +34,23 @@ public class ScoreboardSwitchListener implements Listener {
             return;
         }
 
-        if (isTeamBoardWorld(worldName)) {
+        if (worldName.equals("world_rot") || worldName.equals("world_blau")) {
             game.getScoreboardSwitcher().switchToTeam(player);
+            return;
         }
+
+        if (worldName.equals("world_mobarmy_lobby")) {
+
+            if (game.getScoreboardSwitcher().getActiveBoard(player)
+                    != ScoreboardSwitcher.BoardType.NONE) {
+
+                game.getScoreboardSwitcher().switchToTeam(player);
+            }
+
+            return;
+        }
+
+        game.getScoreboardSwitcher().removePlayer(player);
     }
 
     private boolean isArenaBoardWorld(String worldName) {
@@ -47,4 +62,5 @@ public class ScoreboardSwitchListener implements Listener {
                 || worldName.equals("world_rot")
                 || worldName.equals("world_blau");
     }
+
 }

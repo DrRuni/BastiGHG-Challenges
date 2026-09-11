@@ -359,8 +359,12 @@ public class WorldManager {
     }
 
     private void loadWorlds() {
-        loadWorld(WORLD_LOBBY);
-        loadWorld(WORLD_ARENA);
+        World lobby = loadWorld(WORLD_LOBBY);
+        preloadSpawnChunks(lobby, 3);
+
+        World arena = loadWorld(WORLD_ARENA);
+        preloadSpawnChunks(arena, 2);
+
         loadWorld("world_rot");
         loadWorld("world_blau");
         loadWorld("world_rot_nether");
@@ -585,6 +589,13 @@ public class WorldManager {
             }
 
         }, 1L, 1L);
+    }
+
+    public void preloadTeamWorlds() {
+        preloadSpawnChunks(Bukkit.getWorld("world_rot"), 2);
+        preloadSpawnChunks(Bukkit.getWorld("world_blau"), 2);
+        preloadSpawnChunks(Bukkit.getWorld("world_rot_nether"), 2);
+        preloadSpawnChunks(Bukkit.getWorld("world_blau_nether"), 2);
     }
 
     private void deleteDirectoryRecursively(File dir) {

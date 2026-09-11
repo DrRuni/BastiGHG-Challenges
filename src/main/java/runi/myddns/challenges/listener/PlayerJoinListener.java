@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import runi.myddns.challenges.ChallengeMain;
+import runi.myddns.challenges.core.game.ChallengeGame;
 
 public class PlayerJoinListener implements Listener {
 
@@ -24,11 +25,43 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+
         Player player = event.getPlayer();
+
+        ChallengeGame game = plugin.getGameManager().getSelectedGame();
+
+        boolean joinActiveGame =
+                game != null
+                        && game.isLoaded()
+                        && plugin.getGameStateManager().isStarted()
+                        && game.hasOtherPlayers(player);
+
+        if (joinActiveGame) {
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (!player.isOnline()) return;
+
+                game.joinActiveGame(player);
+
+            }, 20L);
+
+            return;
+        }
 
         player.teleport(plugin.getLobbyWorldManager().getSpawn());
 
-//        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        if (player.isOp() && !plugin.getLanguageManager().hasLanguage()) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (!player.isOnline()) return;
+                if (plugin.getLanguageManager().hasLanguage()) return;
+
+                plugin.getLanguageSelectionGUI().open(player);
+
+            }, 80L);
+        }
+    }
+
+    //        Bukkit.getScheduler().runTaskLater(plugin, () -> {
 //            if (!player.isOnline()) return;
 //
 //            Component prompt = Component.text()
@@ -39,14 +72,4 @@ public class PlayerJoinListener implements Listener {
 //
 //            player.setResourcePack(RESOURCE_PACK_URL, RESOURCE_PACK_SHA1, false, prompt);
 //        }, 20L);
-
-        if (player.isOp() && !plugin.getLanguageManager().hasLanguage()) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (!player.isOnline()) return;
-                if (plugin.getLanguageManager().hasLanguage()) return;
-
-                plugin.getLanguageSelectionGUI().open(player);
-            }, 80L);
-        }
-    }
 }
