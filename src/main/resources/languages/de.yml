@@ -11,8 +11,8 @@ commands:
     invalid-team: "<red>❌ Ungültiges Team. Benutze: rot oder blau"
     no-team: "<red>❌ Du bist in keinem Team!"
     no-mobs: "<red>Team %team% hat keine gespeicherten Mobs."
-    header-red: "<red>[MobArmyWars] Team %team% – gespeicherte Mobs:"
-    header-blue: "<blue>[MobArmyWars] Team %team% – gespeicherte Mobs:"
+    header-red: "<red>[MobArmyBattle] Team %team% – gespeicherte Mobs:"
+    header-blue: "<blue>[MobArmyBattle] Team %team% – gespeicherte Mobs:"
     mob-entry: "<gray>- %amount%x %mob%"
   options:
     player-only: "<red>Dieser Command ist nur für Spieler!"
@@ -131,9 +131,9 @@ language-selection:
   changed-en: "<green>✓ Sprache auf Englisch gesetzt!"
 
 options-gui:
-  title: "<blue>MobArmyWars Optionen"
+  title: "<blue>MobArmyBattle Optionen"
   start:
-    name: "<gold>Start MobArmyWars"
+    name: "<gold>Start MobArmyBattle"
     description: "<gray>Startet den Countdown"
   pause:
     name: "<gold>Event Pause"
@@ -308,7 +308,7 @@ team-settings-gui:
   back: "<dark_aqua>Zurück"
 
 teleport-gui:
-  title: "<blue>Teleports für MobArmyWars"
+  title: "<blue>Teleports für MobArmyBattle"
 
   self:
     lobby:
@@ -552,7 +552,7 @@ event-manager:
     title: "Vorbereitung"
     subtitle: "<dark_aqua>Erstelle die Waves und bereite dich auf den Kampf vor."
   reset:
-    complete: "<dark_red>   MobArmyWars wurde komplett zurückgesetzt!"
+    complete: "<dark_red>   MobArmyBattle wurde komplett zurückgesetzt!"
 
 mob-save-manager:
   kill: "<white>+%amount% <mob> getötet"
@@ -621,9 +621,9 @@ world-manager:
 player-join-listener:
   notice:
     line-1: "<gold><bold>Wichtige Mitteilung:</bold> <yellow>Klicke <aqua><bold>HIER</bold></aqua>, um weitere Informationen zu erhalten."
-    details-1: "<gray>Diese Version wird vorerst die letzte Version von MobArmyWars sein."
+    details-1: "<gray>Diese Version wird vorerst die letzte Version von MobArmyBattle sein."
     details-2: "<gray>Mein nächstes Projekt wird <gold>BastiGHG Challenges - Fan Project</gold> heißen."
-    details-3: "<gray>MobArmyWars wird dort wieder enthalten sein – unter dem ursprünglichen Namen <aqua>MobArmyBattle</aqua>."
+    details-3: "<gray>MobArmyBattle wird dort wieder enthalten sein – unter dem ursprünglichen Namen <aqua>MobArmyBattle</aqua>."
     details-4: "<yellow>Habt etwas Geduld – es wird kommen. :D"
     hover: "<yellow>Klicken für weitere Informationen"
   welcome:
@@ -633,7 +633,7 @@ player-join-listener:
   help-hover: "<yellow>Klicken für Hilfe</yellow>"
 
 info-command:
-  title: "<gold>MobArmyWars - Hilfe</gold>"
+  title: "<gold>MobArmyBattle - Hilfe</gold>"
   goal: "<yellow>• Ziel:</yellow> <gray>Bereitet euer Team vor und besiegt die ausgewählten Wellen.</gray>"
   teams: "<yellow>• Teams:</yellow> <gray>Rot und Blau spielen in eigenen Teamwelten.</gray>"
   preparation: "<yellow>• Vorbereitung:</yellow> <gray>Sammelt Ausrüstung und bereitet euch auf die Arena vor.</gray>"

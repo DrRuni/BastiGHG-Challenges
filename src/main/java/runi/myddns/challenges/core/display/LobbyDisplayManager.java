@@ -17,6 +17,8 @@ import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import static runi.myddns.challenges.core.utils.DisplayColor.*;
+
 public class LobbyDisplayManager {
 
     private static final String DISPLAY_TAG = "challenge_lobby_showcase";
@@ -26,6 +28,7 @@ public class LobbyDisplayManager {
     private static final String INTERACTION_TAG = "challenge_lobby_display_interaction";
     private static final String PROTECTED_TAG = "challenge_protected";
     private static final String LOAD_CONSOLE_TAG = "challenge_lobby_load_console";
+    private static final String LOAD_TITLE_TAG = "challenge_lobby_load_title";
 
     private static final double START_X = 1.0;
     private static final double START_Y = 67.0;
@@ -35,7 +38,6 @@ public class LobbyDisplayManager {
     private static final float HEIGHT = 6.0f;
 
     private static final double TEXT_CENTER_X = START_X + WIDTH / 2.0;
-    private static final double TEXT_CENTER_OFFSET_X = 0.0;
 
     private static final float OUTER_FRAME = 0.16f;
     private static final float INNER_FRAME = 0.06f;
@@ -50,10 +52,12 @@ public class LobbyDisplayManager {
     private static final Material GLASS_MATERIAL = Material.TINTED_GLASS;
 
     private final ChallengeMain plugin;
+    private final java.util.ArrayDeque<String> loadConsoleLines = new java.util.ArrayDeque<>();
     private TextDisplay titleDisplay;
     private TextDisplay gameLabelDisplay;
     private TextDisplay gameNameDisplay;
     private TextDisplay loadConsoleDisplay;
+    private TextDisplay loadTitleDisplay;
 
     public LobbyDisplayManager(ChallengeMain plugin) {
         this.plugin = plugin;
@@ -100,6 +104,8 @@ public class LobbyDisplayManager {
                         LOAD_CONSOLE_TAG
                 );
 
+        loadTitleDisplay = findTextDisplay(world, LOAD_TITLE_TAG);
+
         // Alle wichtigen Teile gefunden?
         if (titleDisplay != null
                 && gameLabelDisplay != null
@@ -108,6 +114,10 @@ public class LobbyDisplayManager {
             plugin.getLogger().info(
                     "Vorhandenes Lobby-Display übernommen."
             );
+
+            if (loadTitleDisplay == null) {
+                createLoadTitle(world);
+            }
 
             if (loadConsoleDisplay == null) {
                 createLoadConsole(world);
@@ -130,9 +140,24 @@ public class LobbyDisplayManager {
         createInnerFrame(world);
         createAccentElements(world);
         createTexts(world);
+        createLoadTitle(world);
         createLoadConsole(world);
 
         protectDisplayEntities(world);
+    }
+
+    private void createLoadTitle(World world) {
+        loadTitleDisplay = createText(
+                world,
+                TEXT_CENTER_X,
+                START_Y + 1.85,
+                START_Z + TEXT_Z_OFFSET,
+                0.72f,
+                Component.empty(),
+                1000
+        );
+
+        loadTitleDisplay.addScoreboardTag(LOAD_TITLE_TAG);
     }
 
     public void setLoadUnloaded(String gameName) {
@@ -377,8 +402,8 @@ public class LobbyDisplayManager {
         gameLabelDisplay =
                 createText(
                         world,
-                        TEXT_CENTER_X + 2.85,
-                        START_Y + 1.95,
+                        TEXT_CENTER_X + 1.55,
+                        START_Y + 2.85,
                         START_Z + TEXT_Z_OFFSET,
                         1.02f,
                         Component.text(
@@ -397,8 +422,8 @@ public class LobbyDisplayManager {
         gameNameDisplay =
                 createText(
                         world,
-                        TEXT_CENTER_X + 1.15,
-                        START_Y + 1.95,
+                        TEXT_CENTER_X - 0.65,
+                        START_Y + 2.85,
                         START_Z + TEXT_Z_OFFSET,
                         1.20f,
                         Component.text(
@@ -416,95 +441,138 @@ public class LobbyDisplayManager {
     }
 
     private void createLoadConsole(World world) {
-
-        loadConsoleDisplay =
-                createText(
-                        world,
-
-                        // mittig unter GAME
-                        TEXT_CENTER_X,
-                        START_Y + 0.90,
-                        START_Z + TEXT_Z_OFFSET,
-
-                        0.58f,
-
-                        Component.text(
-                                "> " + plugin.getLanguageManager().get("lobby-display.waiting-for-load"),
-                                TextColor.color(0x777777)
-                        ),
-
-                        1000
-                );
-
-        loadConsoleDisplay.addScoreboardTag(
-                LOAD_CONSOLE_TAG
+        loadConsoleDisplay = createText(
+                world,
+                TEXT_CENTER_X,
+                START_Y + 1.15,
+                START_Z + TEXT_Z_OFFSET,
+                0.58f,
+                Component.empty(),
+                1000
         );
+
+        loadConsoleDisplay.addScoreboardTag(LOAD_CONSOLE_TAG);
     }
 
-    public void setLoadStatus(
-            String text,
-            int color
-    ) {
+    public void addLoadConsoleLine(String text) {
+        loadConsoleLines.addLast(text);
 
-        if (loadConsoleDisplay == null
-                || !loadConsoleDisplay.isValid()) {
+        while (loadConsoleLines.size() > 3) {
+            loadConsoleLines.removeFirst();
+        }
 
-            World world =
-                    plugin.getServer()
-                            .getWorld(
-                                    "bastighg_challenges_lobby"
-                            );
+        updateLoadConsole();
+    }
 
-            if (world != null) {
-                loadConsoleDisplay =
-                        findTextDisplay(
-                                world,
-                                LOAD_CONSOLE_TAG
-                        );
+    private void updateLoadConsole() {
+        if (loadConsoleDisplay == null || !loadConsoleDisplay.isValid()) {
+            World world = plugin.getLobbyWorldManager().getLobbyWorld();
+            if (world == null) return;
+
+            loadConsoleDisplay = findTextDisplay(world, LOAD_CONSOLE_TAG);
+
+            if (loadConsoleDisplay == null || !loadConsoleDisplay.isValid()) {
+                createLoadConsole(world);
+                return;
             }
         }
 
-        if (loadConsoleDisplay == null) {
-            return;
+        Component console = Component.empty();
+        int index = 0;
+
+        for (String line : loadConsoleLines) {
+            if (index > 0) console = console.append(Component.newline());
+
+            if (!line.isEmpty()) {
+                console = console.append(
+                        Component.text(
+                                "> " + line,
+                                TextColor.color(LIGHT_GREY)
+                        )
+                );
+            }
+
+            index++;
         }
 
-        loadConsoleDisplay.text(
+        loadConsoleDisplay.text(console);
+    }
+
+    public void clearLoadConsole() {
+        loadConsoleLines.clear();
+
+        if (loadConsoleDisplay == null || !loadConsoleDisplay.isValid()) {
+            World world = plugin.getLobbyWorldManager().getLobbyWorld();
+            if (world == null) return;
+
+            loadConsoleDisplay = findTextDisplay(world, LOAD_CONSOLE_TAG);
+        }
+
+        if (loadConsoleDisplay != null && loadConsoleDisplay.isValid()) {
+            loadConsoleDisplay.text(Component.empty());
+        }
+    }
+
+    public void setLoadStatus(String text, int color) {
+        if (loadTitleDisplay == null || !loadTitleDisplay.isValid()) {
+            World world = plugin.getLobbyWorldManager().getLobbyWorld();
+
+            if (world == null) return;
+
+            loadTitleDisplay = findTextDisplay(world, LOAD_TITLE_TAG);
+
+            if (loadTitleDisplay == null) {
+                createLoadTitle(world);
+
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        () -> setLoadStatus(text, color),
+                        1L
+                );
+
+                return;
+            }
+        }
+
+        loadTitleDisplay.text(
                 Component.text(
-                        "> " + text,
+                        text,
                         TextColor.color(color)
-                )
+                ).decorate(TextDecoration.BOLD)
         );
     }
 
-    public void setLoadReady(
-            String gameName
-    ) {
+    public void setLoadReady(String gameName) {
+        if (loadTitleDisplay == null || !loadTitleDisplay.isValid()) {
+            World world = plugin.getLobbyWorldManager().getLobbyWorld();
 
-        if (loadConsoleDisplay == null) {
-            return;
+            if (world != null) {
+                loadTitleDisplay = findTextDisplay(world, LOAD_TITLE_TAG);
+            }
         }
 
-        loadConsoleDisplay.text(
-                Component.empty()
-                        .append(
-                                Component.text(
-                                        "● ",
-                                        TextColor.color(0xB8FF32)
-                                )
-                        )
-                        .append(
-                                Component.text(
-                                        plugin.getLanguageManager().get(
-                                                "lobby-display.ready",
-                                                "game",
-                                                gameName
-                                        ),
-                                        TextColor.color(0xB8FF32)
-                                ).decorate(
-                                        TextDecoration.BOLD
-                                )
-                        )
-        );
+        if (loadTitleDisplay != null) {
+            loadTitleDisplay.text(
+                    Component.text(
+                            gameName + " ist geladen",
+                            TextColor.color(0x55CC44)
+                    ).decorate(TextDecoration.BOLD)
+            );
+        }
+
+        scrollLoadConsoleOut();
+    }
+
+    private void scrollLoadConsoleOut() {
+        for (int i = 1; i <= 3; i++) {
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                if (!loadConsoleLines.isEmpty()) loadConsoleLines.removeFirst();
+                loadConsoleLines.addLast("");
+                updateLoadConsole();
+            }, i * 8L);
+        }
+
+        plugin.getServer().getScheduler().runTaskLater(plugin, this::clearLoadConsole, 32L);
     }
 
     private TextDisplay createText(
@@ -707,43 +775,54 @@ public class LobbyDisplayManager {
     }
 
     public void refreshLanguage() {
-
-        if (loadConsoleDisplay != null && loadConsoleDisplay.isValid()) {
-            loadConsoleDisplay.text(
-                    Component.text(
-                            "> " + plugin.getLanguageManager().get("lobby-display.waiting-for-load"),
-                            TextColor.color(0x777777)
-                    )
-            );
-        }
+        setLoadStatus(
+                plugin.getLanguageManager().get("lobby-display.waiting-for-load"),
+                0x777777
+        );
     }
 
     public void setSelectedGame(String gameName) {
 
-        plugin.getLogger().info(
-                "Display Game setzen auf: " + gameName
-        );
+        plugin.getLogger().info("Display Game setzen auf: " + gameName);
 
-        if (gameNameDisplay == null) {
-            plugin.getLogger().warning(
-                    "Game-Name-Display ist NULL."
-            );
-            return;
+        if (gameNameDisplay == null || !gameNameDisplay.isValid()) {
+            World world = plugin.getLobbyWorldManager().getLobbyWorld();
+            if (world == null) return;
+
+            gameNameDisplay = findTextDisplay(world, GAME_NAME_TAG);
+
+            if (gameNameDisplay == null || !gameNameDisplay.isValid()) {
+                plugin.getLogger().warning("Game-Name-Display wurde nicht gefunden.");
+                return;
+            }
         }
 
         Component gameText;
 
-        if (gameName.equalsIgnoreCase("MobArmyWars")) {
+        if (gameName.equalsIgnoreCase("MobArmyBattle")) {
             gameText = gradientText(
-                    "  " + gameName.toUpperCase(),
-                    0xFF3333,
-                    0x3366FF
+                    " " + gameName.toUpperCase(),
+                    BRIGHT_RED,
+                    BLUE
+            );
+        } else if (gameName.equalsIgnoreCase("LevelBorder")) {
+            gameText = gradientText(
+                    gameName.toUpperCase(),
+                    LIGHT_BLUE,
+                    DEEP_BLUE
+            );
+        } else if (gameName.equalsIgnoreCase("LevelBlock")) {
+            gameText = gradientText(
+                    gameName.toUpperCase(),
+                    LIME,
+                    DARK_GREEN
             );
         } else {
-            gameText = Component.text(
-                    "  " + gameName.toUpperCase(),
-                    TextColor.color(0xFF4FD8)
-            ).decorate(TextDecoration.BOLD);
+            gameText = gradientText(
+                    gameName.toUpperCase(),
+                    LIME,
+                    DARK_GREEN
+            );
         }
 
         gameNameDisplay.text(gameText);
@@ -789,7 +868,8 @@ public class LobbyDisplayManager {
                                 || entity.getScoreboardTags().contains(GAME_LABEL_TAG)
                                 || entity.getScoreboardTags().contains(GAME_NAME_TAG)
                                 || entity.getScoreboardTags().contains(LOAD_CONSOLE_TAG)
-                                || entity.getScoreboardTags().contains(INTERACTION_TAG);
+                                || entity.getScoreboardTags().contains(INTERACTION_TAG)
+                                || entity.getScoreboardTags().contains(LOAD_TITLE_TAG);
 
                 boolean lobbyButton =
                         entity.getScoreboardTags().contains("challenge_lobby_button_visual")
@@ -806,5 +886,6 @@ public class LobbyDisplayManager {
         gameLabelDisplay = null;
         gameNameDisplay = null;
         loadConsoleDisplay = null;
+        loadTitleDisplay = null;
     }
 }

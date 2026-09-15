@@ -69,9 +69,22 @@ commands:
     permission-message: "§c❌ You do not have permission!"
 
   info:
-    description: Zeigt Informationen zu MobArmyWars
+    description: Zeigt Informationen zu MobArmyBattle
     usage: /info
     aliases: [ help ]
+
+  # ============================================================
+  # LevelBorder
+  # ============================================================
+
+  lbscore:
+    description: Steuert das LevelBorder-Scoreboard.
+    usage: /lbscore <reset|reload|hide>
+
+  levelborder:
+    description: Hauptbefehl für LevelBorder.
+    usage: /levelborder <subcommand>
+    aliases: [lb]
 
 permissions:
 
@@ -84,4 +97,12 @@ permissions:
 
   mobarmybattle.mobstatus.admin:
     description: Allows viewing MobArmyBattle mob status for all teams
+    default: op
+
+  # ============================================================
+  # LevelBorder
+  # ============================================================
+
+  levelborder.admin:
+    description: Allows administrative LevelBorder commands
     default: op

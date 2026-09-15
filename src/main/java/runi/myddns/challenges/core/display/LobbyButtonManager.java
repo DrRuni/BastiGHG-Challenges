@@ -1,7 +1,6 @@
 package runi.myddns.challenges.core.display;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,10 +19,12 @@ import org.joml.Vector3f;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.game.GameManager;
-import runi.myddns.challenges.games.mobarmywars.MobArmyWarsGame;
+import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static runi.myddns.challenges.core.utils.DisplayColor.*;
 
 public class LobbyButtonManager implements Listener {
 
@@ -260,12 +261,42 @@ public class LobbyButtonManager implements Listener {
 
             ChallengeGame currentGame = gameManager.getSelectedGame();
 
-            if (currentGame != null && currentGame.isLoaded()) {
-                if (!currentGame.canUnload()) {
-                    plugin.getLogger().info("Game kann noch nicht gewechselt werden.");
-                    return;
-                }
+            if (currentGame != null && currentGame.isLoading()) {
+                lobbyDisplayManager.setLoadStatus(
+                        "Während des Ladens kann das Game nicht gewechselt werden.",
+                        BLOOD_RED
+                );
 
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    if (currentGame.isLoading()) {
+                        lobbyDisplayManager.setLoadStatus(
+                                currentGame.getDisplayName() + " wird geladen...",
+                                LOAD_RED
+                        );
+                    } else if (currentGame.isLoaded()) {
+                        lobbyDisplayManager.setLoadReady(currentGame.getDisplayName());
+                    }
+                }, 40L);
+
+                return;
+            }
+
+//            if (plugin.getGameStateManager().isStarted()) {
+//                lobbyDisplayManager.setLoadStatus(
+//                        "Das laufende Game kann nicht gewechselt werden.",
+//                        0xA61B1B
+//                );
+//
+//                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+//                    if (currentGame != null && currentGame.isLoaded()) {
+//                        lobbyDisplayManager.setLoadReady(currentGame.getDisplayName());
+//                    }
+//                }, 40L);
+//
+//                return;
+//            }
+
+            if (currentGame != null && currentGame.isLoaded()) {
                 currentGame.unload();
             }
 
@@ -275,9 +306,9 @@ public class LobbyButtonManager implements Listener {
 
             if (newGame != null) {
                 plugin.getGameStateManager().setSelectedGame(newGame.getId());
+                lobbyDisplayManager.setSelectedGame(newGame.getDisplayName());
             }
         }
-
 
         // =========================
         // LOAD
@@ -289,18 +320,27 @@ public class LobbyButtonManager implements Listener {
 
             if (game == null) return;
 
-            lobbyDisplayManager.setLoadStatus(
-                    plugin.getLanguageManager().get(
-                            "lobby-display.loading",
-                            "game",
-                            game.getDisplayName()
-                    ),
-                    0xFFAA00
-            );
+            if (game.isLoaded()) {
+                lobbyDisplayManager.setLoadStatus(
+                        game.getDisplayName() + " wurde bereits geladen",
+                        0xA61B1B
+                );
+
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        () -> {
+                            if (game.isLoaded()) {
+                                lobbyDisplayManager.setLoadReady(game.getDisplayName());
+                            }
+                        },
+                        40L
+                );
+
+                return;
+            }
 
             gameManager.loadSelectedGame();
         }
-
 
         // =========================
         // START
@@ -326,7 +366,7 @@ public class LobbyButtonManager implements Listener {
                 return;
             }
 
-            World lobbyWorld = Bukkit.getWorld("BastiGHG_Challenges_Lobby");
+            World lobbyWorld = plugin.getLobbyWorldManager().getLobbyWorld();
 
             if (lobbyWorld == null) {
                 lobbyDisplayManager.setLoadStatus(
@@ -364,8 +404,27 @@ public class LobbyButtonManager implements Listener {
                 return;
             }
 
-            if (game instanceof MobArmyWarsGame mobArmyWarsGame) {
-                mobArmyWarsGame.getOptionenGUI().open(player);
+            if (game.getId().equalsIgnoreCase("levelborder")) {
+                lobbyDisplayManager.setLoadStatus(
+                        "LevelBorder-Einstellungen sind derzeit noch nicht verfügbar.",
+                        0xA61B1B
+                );
+
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        () -> {
+                            if (game.isLoaded()) {
+                                lobbyDisplayManager.setLoadReady(game.getDisplayName());
+                            }
+                        },
+                        40L
+                );
+
+                return;
+            }
+
+            if (game instanceof MobArmyBattleGame mobArmyBattleGame) {
+                mobArmyBattleGame.getOptionenGUI().open(player);
             }
         }
 

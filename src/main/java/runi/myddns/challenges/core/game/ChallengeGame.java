@@ -8,6 +8,7 @@ public interface ChallengeGame {
 
     boolean hasPlayers();
     boolean hasOtherPlayers(Player ignoredPlayer);
+    boolean isLoading();
     boolean canUnload();
 
     String getId();

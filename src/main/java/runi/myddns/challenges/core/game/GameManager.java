@@ -27,6 +27,15 @@ public class GameManager {
         );
     }
 
+    public void selectGame(String gameId) {
+        for (int i = 0; i < games.size(); i++) {
+            if (games.get(i).getId().equalsIgnoreCase(gameId)) {
+                selectedGameIndex = i;
+                return;
+            }
+        }
+    }
+
     public void selectNextGame() {
 
         if (games.isEmpty()) {

@@ -7,75 +7,108 @@ import runi.myddns.challenges.core.commands.LobbyCommand;
 import runi.myddns.challenges.core.display.LobbyButtonManager;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.files.PluginFileManager;
-import runi.myddns.challenges.core.game.ChallengeGame;
-import runi.myddns.challenges.core.game.GameManager;
-import runi.myddns.challenges.core.game.GameStateManager;
-import runi.myddns.challenges.core.language.LanguageManager;
-import runi.myddns.challenges.core.server.ServerIconManager;
-import runi.myddns.challenges.core.world.LobbyWorldManager;
-import runi.myddns.challenges.core.utils.ConsoleColor;
+import runi.myddns.challenges.core.game.*;
 import runi.myddns.challenges.core.gui.LanguageSelectionGUI;
-import runi.myddns.challenges.games.mobarmywars.MobArmyWarsGame;
+import runi.myddns.challenges.core.language.LanguageManager;
+import runi.myddns.challenges.core.player.PlayerGameDataListener;
+import runi.myddns.challenges.core.player.PlayerGameDataManager;
+import runi.myddns.challenges.core.server.ServerIconManager;
+import runi.myddns.challenges.core.utils.ConsoleColor;
+import runi.myddns.challenges.core.world.*;
+import runi.myddns.challenges.core.world.lobby.LobbyWorldManager;
+import runi.myddns.challenges.games.LevelBlock.LevelBlockGame;
+import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
+import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.listener.LobbyRespawnListener;
 import runi.myddns.challenges.listener.PlayerJoinListener;
 
+import static runi.myddns.challenges.core.utils.DisplayColor.*;
+
 public final class ChallengeMain extends JavaPlugin {
 
+    private WorldSourceManager worldSourceManager;
+    private GameWorldManager gameWorldManager;
     private LobbyWorldManager lobbyWorldManager;
     private LobbyDisplayManager lobbyDisplayManager;
     private LanguageManager languageManager;
     private LanguageSelectionGUI languageSelectionGUI;
     private GameManager gameManager;
     private GameStateManager gameStateManager;
+    private PlayerGameDataManager playerGameDataManager;
 
     @Override
     public void onLoad() {
-
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.COPPER + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.COPPER + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.COPPER + "                          V1.0" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.COPPER + "                     L O A D I N G" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage("");
-
+        printLoadingMessage();
     }
 
     @Override
     public void onEnable() {
-
         ServerIconManager serverIconManager = new ServerIconManager(this);
 
-        PluginFileManager pluginFileManager = new PluginFileManager(this);
-        pluginFileManager.checkFilesOnStartup();
+        new PluginFileManager(this).checkFilesOnStartup();
 
-        languageManager = new LanguageManager(this);
-        languageSelectionGUI = new LanguageSelectionGUI(this);
-
-        lobbyWorldManager = new LobbyWorldManager(this);
-        lobbyWorldManager.loadWorld();
-
-        lobbyDisplayManager = new LobbyDisplayManager(this);
-
-        gameStateManager = new GameStateManager(this);
-
-        gameManager = new GameManager();
-        gameManager.registerGame(new MobArmyWarsGame(this, lobbyDisplayManager));
+        setupWorlds();
+        setupLanguage();
+        setupLobby();
+        setupGames();
 
         LobbyButtonManager lobbyButtonManager = new LobbyButtonManager(this, lobbyDisplayManager, gameManager);
 
+        playerGameDataManager = new PlayerGameDataManager(this);
+
+        registerListeners(serverIconManager, lobbyButtonManager);
+        createLobbyDisplay(lobbyButtonManager);
+        registerCommands();
+
+        printReadyMessage();
+    }
+
+    private void setupWorlds() {
+        worldSourceManager = new WorldSourceManager(this);
+        gameWorldManager = new GameWorldManager(this, worldSourceManager);
+
+        worldSourceManager.prepareAllWorlds();
+
+        lobbyWorldManager = new LobbyWorldManager(this);
+        lobbyWorldManager.loadWorld();
+    }
+
+    private void setupLanguage() {
+        languageManager = new LanguageManager(this);
+        languageSelectionGUI = new LanguageSelectionGUI(this);
+    }
+
+    private void setupLobby() {
+        lobbyDisplayManager = new LobbyDisplayManager(this);
+    }
+
+    private void setupGames() {
+        gameStateManager = new GameStateManager(this);
+
+        gameManager = new GameManager();
+        gameManager.registerGame(new MobArmyBattleGame(this, lobbyDisplayManager));
+        gameManager.registerGame(new LevelBorderGame(this));
+        gameManager.registerGame(new LevelBlockGame(this));
+
+        gameStateManager.resetRuntimeState();
+
+        String savedGameId = gameStateManager.getSelectedGame();
+
+        if (!savedGameId.equalsIgnoreCase("none")) gameManager.selectGame(savedGameId);
+    }
+
+    private void registerListeners(ServerIconManager serverIconManager, LobbyButtonManager lobbyButtonManager) {
         getServer().getPluginManager().registerEvents(languageSelectionGUI, this);
         getServer().getPluginManager().registerEvents(lobbyButtonManager, this);
         getServer().getPluginManager().registerEvents(new LobbyRespawnListener(lobbyWorldManager), this);
         getServer().getPluginManager().registerEvents(serverIconManager, this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerGameDataListener(this), this);
+    }
+
+    private void createLobbyDisplay(LobbyButtonManager lobbyButtonManager) {
         getServer().getScheduler().runTaskLater(this, () -> {
-
             lobbyDisplayManager.createShowcaseDisplay(lobbyWorldManager.getLobbyWorld());
-
             lobbyButtonManager.createButtons(lobbyWorldManager.getLobbyWorld());
 
             ChallengeGame selectedGame = gameManager.getSelectedGame();
@@ -84,45 +117,49 @@ public final class ChallengeMain extends JavaPlugin {
                 lobbyDisplayManager.setSelectedGame(selectedGame.getDisplayName());
             }
 
+            lobbyDisplayManager.clearLoadConsole();
+
+            getServer().getScheduler().runTaskLater(this, () ->
+                    lobbyDisplayManager.setLoadStatus("Warte auf Laden...", GREY), 5L);
+
         }, 2L);
+    }
 
-        LanguageCommand languageCommand = new LanguageCommand(this);
-
-        if (getCommand("language") != null) {
-            getCommand("language").setExecutor(languageCommand);
-        }
-
-        LobbyCommand lobbyCommand = new LobbyCommand(this);
-
-        if (getCommand("lobby") != null) {
-            getCommand("lobby").setExecutor(lobbyCommand);
-        }
-
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.DARK_GOLDEN_LIME + "                          V1.0" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.DARK_GOLDEN_LIME + "                       R E A D Y" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage("");
+    private void registerCommands() {
+        if (getCommand("language") != null) getCommand("language").setExecutor(new LanguageCommand(this));
+        if (getCommand("lobby") != null) getCommand("lobby").setExecutor(new LobbyCommand(this));
     }
 
     @Override
     public void onDisable() {
-        if (lobbyDisplayManager != null) {
-            lobbyDisplayManager.removeAllDisplayEntities();
-        }
+        if (lobbyDisplayManager != null) lobbyDisplayManager.removeAllDisplayEntities();
+    }
+
+    private void printLoadingMessage() {
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                          V1.0" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                     L O A D I N G" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage("");
+    }
+
+    private void printReadyMessage() {
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                          V1.0" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                       R E A D Y" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage("");
     }
 
     public GameManager getGameManager() { return gameManager; }
-    public LobbyWorldManager getLobbyWorldManager() {
-        return lobbyWorldManager;
-    }
-    public LobbyDisplayManager getLobbyDisplayManager() { return lobbyDisplayManager;}
+    public LobbyWorldManager getLobbyWorldManager() { return lobbyWorldManager; }
+    public LobbyDisplayManager getLobbyDisplayManager() { return lobbyDisplayManager; }
     public LanguageManager getLanguageManager() { return languageManager; }
     public LanguageSelectionGUI getLanguageSelectionGUI() { return languageSelectionGUI; }
     public GameStateManager getGameStateManager() { return gameStateManager; }
+    public PlayerGameDataManager getPlayerGameDataManager() { return playerGameDataManager; }
+    public WorldSourceManager getWorldSourceManager() { return worldSourceManager; }
+    public GameWorldManager getGameWorldManager() { return gameWorldManager; }
 }

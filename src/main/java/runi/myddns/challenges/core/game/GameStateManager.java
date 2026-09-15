@@ -17,11 +17,21 @@ public class GameStateManager {
         this.file = new File(plugin.getDataFolder(), "game-state.yml");
         this.config = YamlConfiguration.loadConfiguration(file);
 
-        reset();
+        if (!config.contains("selected-game")) config.set("selected-game", "none");
+        if (!config.contains("loaded")) config.set("loaded", false);
+        if (!config.contains("started")) config.set("started", false);
+
+        save();
     }
 
     public void reset() {
         config.set("selected-game", "none");
+        config.set("loaded", false);
+        config.set("started", false);
+        save();
+    }
+
+    public void resetRuntimeState() {
         config.set("loaded", false);
         config.set("started", false);
         save();

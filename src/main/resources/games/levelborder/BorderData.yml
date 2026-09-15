@@ -1,0 +1,15 @@
+# Levelborder Data
+file-version: 3
+
+border:
+  world: null
+  center: null
+  size: 3
+  active: false
+  max-total-level: 0
+scoreboard:
+  visible: false
+
+timer:
+  seconds: 0
+

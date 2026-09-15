@@ -11,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 
 public class PluginFileManager {
@@ -24,26 +22,17 @@ public class PluginFileManager {
             String targetFolder,
             String resourcePrefix,
             List<String> yamlFiles,
-            List<String> emptyFiles,
-            String templatePrefix
+            List<String> emptyFiles
     ) {}
-    private static final List<String> ROOT_RESOURCE_FILES = List.of(
-            "config.yml"
-    );
 
-    private static final List<String> ROOT_EMPTY_FILES = List.of(
-            "game-state.yml"
-    );
-
-    private static final List<String> LANGUAGE_FILES = List.of(
-            "de.yml",
-            "en.yml"
-    );
+    private static final List<String> ROOT_RESOURCE_FILES = List.of("config.yml");
+    private static final List<String> ROOT_EMPTY_FILES = List.of("game-state.yml");
+    private static final List<String> LANGUAGE_FILES = List.of("de.yml", "en.yml");
 
     private static final GameFiles MOB_ARMY_BATTLE = new GameFiles(
             "MobArmyBattle",
-            "games/mobarmywars/",
-            "games/mobarmywars/",
+            "games/mobarmybattle/",
+            "games/mobarmybattle/",
             List.of(
                     "arena-koordinaten.yml",
                     "eventdaten.yml",
@@ -56,11 +45,23 @@ public class PluginFileManager {
                     "mobData.yml",
                     "scoreboard.yml",
                     "teams.yml"
-            ),
-            "world_mobarmy"
+            )
     );
+
+    private static final GameFiles LEVEL_BORDER = new GameFiles(
+            "LevelBorder",
+            "games/levelborder/",
+            "games/levelborder/",
+            List.of(
+                    "BorderData.yml",
+                    "config.yml"
+            ),
+            List.of()
+    );
+
     private static final List<GameFiles> GAMES = List.of(
-            MOB_ARMY_BATTLE
+            MOB_ARMY_BATTLE,
+            LEVEL_BORDER
     );
 
     public PluginFileManager(JavaPlugin plugin) {
@@ -93,7 +94,7 @@ public class PluginFileManager {
         Bukkit.getConsoleSender().sendMessage("");
 
         for (String fileName : ROOT_RESOURCE_FILES) {
-            copyResourceIfMissing(fileName, new File(targetFolder, fileName));
+            checkYamlFile(targetFolder, "", fileName);
         }
 
         for (String fileName : ROOT_EMPTY_FILES) {
@@ -141,24 +142,6 @@ public class PluginFileManager {
         );
         Bukkit.getConsoleSender().sendMessage("");
 
-        if (game.templatePrefix() != null) {
-            String newestTemplate = findNewestTemplateInJar(
-                    game.gameName(),
-                    resourcePrefix,
-                    game.templatePrefix()
-            );
-
-            if (newestTemplate != null) {
-                checkTemplateByVersion(
-                        game.gameName(),
-                        targetFolder,
-                        resourcePrefix,
-                        game.templatePrefix(),
-                        newestTemplate
-                );
-            }
-        }
-
         for (String file : game.yamlFiles()) {
             checkYamlFile(targetFolder, resourcePrefix, file);
         }
@@ -181,96 +164,6 @@ public class PluginFileManager {
     private String normalizePrefix(String prefix) {
         if (prefix == null || prefix.isBlank()) return "";
         return prefix.endsWith("/") ? prefix : prefix + "/";
-    }
-
-    private String findNewestTemplateInJar(String gameName, String resourcePrefix, String templatePrefix) {
-        try {
-            File jarFile = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
-
-            try (JarFile jar = new JarFile(jarFile)) {
-                String newestResourcePath = null;
-                String newestVersion = null;
-
-                Enumeration<JarEntry> entries = jar.entries();
-
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    String resourcePath = entry.getName();
-
-                    if (!resourcePath.startsWith(resourcePrefix + templatePrefix + " V")) continue;
-                    if (!resourcePath.endsWith(".zip")) continue;
-
-                    String fileName = resourcePath.substring(resourcePrefix.length());
-                    String version = extractVersionFromFileName(fileName, templatePrefix);
-
-                    if (version == null) continue;
-
-                    if (newestVersion == null || compareVersions(version, newestVersion) > 0) {
-                        newestVersion = version;
-                        newestResourcePath = resourcePath;
-                    }
-                }
-
-                return newestResourcePath;
-            }
-
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Fehler beim Suchen des Templates für " + gameName + ".", e);
-            return null;
-        }
-    }
-
-    private void checkTemplateByVersion(
-            String gameName,
-            File targetFolder,
-            String resourcePrefix,
-            String templatePrefix,
-            String resourcePath
-    ) {
-        String fileName = resourcePath.substring(resourcePrefix.length());
-        String resourceVersion = extractVersionFromFileName(fileName, templatePrefix);
-
-        if (resourceVersion == null) return;
-
-        File[] existingFiles = targetFolder.listFiles((_, name) ->
-                name.startsWith(templatePrefix + " V") && name.endsWith(".zip"));
-
-        File newestExistingFile = null;
-        String newestExistingVersion = null;
-
-        if (existingFiles != null) {
-            for (File file : existingFiles) {
-                String version = extractVersionFromFileName(file.getName(), templatePrefix);
-                if (version == null) continue;
-
-                if (newestExistingVersion == null || compareVersions(version, newestExistingVersion) > 0) {
-                    newestExistingVersion = version;
-                    newestExistingFile = file;
-                }
-            }
-        }
-
-        File targetFile = new File(targetFolder, fileName);
-
-        if (newestExistingFile == null) {
-            copyResource(resourcePath, targetFile);
-            printFileStatus(fileName, "erstellt.");
-            return;
-        }
-
-        if (compareVersions(resourceVersion, newestExistingVersion) > 0) {
-            backupFile(targetFolder, newestExistingFile, newestExistingFile.getName());
-            copyResource(resourcePath, targetFile);
-
-            if (!newestExistingFile.equals(targetFile) && newestExistingFile.exists() && !newestExistingFile.delete()) {
-                plugin.getLogger().warning("Alte Template-Datei konnte nicht gelöscht werden: " + newestExistingFile.getName());
-            }
-
-            printFileStatus(fileName, "aktualisiert.");
-            return;
-        }
-
-        printFileStatus(newestExistingFile.getName(), "I.O.");
     }
 
     private void checkYamlFile(File targetFolder, String resourcePrefix, String fileName) {
@@ -410,39 +303,6 @@ public class PluginFileManager {
 
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Backup für " + fileName + " konnte nicht erstellt werden.", e);
-        }
-    }
-
-    private String extractVersionFromFileName(String fileName, String baseName) {
-        String prefix = baseName + " V";
-        String suffix = ".zip";
-
-        if (!fileName.startsWith(prefix) || !fileName.endsWith(suffix)) return null;
-
-        return fileName.substring(prefix.length(), fileName.length() - suffix.length());
-    }
-
-    private int compareVersions(String v1, String v2) {
-        String[] parts1 = v1.replace("V", "").replace("v", "").split("\\.");
-        String[] parts2 = v2.replace("V", "").replace("v", "").split("\\.");
-
-        int length = Math.max(parts1.length, parts2.length);
-
-        for (int i = 0; i < length; i++) {
-            int num1 = i < parts1.length ? parseVersionPart(parts1[i]) : 0;
-            int num2 = i < parts2.length ? parseVersionPart(parts2[i]) : 0;
-
-            if (num1 != num2) return Integer.compare(num1, num2);
-        }
-
-        return 0;
-    }
-
-    private int parseVersionPart(String part) {
-        try {
-            return Integer.parseInt(part);
-        } catch (NumberFormatException e) {
-            return 0;
         }
     }
 

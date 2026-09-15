@@ -5,7 +5,7 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import runi.myddns.challenges.core.world.LobbyWorldManager;
+import runi.myddns.challenges.core.world.lobby.LobbyWorldManager;
 
 public class LobbyRespawnListener
         implements Listener {

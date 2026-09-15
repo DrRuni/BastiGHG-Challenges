@@ -1,0 +1,3 @@
+- MAB Lobby Blockabbau darf nicht sein
+- /lobby aus levelborder ist das sb noch da
+- levelborder keine console
