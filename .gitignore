@@ -23,6 +23,7 @@ out/
 *.nar
 *.ear
 *.zip
+!src/main/resources/core/worlds/BastiGHG_Challenges_Worlds.zip
 *.tar.gz
 *.rar
 

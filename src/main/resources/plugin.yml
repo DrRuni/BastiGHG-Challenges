@@ -1,5 +1,5 @@
 name: BastiGHG-Challenges
-version: '0.2'
+version: '0.3'
 
 main: runi.myddns.challenges.ChallengeMain
 api-version: '26.2'
