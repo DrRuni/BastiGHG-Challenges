@@ -21,10 +21,6 @@ public class PlayerGameDataListener implements Listener {
         this.playerGameDataManager = plugin.getPlayerGameDataManager();
     }
 
-    // ============================================================
-    // VOR WELTWECHSEL -> ALTES GAME SPEICHERN
-    // ============================================================
-
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         if (event.getTo() == null) return;
@@ -40,10 +36,6 @@ public class PlayerGameDataListener implements Listener {
 
         playerGameDataManager.savePlayerData(player, oldGameId);
     }
-
-    // ============================================================
-    // NACH WELTWECHSEL -> NEUES GAME LADEN
-    // ============================================================
 
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
@@ -66,10 +58,6 @@ public class PlayerGameDataListener implements Listener {
         }
     }
 
-    // ============================================================
-    // SERVER VERLASSEN
-    // ============================================================
-
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
@@ -79,10 +67,6 @@ public class PlayerGameDataListener implements Listener {
 
         playerGameDataManager.savePlayerData(player, gameId);
     }
-
-    // ============================================================
-    // SERVER JOIN
-    // ============================================================
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
@@ -102,10 +86,6 @@ public class PlayerGameDataListener implements Listener {
 
         }, 2L);
     }
-
-    // ============================================================
-    // GAME ZUR WELT FINDEN
-    // ============================================================
 
     private String getGameId(World world) {
         if (world == null) return null;

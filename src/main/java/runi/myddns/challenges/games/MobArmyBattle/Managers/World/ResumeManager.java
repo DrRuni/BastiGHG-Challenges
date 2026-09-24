@@ -32,7 +32,7 @@ public class ResumeManager {
     public ResumeManager(MobArmyBattleGame game) {
         this.game = game;
 
-        this.file = new File(game.getDataFolder(), "eventdaten.yml");
+        this.file = new File(game.getDataFolder(), "gamedata.yml");
         this.config = YamlConfiguration.loadConfiguration(file);
 
         this.locationManager = new PlayerLocationManager(config);
@@ -46,7 +46,7 @@ public class ResumeManager {
         } catch (IOException e) {
             game.getPlugin().getLogger().log(
                     Level.SEVERE,
-                    "Failed to save eventdaten.yml.",
+                    "Failed to save gamedata.yml.",
                     e
             );
         }

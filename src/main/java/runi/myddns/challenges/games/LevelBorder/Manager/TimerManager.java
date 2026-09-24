@@ -56,7 +56,7 @@ public class TimerManager {
                     }
                 }
 
-                String animated = ColorUtil.borderColorScrolling(
+                String animated = ColorUtil.animatedBlueGradient(
                         formatTime(seconds),
                         gradientTick
                 );

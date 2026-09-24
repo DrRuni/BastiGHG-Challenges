@@ -1,0 +1,12 @@
+# Welteneinstellungen
+file-version: 1
+
+world-settings:
+  keep-inventory: true
+  night-vision-enabled: false
+  mob-spawning: true
+  daylight-cycle: true
+  difficulty: normal
+  world-time: 6000
+
+game-settings:

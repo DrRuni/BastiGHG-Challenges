@@ -74,7 +74,8 @@ public class LobbyButtonManager implements Listener {
             "SELECT",
             "LOAD",
             "START",
-            "SETTINGS"
+            "SETTINGS",
+            "WORLDSETTINGS"
     };
 
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -88,11 +89,20 @@ public class LobbyButtonManager implements Listener {
 
         buttonDisplays.clear();
 
-        double[] positions = {
-                START_X + 10.20, // SELECT - visuell links
-                START_X + 7.75,  // LOAD
-                START_X + 5.30,  // START
-                START_X + 2.85   // SETTINGS - visuell rechts
+        double[] positionsX = {
+                START_X + 10.20,
+                START_X + 7.75,
+                START_X + 5.30,
+                START_X + 2.85,
+                START_X + 2.85
+        };
+
+        double[] positionsY = {
+                BUTTON_Y,
+                BUTTON_Y,
+                BUTTON_Y,
+                BUTTON_Y,
+                BUTTON_Y + 1.00
         };
 
         for (int i = 0; i < BUTTON_NAMES.length; i++) {
@@ -101,7 +111,8 @@ public class LobbyButtonManager implements Listener {
                     world,
                     i,
                     BUTTON_NAMES[i],
-                    positions[i]
+                    positionsX[i],
+                    positionsY[i]
             );
         }
     }
@@ -110,14 +121,15 @@ public class LobbyButtonManager implements Listener {
             World world,
             int index,
             String name,
-            double x
+            double x,
+            double y
     ) {
 
         Location textLocation =
                 new Location(
                         world,
                         x,
-                        BUTTON_Y,
+                        y,
                         BUTTON_Z,
                         BUTTON_YAW,
                         0.0f
@@ -195,7 +207,7 @@ public class LobbyButtonManager implements Listener {
                 new Location(
                         world,
                         x,
-                        BUTTON_Y,
+                        y,
                         BUTTON_Z - 0.05
                 );
 
@@ -426,6 +438,38 @@ public class LobbyButtonManager implements Listener {
             if (game instanceof MobArmyBattleGame mobArmyBattleGame) {
                 mobArmyBattleGame.getOptionenGUI().open(player);
             }
+        }
+
+        // =========================
+        // WORLDSETTINGS
+        // =========================
+
+        if (index == 4) {
+
+            ChallengeGame game = gameManager.getSelectedGame();
+
+            if (game == null) {
+                lobbyDisplayManager.setLoadStatus(
+                        plugin.getLanguageManager().get("lobby-display.no-game-selected"),
+                        0xFF5555
+                );
+                return;
+            }
+
+            if (!game.isLoaded()) {
+                lobbyDisplayManager.setLoadStatus(
+                        "Bitte zuerst ein Game laden.",
+                        0xFFAA00
+                );
+                return;
+            }
+
+            if (game instanceof MobArmyBattleGame mobArmyBattleGame) {
+                mobArmyBattleGame.getWorldSettingsGUI().open(player);
+                return;
+            }
+
+            plugin.getWorldSettingsGUI().open(player);
         }
 
         // =========================

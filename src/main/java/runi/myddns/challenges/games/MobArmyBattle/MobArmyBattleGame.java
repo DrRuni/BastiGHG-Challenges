@@ -11,6 +11,7 @@ import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.games.MobArmyBattle.GUIs.OptionsGUI;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
+import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.MobArmyBattle.Commands.*;
 import runi.myddns.challenges.games.MobArmyBattle.GUIs.*;
 import runi.myddns.challenges.games.MobArmyBattle.Listeners.*;
@@ -43,8 +44,8 @@ public class MobArmyBattleGame implements ChallengeGame {
     public ArenaBuildProtectionManager arenaBuildProtectionManager;
     private ResumeManager eventResume;
     private WorldSettings worldSettings;
+    private final GameWorldSettingsManager worldSettingsManager;
     private PortalManager portalManager;
-    private PlayerEffectManager playerEffectManager;
     private ArenaConfig arenaConfig;
     public OptionsGUI optionenGUI;
     public TimerGUI timerGUI;
@@ -63,17 +64,36 @@ public class MobArmyBattleGame implements ChallengeGame {
     private ArenaCompassManager arenaCompassManager;
     private TeamEquipmentManager teamEquipmentManager;
     private TeamEquipmentGUI teamEquipmentGUI;
-    private PlayerJoinListener playerJoinListener;
+    private PlayerListener playerListener;
     private ChestRandomizerManager chestRandomizerManager;
 
     private boolean loaded;
     private boolean loading;
 
-    public MobArmyBattleGame(ChallengeMain plugin, LobbyDisplayManager lobbyDisplayManager) {
+    public MobArmyBattleGame(
+            ChallengeMain plugin,
+            LobbyDisplayManager lobbyDisplayManager
+    ) {
         this.plugin = plugin;
         this.lobbyDisplayManager = lobbyDisplayManager;
-    }
 
+        this.worldSettingsManager =
+                new GameWorldSettingsManager(plugin, getId(), List.of(
+                        "world_mobarmy_lobby",
+                        "world_mobarmy_arena",
+                        "world_rot",
+                        "world_rot_nether",
+                        "world_blau",
+                        "world_blau_nether"
+                ));
+
+        this.worldSettingsManager.setMobSpawningForcedOffWorlds(
+                List.of(
+                        "world_mobarmy_lobby",
+                        "world_mobarmy_arena"
+                )
+        );
+    }
 
     public File getDataFolder() {
         return new File(plugin.getDataFolder(), "games/mobarmybattle");
@@ -98,6 +118,10 @@ public class MobArmyBattleGame implements ChallengeGame {
         return loaded;
     }
 
+    @Override
+    public void openSettings(Player player) {
+        getOptionenGUI().open(player);
+    }
 
     @Override
     public void load() {
@@ -122,9 +146,11 @@ public class MobArmyBattleGame implements ChallengeGame {
         runStep(
                 "Welten prüfen...",
                 () -> {
+                    worldSettingsManager.load();
                     worldSettings = new WorldSettings(this);
                     worldManager = new WorldManager(this);
                     worldManager.checkWorldsOnStartup();
+                    worldSettingsManager.applyAll();
                 },
                 () -> runStep(
                         "Manager initialisieren...",
@@ -165,7 +191,6 @@ public class MobArmyBattleGame implements ChallengeGame {
     }
 
     private void initializeMobArmyBattle() {
-        playerEffectManager = new PlayerEffectManager(this);
         blockRandomizerManager = new BlockRandomizerManager(this);
         arenaConfig = new ArenaConfig(plugin);
         arenaManager = new ArenaEventManager(this);
@@ -215,7 +240,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         playerActionGUI = new PlayerActionGUI(this);
         teamSettingsGUI = new TeamSettingsGUI(this);
         teamEquipmentGUI = new TeamEquipmentGUI(this);
-        playerJoinListener = new PlayerJoinListener(this);
+        playerListener = new PlayerListener(this);
     }
 
     private void registerListener(Listener listener) {
@@ -225,7 +250,7 @@ public class MobArmyBattleGame implements ChallengeGame {
 
     private void registerListeners() {
         registerListener(new PauseListener(this));
-        registerListener(playerJoinListener);
+        registerListener(playerListener);
         registerListener(new PlayerRespawnListener(this));
         registerListener(new PortalListener(this));
         registerListener(blockRandomizerManager);
@@ -243,7 +268,6 @@ public class MobArmyBattleGame implements ChallengeGame {
         registerListener(new BundleListener(this, bundleGUI, teamManager, bundleManager));
         registerListener(arenaSettingsGUI);
         registerListener(worldSettingsGUI);
-        registerListener(new UltraHardcoreListener(this));
         registerListener(arenaCompassManager);
         registerListener(playerGUI);
         registerListener(playerActionGUI);
@@ -256,10 +280,9 @@ public class MobArmyBattleGame implements ChallengeGame {
     private void registerCommands() {
         ResumeCommand resumeCmd = new ResumeCommand(this);
         registerCommand("resume", resumeCmd, resumeCmd);
-        registerCommand("mobarmy", resumeCmd, resumeCmd);
 
-        OptionenCommand optionenCommand = new OptionenCommand(this);
-        registerCommand("optionen", optionenCommand, optionenCommand);
+        MobArmyCommand mobArmyCommand = new MobArmyCommand(this);
+        registerCommand("mobarmy", mobArmyCommand, mobArmyCommand);
 
         TeamCommand teamCmd = new TeamCommand(this);
         registerCommand("team", teamCmd, teamCmd);
@@ -271,17 +294,23 @@ public class MobArmyBattleGame implements ChallengeGame {
 
         SetPhaseCommand setPhaseCommand = new SetPhaseCommand(this);
         registerCommand("setphase", setPhaseCommand, setPhaseCommand);
-
-        ResetCommand resetCommand = new ResetCommand(this);
-        registerCommand("reset", resetCommand, resetCommand);
-
-        InfoCommand infoCommand = new InfoCommand(this);
-        registerCommand("info", infoCommand, null);
     }
 
     @Override
     public boolean canUnload() {
         return eventResume != null && eventResume.loadPhase() == ResumeManager.PHASE_LOBBY && !hasPlayers();
+    }
+
+    @Override
+    public void shutdown() {
+        if (timerManager != null) {
+            getEventResume().saveTimerState(
+                    timerManager.getTimeInSeconds(),
+                    timerManager.isForward()
+            );
+
+            timerManager.pauseTimer();
+        }
     }
 
     @Override
@@ -329,10 +358,8 @@ public class MobArmyBattleGame implements ChallengeGame {
             TeleportManager.teleport(this, player, "world_mobarmy_lobby");
         }
 
-        playerEffectManager.applyNightVision(player);
-
-        playerJoinListener.showWelcomeSequence(player);
-        playerJoinListener.showHelpHint(player);
+        worldSettingsManager.applyPlayerSettings(player);
+        playerListener.showWelcomeSequence(player);
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (!player.isOnline()) return;
@@ -460,10 +487,8 @@ public class MobArmyBattleGame implements ChallengeGame {
 
             TeleportManager.teleport(this, player, "world_mobarmy_lobby");
 
-            playerEffectManager.applyNightVision(player);
-
-            playerJoinListener.showWelcomeSequence(player);
-            playerJoinListener.showHelpHint(player);
+            worldSettingsManager.applyPlayerSettings(player);
+            playerListener.showWelcomeSequence(player);
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (!player.isOnline()) return;
@@ -496,6 +521,11 @@ public class MobArmyBattleGame implements ChallengeGame {
         }
     }
 
+    @Override
+    public GameWorldSettingsManager getWorldSettingsManager() {
+        return worldSettingsManager;
+    }
+
     public ChallengeMain getPlugin() { return plugin; }
     public TeamManager getTeamManager() { return teamManager; }
     public TimerManager getTimerManager() { return timerManager; }
@@ -519,7 +549,6 @@ public class MobArmyBattleGame implements ChallengeGame {
     public MobSaveManager getMobSaveManager() { return mobSaveManager; }
     public WorldSettings getWorldSettings() { return worldSettings; }
     public PortalManager getPortalManager() { return portalManager; }
-    public PlayerEffectManager getPlayerEffectManager() { return playerEffectManager; }
     public TeamScoreboardManager getTeamScoreboardManager() { return teamScoreboardManager; }
     public ScoreboardSwitcher getScoreboardSwitcher() { return scoreboardSwitcher; }
     public ArenaSettingsGUI getArenaSettingsGUI() { return arenaSettingsGUI; }
@@ -530,7 +559,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     public TeamSettingsGUI getTeamSettingsGUI() { return teamSettingsGUI; }
     public TeamEquipmentManager getTeamEquipmentManager() { return teamEquipmentManager; }
     public TeamEquipmentGUI getTeamEquipmentGUI() { return teamEquipmentGUI; }
-    public PlayerJoinListener getPlayerJoinListener() { return playerJoinListener; }
+    public PlayerListener getPlayerJoinListener() { return playerListener; }
     public LanguageManager getLanguageManager() { return plugin.getLanguageManager();
     }
 }

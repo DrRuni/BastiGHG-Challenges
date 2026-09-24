@@ -1,6 +1,7 @@
 package runi.myddns.challenges.games.LevelBorder;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,6 +13,7 @@ import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
+import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.LevelBorder.Commands.LevelBorderCommand;
 import runi.myddns.challenges.games.LevelBorder.Commands.ScoreboardCommand;
 import runi.myddns.challenges.games.LevelBorder.Listeners.PlayerListener;
@@ -26,6 +28,7 @@ import java.util.List;
 public class LevelBorderGame implements ChallengeGame {
 
     private final ChallengeMain plugin;
+    private final GameWorldSettingsManager worldSettingsManager;
     private final List<Listener> registeredListeners = new ArrayList<>();
 
     private boolean loaded = false;
@@ -43,6 +46,12 @@ public class LevelBorderGame implements ChallengeGame {
 
     public LevelBorderGame(ChallengeMain plugin) {
         this.plugin = plugin;
+
+        this.worldSettingsManager =
+                new GameWorldSettingsManager(plugin, getId(), List.of(
+                        GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName(),
+                        GameWorldDefinition.LEVEL_BORDER_NETHER.worldName(),
+                        GameWorldDefinition.LEVEL_BORDER_END.worldName()));
     }
 
     private void loadConfig() {
@@ -69,6 +78,11 @@ public class LevelBorderGame implements ChallengeGame {
     }
 
     @Override
+    public void openSettings(Player player) {
+        plugin.getWorldSettingsGUI().open(player);
+    }
+
+    @Override
     public void load() {
         if (loaded || loading) return;
 
@@ -90,6 +104,8 @@ public class LevelBorderGame implements ChallengeGame {
                     loadConfig();
 
                     plugin.getGameWorldManager().loadGameWorlds(getId());
+                    worldSettingsManager.load();
+                    worldSettingsManager.applyAll();
 
                     World world = Bukkit.getWorld(
                             GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
@@ -175,7 +191,12 @@ public class LevelBorderGame implements ChallengeGame {
         registeredListeners.add(listener);
     }
 
-
+    @Override
+    public void shutdown() {
+        if (timerManager != null) {
+            timerManager.stop();
+        }
+    }
 
     @Override
     public void unload() {
@@ -245,15 +266,34 @@ public class LevelBorderGame implements ChallengeGame {
     public void joinActiveGame(Player player) {
         if (!loaded) return;
 
-        World world = Bukkit.getWorld("world_levelborder");
+        World world = Bukkit.getWorld(
+                GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
+        );
+
         if (world == null) return;
 
-        player.teleport(world.getSpawnLocation());
+        Location targetLocation =
+                plugin.getPlayerGameDataManager()
+                        .getSavedLocation(
+                                player.getUniqueId(),
+                                getId()
+                        );
+
+        if (targetLocation == null) {
+            targetLocation =
+                    world.getSpawnLocation();
+        }
+
+        player.teleport(
+                targetLocation
+        );
     }
 
     @Override
     public void leavePlayer(Player player) {
-        if (!loaded) return;
+        if (player == null) return;
+
+        scoreboardManager.removePlayer(player);
     }
 
     @Override
@@ -278,6 +318,11 @@ public class LevelBorderGame implements ChallengeGame {
     @Override
     public boolean canUnload() {
         return !hasPlayers();
+    }
+
+    @Override
+    public GameWorldSettingsManager getWorldSettingsManager() {
+        return worldSettingsManager;
     }
 
     public boolean isLevelBorderWorld(World world) {

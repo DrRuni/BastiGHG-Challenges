@@ -2,6 +2,7 @@ package runi.myddns.challenges;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import runi.myddns.challenges.core.commands.GameSettingsCommand;
 import runi.myddns.challenges.core.commands.LanguageCommand;
 import runi.myddns.challenges.core.commands.LobbyCommand;
 import runi.myddns.challenges.core.display.LobbyButtonManager;
@@ -9,6 +10,7 @@ import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.files.PluginFileManager;
 import runi.myddns.challenges.core.game.*;
 import runi.myddns.challenges.core.gui.LanguageSelectionGUI;
+import runi.myddns.challenges.core.gui.WorldSettingsGUI;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.player.PlayerGameDataListener;
 import runi.myddns.challenges.core.player.PlayerGameDataManager;
@@ -21,6 +23,7 @@ import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.listener.LobbyRespawnListener;
 import runi.myddns.challenges.listener.PlayerJoinListener;
+import runi.myddns.challenges.listener.UltraUltraHardcoreListener;
 
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
 
@@ -35,6 +38,7 @@ public final class ChallengeMain extends JavaPlugin {
     private GameManager gameManager;
     private GameStateManager gameStateManager;
     private PlayerGameDataManager playerGameDataManager;
+    private WorldSettingsGUI worldSettingsGUI;
 
     @Override
     public void onLoad() {
@@ -51,6 +55,8 @@ public final class ChallengeMain extends JavaPlugin {
         setupLanguage();
         setupLobby();
         setupGames();
+
+        worldSettingsGUI = new WorldSettingsGUI(this);
 
         LobbyButtonManager lobbyButtonManager = new LobbyButtonManager(this, lobbyDisplayManager, gameManager);
 
@@ -100,10 +106,12 @@ public final class ChallengeMain extends JavaPlugin {
     private void registerListeners(ServerIconManager serverIconManager, LobbyButtonManager lobbyButtonManager) {
         getServer().getPluginManager().registerEvents(languageSelectionGUI, this);
         getServer().getPluginManager().registerEvents(lobbyButtonManager, this);
+        getServer().getPluginManager().registerEvents(worldSettingsGUI, this);
         getServer().getPluginManager().registerEvents(new LobbyRespawnListener(lobbyWorldManager), this);
         getServer().getPluginManager().registerEvents(serverIconManager, this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerGameDataListener(this), this);
+        getServer().getPluginManager().registerEvents(new UltraUltraHardcoreListener(this), this);
     }
 
     private void createLobbyDisplay(LobbyButtonManager lobbyButtonManager) {
@@ -128,11 +136,29 @@ public final class ChallengeMain extends JavaPlugin {
     private void registerCommands() {
         if (getCommand("language") != null) getCommand("language").setExecutor(new LanguageCommand(this));
         if (getCommand("lobby") != null) getCommand("lobby").setExecutor(new LobbyCommand(this));
+        if (getCommand("gamesettings") != null) getCommand("gamesettings").setExecutor(new GameSettingsCommand(this));
     }
 
     @Override
     public void onDisable() {
-        if (lobbyDisplayManager != null) lobbyDisplayManager.removeAllDisplayEntities();
+
+        if (gameManager != null) {
+
+            ChallengeGame game =
+                    gameManager.getSelectedGame();
+
+            if (playerGameDataManager != null) {
+                playerGameDataManager.saveOnlinePlayers();
+            }
+
+            if (game != null && game.isLoaded()) {
+                game.shutdown();
+            }
+        }
+
+        if (lobbyDisplayManager != null) {
+            lobbyDisplayManager.removeAllDisplayEntities();
+        }
     }
 
     private void printLoadingMessage() {
@@ -162,4 +188,5 @@ public final class ChallengeMain extends JavaPlugin {
     public PlayerGameDataManager getPlayerGameDataManager() { return playerGameDataManager; }
     public WorldSourceManager getWorldSourceManager() { return worldSourceManager; }
     public GameWorldManager getGameWorldManager() { return gameWorldManager; }
+    public WorldSettingsGUI getWorldSettingsGUI() { return worldSettingsGUI;}
 }

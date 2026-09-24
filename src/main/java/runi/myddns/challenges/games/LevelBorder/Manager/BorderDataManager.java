@@ -32,7 +32,7 @@ public class BorderDataManager {
 
         dataFile = new File(
                 gameFolder,
-                "BorderData.yml"
+                "gamedata.yml"
         );
 
         dataCfg = YamlConfiguration.loadConfiguration(dataFile);
@@ -286,7 +286,7 @@ public class BorderDataManager {
             game.getPlugin()
                     .getLogger()
                     .warning(
-                            "Fehler beim Speichern von BorderData.yml"
+                            "Fehler beim Speichern von gamedata.yml"
                     );
         }
     }

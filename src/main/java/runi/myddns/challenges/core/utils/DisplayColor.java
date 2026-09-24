@@ -61,7 +61,9 @@ public class DisplayColor {
     // ============================================================
 
     public static final int GREEN = 0x55CC44;
+    public static final int SOFT_LIME = 0x9BE870;
     public static final int BRIGHT_GREEN = 0x33FF66;
+    public static final int DEEP_GREEN = 0x1F5E2A;
     public static final int NEON_GREEN = 0x39FF14;
     public static final int DARK_GREEN = 0x2E7D32;
     public static final int FOREST_GREEN = 0x228B22;

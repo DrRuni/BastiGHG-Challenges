@@ -17,6 +17,7 @@ import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import static runi.myddns.challenges.core.utils.ColorUtil.gradientText;
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
 
 public class LobbyDisplayManager {
@@ -75,11 +76,6 @@ public class LobbyDisplayManager {
 
         world.getChunkAt(center).load();
 
-
-        // =============================
-        // EXISTIERENDES DISPLAY SUCHEN
-        // =============================
-
         titleDisplay =
                 findTextDisplay(
                         world,
@@ -106,7 +102,6 @@ public class LobbyDisplayManager {
 
         loadTitleDisplay = findTextDisplay(world, LOAD_TITLE_TAG);
 
-        // Alle wichtigen Teile gefunden?
         if (titleDisplay != null
                 && gameLabelDisplay != null
                 && gameNameDisplay != null) {
@@ -127,11 +122,6 @@ public class LobbyDisplayManager {
 
             return;
         }
-
-
-        // =============================
-        // KEIN VOLLSTÄNDIGES DISPLAY
-        // =============================
 
         removeBrokenDisplay(world);
 
@@ -704,74 +694,6 @@ public class LobbyDisplayManager {
                         new Quaternionf()
                 )
         );
-    }
-
-    private Component gradientText(
-            String text,
-            int startColor,
-            int endColor
-    ) {
-
-        Component result =
-                Component.empty();
-
-        int length =
-                Math.max(
-                        1,
-                        text.length() - 1
-                );
-
-        int startR = (startColor >> 16) & 0xFF;
-        int startG = (startColor >> 8) & 0xFF;
-        int startB = startColor & 0xFF;
-
-        int endR = (endColor >> 16) & 0xFF;
-        int endG = (endColor >> 8) & 0xFF;
-        int endB = endColor & 0xFF;
-
-        for (int i = 0; i < text.length(); i++) {
-
-            double factor =
-                    (double) i / length;
-
-            int red =
-                    (int) Math.round(
-                            startR
-                                    + (endR - startR)
-                                    * factor
-                    );
-
-            int green =
-                    (int) Math.round(
-                            startG
-                                    + (endG - startG)
-                                    * factor
-                    );
-
-            int blue =
-                    (int) Math.round(
-                            startB
-                                    + (endB - startB)
-                                    * factor
-                    );
-
-            result = result.append(
-                    Component.text(
-                            String.valueOf(
-                                    text.charAt(i)
-                            ),
-                            TextColor.color(
-                                    red,
-                                    green,
-                                    blue
-                            )
-                    ).decorate(
-                            TextDecoration.BOLD
-                    )
-            );
-        }
-
-        return result;
     }
 
     public void refreshLanguage() {

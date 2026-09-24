@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import runi.myddns.challenges.ChallengeMain;
+import runi.myddns.challenges.core.world.GameWorldDefinition;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,6 @@ public class PlayerGameDataManager {
         YamlConfiguration config =
                 new YamlConfiguration();
 
-        // Inventar
         config.set(
                 "inventory.contents",
                 Arrays.asList(
@@ -48,7 +48,6 @@ public class PlayerGameDataManager {
                 )
         );
 
-        // Rüstung
         config.set(
                 "inventory.armor",
                 Arrays.asList(
@@ -56,13 +55,11 @@ public class PlayerGameDataManager {
                 )
         );
 
-        // Offhand
         config.set(
                 "inventory.offhand",
                 player.getInventory().getItemInOffHand()
         );
 
-        // Enderchest
         config.set(
                 "enderchest",
                 Arrays.asList(
@@ -70,7 +67,6 @@ public class PlayerGameDataManager {
                 )
         );
 
-        // XP
         config.set(
                 "experience.level",
                 player.getLevel()
@@ -122,6 +118,31 @@ public class PlayerGameDataManager {
             );
 
             exception.printStackTrace();
+        }
+    }
+
+    public void saveOnlinePlayers() {
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            String gameId = null;
+
+            for (GameWorldDefinition definition : GameWorldDefinition.ALL) {
+
+                if (definition.worldName().equalsIgnoreCase(
+                        player.getWorld().getName()
+                )) {
+                    gameId = definition.gameId();
+                    break;
+                }
+            }
+
+            if (gameId == null) continue;
+
+            savePlayerData(
+                    player,
+                    gameId
+            );
         }
     }
 
@@ -306,6 +327,25 @@ public class PlayerGameDataManager {
                 "location.pitch",
                 location.getPitch()
         );
+    }
+
+    public Location getSavedLocation(
+            UUID uuid,
+            String gameId
+    ) {
+
+        File file =
+                getPlayerFile(
+                        uuid,
+                        gameId
+                );
+
+        if (!file.exists()) return null;
+
+        YamlConfiguration config =
+                YamlConfiguration.loadConfiguration(file);
+
+        return loadLocation(config);
     }
 
     private Location loadLocation(

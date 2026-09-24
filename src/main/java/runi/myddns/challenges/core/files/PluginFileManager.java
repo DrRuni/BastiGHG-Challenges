@@ -22,12 +22,14 @@ public class PluginFileManager {
             String targetFolder,
             String resourcePrefix,
             List<String> yamlFiles,
-            List<String> emptyFiles
+            List<String> emptyFiles,
+            boolean worldSettings
     ) {}
 
     private static final List<String> ROOT_RESOURCE_FILES = List.of("config.yml");
     private static final List<String> ROOT_EMPTY_FILES = List.of("game-state.yml");
     private static final List<String> LANGUAGE_FILES = List.of("de.yml", "en.yml");
+    private static final String WORLD_SETTINGS_RESOURCE = "core/gamesettings.yml";
 
     private static final GameFiles MOB_ARMY_BATTLE = new GameFiles(
             "MobArmyBattle",
@@ -35,17 +37,17 @@ public class PluginFileManager {
             "games/mobarmybattle/",
             List.of(
                     "arena-koordinaten.yml",
-                    "eventdaten.yml",
+                    "gamedata.yml",
                     "spawns.yml",
                     "team-equipment.yml",
-                    "waves.yml",
-                    "worldsettings.yml"
+                    "waves.yml"
             ),
             List.of(
                     "mobData.yml",
                     "scoreboard.yml",
                     "teams.yml"
-            )
+            ),
+            true
     );
 
     private static final GameFiles LEVEL_BORDER = new GameFiles(
@@ -53,15 +55,28 @@ public class PluginFileManager {
             "games/levelborder/",
             "games/levelborder/",
             List.of(
-                    "BorderData.yml",
+                    "gamedata.yml",
                     "config.yml"
             ),
-            List.of()
+            List.of(),
+            true
+    );
+
+    private static final GameFiles LEVEL_BLOCK = new GameFiles(
+            "LevelBlock",
+            "games/levelblock/",
+            "games/levelblock/",
+            List.of(
+                    "gamedata.yml"
+            ),
+            List.of(),
+            true
     );
 
     private static final List<GameFiles> GAMES = List.of(
             MOB_ARMY_BATTLE,
-            LEVEL_BORDER
+            LEVEL_BORDER,
+            LEVEL_BLOCK
     );
 
     public PluginFileManager(JavaPlugin plugin) {
@@ -146,6 +161,10 @@ public class PluginFileManager {
             checkYamlFile(targetFolder, resourcePrefix, file);
         }
 
+        if (game.worldSettings()) {
+            checkWorldSettings(targetFolder);
+        }
+
         for (String file : game.emptyFiles()) {
             createEmptyFileIfMissing(targetFolder, file);
         }
@@ -197,6 +216,54 @@ public class PluginFileManager {
         }
 
         printFileStatus(fileName, "I.O.");
+    }
+
+    private void checkWorldSettings(File targetFolder) {
+        File targetFile = new File(targetFolder, "gamesettings.yml");
+
+        if (plugin.getResource(WORLD_SETTINGS_RESOURCE) == null) {
+            plugin.getLogger().warning(
+                    "Resource nicht gefunden: " + WORLD_SETTINGS_RESOURCE
+            );
+            return;
+        }
+
+        if (!targetFile.exists()) {
+            copyResource(WORLD_SETTINGS_RESOURCE, targetFile);
+            printFileStatus("gamesettings.yml", "erstellt.");
+            return;
+        }
+
+        int currentVersion = getFileVersion(targetFile);
+        int newestVersion = getResourceVersion(
+                "core/",
+                "gamesettings.yml"
+        );
+
+        if (currentVersion < newestVersion) {
+            backupFile(
+                    targetFolder,
+                    targetFile,
+                    "gamesettings.yml"
+            );
+
+            overwriteResource(
+                    WORLD_SETTINGS_RESOURCE,
+                    targetFile
+            );
+
+            printFileStatus(
+                    "gamesettings.yml",
+                    "aktualisiert."
+            );
+
+            return;
+        }
+
+        printFileStatus(
+                "gamesettings.yml",
+                "I.O."
+        );
     }
 
     private void createEmptyFileIfMissing(File targetFolder, String fileName) {

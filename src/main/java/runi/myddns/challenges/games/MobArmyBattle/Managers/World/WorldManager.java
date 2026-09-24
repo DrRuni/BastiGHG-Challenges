@@ -28,7 +28,7 @@ public class WorldManager {
     public void checkWorldsOnStartup() {
         checkTeamWorlds();
         loadWorlds();
-        game.getWorldSettings().applyAllSettings();
+        game.getWorldSettingsManager().applyAll();
     }
 
     public void resetLobbyWorld() {
@@ -59,7 +59,7 @@ public class WorldManager {
             Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
                 World lobby = game.getPlugin().getGameWorldManager().loadWorld(GameWorldDefinition.MOB_ARMY_LOBBY);
                 game.getPlugin().getGameWorldManager().preloadSpawnChunks(lobby, 3);
-                game.getWorldSettings().applyAllSettings();
+                game.getWorldSettingsManager().applyAll();
 
                 Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
                     for (Player p : players) {
@@ -114,7 +114,7 @@ public class WorldManager {
                 World arena = game.getPlugin().getGameWorldManager().loadWorld(GameWorldDefinition.MOB_ARMY_ARENA);
                 game.getPlugin().getGameWorldManager().preloadSpawnChunks(arena, 2);
 
-                game.getWorldSettings().applyAllSettings();
+                game.getWorldSettingsManager().applyAll();
                 game.getArenaConfig().reload();
 
                 Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
@@ -271,10 +271,10 @@ public class WorldManager {
 
                     loadWorldsWithPreload();
 
-                    game.getWorldSettings().applyToWorld(Bukkit.getWorld("world_rot"));
-                    game.getWorldSettings().applyToWorld(Bukkit.getWorld("world_blau"));
-                    game.getWorldSettings().applyToWorld(Bukkit.getWorld("world_rot_nether"));
-                    game.getWorldSettings().applyToWorld(Bukkit.getWorld("world_blau_nether"));
+                game.getWorldSettingsManager().applyToWorld(Bukkit.getWorld("world_rot"));
+                game.getWorldSettingsManager().applyToWorld(Bukkit.getWorld("world_blau"));
+                game.getWorldSettingsManager().applyToWorld(Bukkit.getWorld("world_rot_nether"));
+                game.getWorldSettingsManager().applyToWorld(Bukkit.getWorld("world_blau_nether"));
 
                     Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
 

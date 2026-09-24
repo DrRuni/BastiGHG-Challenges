@@ -18,7 +18,7 @@ import java.util.Locale;
 public class ArenaConfig {
 
     private static final String ARENA_FILE_NAME = "arena-koordinaten.yml";
-    private static final String EVENT_FILE_NAME = "eventdaten.yml";
+    private static final String EVENT_FILE_NAME = "gamedata.yml";
 
     private static final String ACTIVE_ARENA_PATH = "arena.active";
 
@@ -82,11 +82,11 @@ public class ArenaConfig {
         try {
             if (eventFile.createNewFile()) {
                 plugin.getLogger().info(
-                        "[ArenaConfig] eventdaten.yml wurde erstellt."
+                        "[ArenaConfig] gamedata.yml wurde erstellt."
                 );
             }
         } catch (IOException e) {
-            plugin.getLogger().severe("[ArenaConfig] Konnte eventdaten.yml nicht erstellen: " + e.getMessage());
+            plugin.getLogger().severe("[ArenaConfig] Konnte gamedata.yml nicht erstellen: " + e.getMessage());
         }
 
         arenaConfig = YamlConfiguration.loadConfiguration(arenaFile);
@@ -166,7 +166,7 @@ public class ArenaConfig {
         try {
             eventConfig.save(eventFile);
         } catch (IOException e) {
-            plugin.getLogger().severe("[ArenaConfig] Konnte aktive Arena nicht in eventdaten.yml speichern: " + e.getMessage());
+            plugin.getLogger().severe("[ArenaConfig] Konnte aktive Arena nicht in gamedata.yml speichern: " + e.getMessage());
         }
     }
 

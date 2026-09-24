@@ -105,6 +105,13 @@
       "ascent": 14,
       "height": 18,
       "chars": ["\uE032"]
+    },
+    {
+      "type": "bitmap",
+      "file": "bastighg_challenges:font/levelblock_title.png",
+      "ascent": 14,
+      "height": 18,
+      "chars": ["\uE033"]
     }
   ]
 }

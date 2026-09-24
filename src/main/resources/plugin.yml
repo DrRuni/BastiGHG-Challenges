@@ -1,5 +1,5 @@
 name: BastiGHG-Challenges
-version: '0.3'
+version: '0.4'
 
 main: runi.myddns.challenges.ChallengeMain
 api-version: '26.2'
@@ -20,7 +20,12 @@ commands:
     description: Teleports players back to the central lobby
     usage: /lobby [all]
 
-  # ============================================================
+  gamesettings:
+    description: Opens the settings for the currently loaded game
+    usage: /gamesettings
+    aliases: [ settings, options ]
+
+    # ============================================================
   # MobArmyBattle
   # ============================================================
 
@@ -30,8 +35,8 @@ commands:
 
   mobarmy:
     description: Main command for MobArmyBattle
-    usage: /mobarmy resume
-    aliases: [ma]
+    usage: /mobarmy <info|resume|gamesettings|reset>
+    aliases: [ ma ]
     permission: mobarmybattle.admin
     permission-message: "§c❌ You do not have permission!"
 
@@ -39,16 +44,10 @@ commands:
     description: Shows saved mobs for MobArmyBattle
     usage: /mobstatus [rot|blau]
 
-  optionen:
-    description: Opens the MobArmyBattle options
-    usage: /optionen
-    permission: mobarmybattle.admin
-    permission-message: "§c❌ You do not have permission!"
-
   resume:
     description: Resume function for MobArmyBattle
     usage: /resume mobarmy
-    aliases: [continue]
+    aliases: [ continue ]
     permission: mobarmybattle.admin
     permission-message: "§c❌ You do not have permission!"
 
@@ -62,17 +61,6 @@ commands:
     description: MobArmyBattle team commands
     usage: /team <join|leave> [rot|blau]
 
-  reset:
-    description: Reset commands for MobArmyBattle
-    usage: /reset <arena|lobby|teamworld|playerdata>
-    permission: mobarmybattle.admin
-    permission-message: "§c❌ You do not have permission!"
-
-  info:
-    description: Zeigt Informationen zu MobArmyBattle
-    usage: /info
-    aliases: [ help ]
-
   # ============================================================
   # LevelBorder
   # ============================================================
@@ -85,6 +73,14 @@ commands:
     description: Hauptbefehl für LevelBorder.
     usage: /levelborder <subcommand>
     aliases: [lb]
+
+  # ============================================================
+  # LevelBlock
+  # ============================================================
+
+  levelblock:
+    description: LevelBlock Steuerung
+    usage: /levelblock
 
 permissions:
 

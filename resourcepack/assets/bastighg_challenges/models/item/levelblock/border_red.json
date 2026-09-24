@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bastighg_challenges:item/levelblock/border_red"
+  }
+}

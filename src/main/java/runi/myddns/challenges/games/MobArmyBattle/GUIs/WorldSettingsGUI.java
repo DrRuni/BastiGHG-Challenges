@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import runi.myddns.challenges.games.MobArmyBattle.Managers.Event.BlockRandomizerManager;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.MobArmyBattle.Utils.Sounds;
 
 import java.util.ArrayList;
@@ -41,29 +42,32 @@ public class WorldSettingsGUI implements Listener {
                 lang("world-settings-gui.title")
         );
 
+        GameWorldSettingsManager settings =
+                game.getWorldSettingsManager();
+
         boolean randomizerOn =
                 blockRandomizerManager.isGlobalRandomizerEnabled();
 
         boolean keepInvOn =
-                game.getWorldSettings().isKeepInventoryEnabled();
+                settings.isKeepInventoryEnabled();
 
         boolean mobSpawningOn =
-                game.getWorldSettings().isMobSpawningEnabled();
+                settings.isMobSpawningEnabled();
 
         boolean daylightCycleOn =
-                game.getWorldSettings().isDaylightCycleEnabled();
+                settings.isDaylightCycleEnabled();
 
         boolean nightVisionOn =
-                game.getWorldSettings().isNightVisionEnabled();
+                settings.isNightVisionEnabled();
 
         boolean chestRandomizerOn =
                 game.getWorldSettings().isChestRandomizerEnabled();
 
         String difficulty =
-                game.getWorldSettings().getDifficulty();
+                settings.getDifficulty();
 
         long currentTime =
-                game.getWorldSettings().getCurrentWorldTime();
+                settings.getWorldTime();
 
         inv.setItem(10, createToggleItem(
                 randomizerOn ? Material.LIME_WOOL : Material.RED_WOOL,
@@ -236,10 +240,11 @@ public class WorldSettingsGUI implements Listener {
                 ) {
             case "peaceful" -> Material.WHITE_WOOL;
             case "easy" -> Material.LIME_WOOL;
-            case "normal" -> Material.ORANGE_WOOL;
+            case "normal" -> Material.YELLOW_WOOL;
             case "hard" -> Material.RED_WOOL;
-            case "ultra-ultra-hardcore" -> Material.PURPLE_WOOL;
-            default -> Material.GRAY_WOOL;
+            case "ultra-hardcore" -> Material.PURPLE_WOOL;
+            case "ultra-ultra-hardcore" -> Material.BLACK_WOOL;
+            default -> Material.YELLOW_WOOL;
         };
 
         Component difficultyName =
@@ -411,12 +416,15 @@ public class WorldSettingsGUI implements Listener {
 
                 Sounds.playClick(player);
 
-                game.getWorldSettings()
-                        .toggleMobSpawning();
+                GameWorldSettingsManager settings =
+                        game.getWorldSettingsManager();
 
                 boolean newState =
-                        game.getWorldSettings()
-                                .isMobSpawningEnabled();
+                        !settings.isMobSpawningEnabled();
+
+                settings.setMobSpawning(newState);
+                settings.save();
+                settings.applyAll();
 
                 broadcast(
                         newState
@@ -429,12 +437,15 @@ public class WorldSettingsGUI implements Listener {
 
                 Sounds.playClick(player);
 
-                game.getWorldSettings()
-                        .toggleKeepInventory();
+                GameWorldSettingsManager settings =
+                        game.getWorldSettingsManager();
 
                 boolean newState =
-                        game.getWorldSettings()
-                                .isKeepInventoryEnabled();
+                        !settings.isKeepInventoryEnabled();
+
+                settings.setKeepInventory(newState);
+                settings.save();
+                settings.applyAll();
 
                 broadcast(
                         newState
@@ -447,15 +458,15 @@ public class WorldSettingsGUI implements Listener {
 
                 Sounds.playClick(player);
 
-                game.getWorldSettings()
-                        .toggleNightVision();
-
-                game.getPlayerEffectManager()
-                        .applyNightVisionToAll();
+                GameWorldSettingsManager settings =
+                        game.getWorldSettingsManager();
 
                 boolean newState =
-                        game.getWorldSettings()
-                                .isNightVisionEnabled();
+                        !settings.isNightVisionEnabled();
+
+                settings.setNightVisionEnabled(newState);
+                settings.save();
+                settings.applyAll();
 
                 broadcast(
                         newState
@@ -475,12 +486,15 @@ public class WorldSettingsGUI implements Listener {
 
                 Sounds.playClick(player);
 
-                game.getWorldSettings()
-                        .toggleDaylightCycle();
+                GameWorldSettingsManager settings =
+                        game.getWorldSettingsManager();
 
                 boolean newState =
-                        game.getWorldSettings()
-                                .isDaylightCycleEnabled();
+                        !settings.isDaylightCycleEnabled();
+
+                settings.setDaylightCycle(newState);
+                settings.save();
+                settings.applyAll();
 
                 broadcast(
                         newState
@@ -493,8 +507,15 @@ public class WorldSettingsGUI implements Listener {
 
                 Sounds.playBack(player);
 
-                game.getEventSettingsGUI()
-                        .open(player);
+                if (player.getWorld().equals(
+                        game.getPlugin()
+                                .getLobbyWorldManager()
+                                .getLobbyWorld()
+                )) {
+                    player.closeInventory();
+                } else {
+                    game.getEventSettingsGUI().open(player);
+                }
 
                 reopen = false;
             }
@@ -524,9 +545,25 @@ public class WorldSettingsGUI implements Listener {
 
     private void handleDifficultyClick() {
 
-        String next =
-                game.getWorldSettings()
-                        .cycleDifficulty();
+        GameWorldSettingsManager settings =
+                game.getWorldSettingsManager();
+
+        String current =
+                settings.getDifficulty()
+                        .toLowerCase(Locale.ROOT);
+
+        String next = switch (current) {
+            case "peaceful" -> "easy";
+            case "easy" -> "normal";
+            case "normal" -> "hard";
+            case "hard" -> "ultra-hardcore";
+            case "ultra-hardcore" -> "ultra-ultra-hardcore";
+            default -> "peaceful";
+        };
+
+        settings.setDifficulty(next);
+        settings.save();
+        settings.applyAll();
 
         Component difficulty =
                 getDifficultyName(next);
@@ -542,27 +579,45 @@ public class WorldSettingsGUI implements Listener {
 
     private void handleTimeClick() {
 
-        long next =
-                game.getWorldSettings()
-                        .cycleTime();
+        GameWorldSettingsManager settings =
+                game.getWorldSettingsManager();
+
+        long current =
+                settings.getWorldTime();
+
+        long next;
+
+        if (current < 6000) {
+            next = 6000;
+        } else if (current < 12000) {
+            next = 12000;
+        } else if (current < 18000) {
+            next = 18000;
+        } else {
+            next = 0;
+        }
+
+        settings.setWorldTime(next);
+        settings.save();
+        settings.applyAll();
 
         String phaseKey;
 
         if (next < 6000) {
             phaseKey = "morning";
-
         } else if (next < 12000) {
             phaseKey = "noon";
-
         } else if (next < 18000) {
             phaseKey = "evening";
-
         } else {
             phaseKey = "night";
         }
 
         Component phase =
-                lang("world-settings-gui.time." + phaseKey);
+                lang(
+                        "world-settings-gui.time."
+                                + phaseKey
+                );
 
         broadcast(
                 game.getLanguageManager().getComponent(
@@ -584,8 +639,8 @@ public class WorldSettingsGUI implements Listener {
             case "easy" -> "easy";
             case "normal" -> "normal";
             case "hard" -> "hard";
-            case "ultra-ultra-hardcore" ->
-                    "ultra-ultra-hardcore";
+            case "ultra-hardcore" -> "ultra-hardcore";
+            case "ultra-ultra-hardcore" -> "ultra-ultra-hardcore";
             default -> "unknown";
         };
 

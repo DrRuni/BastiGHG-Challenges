@@ -38,7 +38,7 @@ public class BlockRandomizerManager implements Listener {
         this.dataFile = new File(game.getDataFolder(), "RandomBlock.yml");
         this.dataConfig = YamlConfiguration.loadConfiguration(dataFile);
 
-        this.worldSettingsFile = new File(game.getDataFolder(), "worldsettings.yml");
+        this.worldSettingsFile = new File(game.getDataFolder(), "gamesettings.yml");
         this.worldSettingsConfig = YamlConfiguration.loadConfiguration(worldSettingsFile);
 
         loadBlockedSpawnEggs();

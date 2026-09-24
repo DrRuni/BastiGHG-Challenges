@@ -34,8 +34,8 @@ public class PlayerRespawnListener implements Listener {
 
         Bukkit.getScheduler().runTask(
                 game.getPlugin(),
-                () -> game.getPlayerEffectManager()
-                        .applyNightVision(player)
+                () -> game.getWorldSettingsManager()
+                        .applyPlayerSettings(player)
         );
 
         Location deathLocation = player.getLocation();
@@ -168,7 +168,7 @@ public class PlayerRespawnListener implements Listener {
                 return;
             }
 
-            game.getPlayerEffectManager().applyNightVision(player);
+            game.getWorldSettingsManager().applyPlayerSettings(player);
 
         }, 1L);
     }
@@ -187,7 +187,7 @@ public class PlayerRespawnListener implements Listener {
                 return;
             }
 
-            game.getPlayerEffectManager().applyNightVision(player);
+            game.getWorldSettingsManager().applyPlayerSettings(player);
 
         }, 2L);
     }

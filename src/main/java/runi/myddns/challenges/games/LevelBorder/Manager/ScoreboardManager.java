@@ -69,7 +69,12 @@ public class ScoreboardManager {
             return;
         }
 
-        objective.setDisplayName(ColorUtil.borderColorScrolling("- LevelBorder -", titleTick));
+        objective.setDisplayName(
+                ColorUtil.animatedBlueGradient(
+                        "- LevelBorder -",
+                        titleTick
+                )
+        );
 
         if (player.getScoreboard() != board) {
             player.setScoreboard(board);

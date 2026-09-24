@@ -64,15 +64,7 @@ public class LevelBorderManager {
     public void growByLevel(Player trigger, int diff) {
         double newSize = data.getSize() + (diff * 2);
         data.setSize(newSize);
-
         applyBorderToAllWorlds(newSize, 3);
-
-        Bukkit.broadcastMessage(
-                ChatColor.GREEN + "🌱 Neuer Levelrekord: "
-                        + ChatColor.GOLD + data.getMaxTotalLevel()
-                        + ChatColor.GREEN + " → Border auf "
-                        + ChatColor.GOLD + ((int) newSize) + "m"
-        );
     }
 
     public void resetBorder(Player initiator) {

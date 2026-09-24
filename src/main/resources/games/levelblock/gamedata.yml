@@ -1,0 +1,21 @@
+# Unlocked Blocks
+file-version: 2
+
+event-started: false
+
+timer:
+  seconds: 0
+
+worlds:
+
+  world_levelblock:
+    start: {}
+    unlocked: []
+
+  world_levelblock_nether:
+    start: {}
+    unlocked: []
+
+  world_levelblock_the_end:
+    start: {}
+    unlocked: []

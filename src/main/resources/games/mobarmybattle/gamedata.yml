@@ -14,7 +14,7 @@
 #
 # players = Hier werden Spielerdaten gespeichert
 # z.B. letzter Standort, Spawnpunkt oder weitere Resume-Daten
-file-version: 2
+file-version: 1
 
 event:
   started: false

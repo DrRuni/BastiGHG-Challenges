@@ -3,16 +3,14 @@ package runi.myddns.challenges.games.LevelBorder.Listeners;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.*;
 import runi.myddns.challenges.core.utils.ColorUtil;
+import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.games.LevelBorder.Manager.BorderDataManager;
 import runi.myddns.challenges.games.LevelBorder.Manager.LevelBorderManager;
@@ -55,13 +53,20 @@ public class PlayerListener implements Listener {
 
             Component titleImage = Component.text("\uE032");
 
+            player.playSound(
+                    player.getLocation(),
+                    Sound.BLOCK_AMETHYST_BLOCK_CHIME,
+                    0.35f,
+                    1.2f
+            );
+
             player.showTitle(Title.title(
                     titleImage,
                     Component.empty(),
                     Title.Times.times(
-                            Duration.ofMillis(300),
+                            Duration.ofMillis(1000),
                             Duration.ofSeconds(2),
-                            Duration.ofMillis(500)
+                            Duration.ofMillis(800)
                     )
             ));
         }, 40L);
@@ -104,18 +109,49 @@ public class PlayerListener implements Listener {
 
         if (!game.isLevelBorderPlayer(player)) return;
 
-        BorderDataManager data = borderManager.getData();
-        if (!data.isActive() || data.getCenter() == null) return;
+        Location bedSpawn = player.getRespawnLocation();
 
-        if (!event.isBedSpawn()) {
-            Location center = data.getCenter();
-            World world = center.getWorld();
+        if (bedSpawn != null
+                && bedSpawn.getWorld() != null
+                && bedSpawn.getWorld().getName().equalsIgnoreCase(
+                GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
+        )) {
 
-            if (world == null) return;
-
-            int y = world.getHighestBlockYAt(center) + 1;
-            event.setRespawnLocation(new Location(world, center.getX(), y, center.getZ()));
+            event.setRespawnLocation(bedSpawn);
+            return;
         }
+
+        BorderDataManager data = borderManager.getData();
+
+        if (!data.isActive() || data.getCenter() == null) {
+            World world = Bukkit.getWorld(
+                    GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
+            );
+
+            if (world != null) {
+                event.setRespawnLocation(
+                        world.getSpawnLocation()
+                );
+            }
+
+            return;
+        }
+
+        Location center = data.getCenter();
+        World world = center.getWorld();
+
+        if (world == null) return;
+
+        int y = world.getHighestBlockYAt(center) + 1;
+
+        event.setRespawnLocation(
+                new Location(
+                        world,
+                        center.getX(),
+                        y,
+                        center.getZ()
+                )
+        );
     }
 
     @EventHandler
