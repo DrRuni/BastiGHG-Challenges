@@ -476,13 +476,26 @@ public class PlayerActionGUI implements Listener {
             Player viewer
     ) {
 
-        return game.getLanguageManager()
-                .getComponent(
-                        "player-action-gui.messages.killed",
-                        Map.of(
-                                "player", Component.text(target.getName()),
-                                "viewer", Component.text(viewer.getName())
-                        )
+        String text =
+                game.getLanguageManager()
+                        .get(
+                                "player-action-gui.messages.killed"
+                        );
+
+        text = text
+                .replace(
+                        "%player%",
+                        target.getName()
+                )
+                .replace(
+                        "%viewer%",
+                        viewer.getName()
+                );
+
+        return net.kyori.adventure.text.minimessage.MiniMessage
+                .miniMessage()
+                .deserialize(
+                        text
                 );
     }
 

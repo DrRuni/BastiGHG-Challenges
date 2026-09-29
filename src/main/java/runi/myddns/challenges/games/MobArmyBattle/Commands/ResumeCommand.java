@@ -52,7 +52,7 @@ public class ResumeCommand implements CommandExecutor, TabCompleter {
             }
 
             player.sendMessage(
-                    lang("commands.resume.usage-resume")
+                    lang("commands.resume.usage-mobarmy")
             );
 
             return true;

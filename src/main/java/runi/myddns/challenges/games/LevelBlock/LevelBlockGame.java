@@ -339,7 +339,7 @@ public class LevelBlockGame implements ChallengeGame {
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(
                 ConsoleColor.DARK_GOLDEN_LIME
-                        + "  ═══════════════  LevelBlock V1.0 ═══════════════"
+                        + "  ═══════════════  LevelBlock V0.8 ═══════════════"
                         + ConsoleColor.RESET
         );
         Bukkit.getConsoleSender().sendMessage(
@@ -361,7 +361,6 @@ public class LevelBlockGame implements ChallengeGame {
             joinActiveGame(player);
         }
     }
-
 
     @Override
     public void joinActiveGame(Player player) {
@@ -476,7 +475,6 @@ public class LevelBlockGame implements ChallengeGame {
         );
     }
 
-
     private boolean hasPlayersInWorld(
             GameWorldDefinition definition
     ) {
@@ -489,7 +487,6 @@ public class LevelBlockGame implements ChallengeGame {
         return world != null
                 && !world.getPlayers().isEmpty();
     }
-
 
     @Override
     public boolean hasOtherPlayers(
@@ -526,6 +523,15 @@ public class LevelBlockGame implements ChallengeGame {
                 || worldName.equalsIgnoreCase(
                 GameWorldDefinition.LEVEL_BLOCK_END.worldName()
         );
+    }
+
+    public void resetWorldData() {
+
+        borderManager
+                .getDataManager()
+                .resetAll();
+
+        gameTimerManager.reset();
     }
 
     @Override

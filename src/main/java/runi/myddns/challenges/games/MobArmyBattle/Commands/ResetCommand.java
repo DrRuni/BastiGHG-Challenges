@@ -1,6 +1,7 @@
 package runi.myddns.challenges.games.MobArmyBattle.Commands;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -10,8 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import runi.myddns.challenges.games.MobArmyBattle.Managers.World.WorldManager;
-import runi.myddns.challenges.games.MobArmyBattle.Utils.Sounds;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
 import java.time.Duration;
@@ -37,227 +36,208 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage(
-                    lang("commands.reset.player-only")
+                    Component.text(
+                            "Dieser Befehl kann nur von Spielern verwendet werden.",
+                            NamedTextColor.RED
+                    )
             );
             return true;
         }
 
         if (!player.isOp()) {
-
             player.sendMessage(
-                    lang("commands.reset.no-permission")
+                    Component.text(
+                            "Du hast keine Berechtigung dafür.",
+                            NamedTextColor.RED
+                    )
             );
-
-            player.playSound(
-                    player.getLocation(),
-                    Sound.BLOCK_NOTE_BLOCK_BASS,
-                    1.0f,
-                    0.8f
-            );
-
             return true;
         }
 
+        if (!game.isLoaded()) {
+            player.sendMessage(
+                    Component.text(
+                            "MobArmyBattle muss zuerst geladen werden.",
+                            NamedTextColor.RED
+                    )
+            );
+            return true;
+        }
+
+        /*
+         * /mobarmy reset
+         */
         if (args.length == 0) {
-            sendUsage(player);
+
+            game.getPlugin()
+                    .getResetVoteManager()
+                    .startVote(
+                            game.getDisplayName(),
+                            "Spielstand zurücksetzen",
+                            () -> {
+
+                                showTitleToAll(
+                                        "MobArmyBattle",
+                                        "Spielstand wird zurückgesetzt...",
+                                        NamedTextColor.GOLD
+                                );
+
+                                game.getEventManager()
+                                        .resetGame(player);
+
+                                Bukkit.broadcast(
+                                        Component.text(
+                                                "✔ MobArmyBattle wurde zurückgesetzt.",
+                                                NamedTextColor.GREEN
+                                        )
+                                );
+                            }
+                    );
+
             return true;
         }
 
-        switch (args[0].toLowerCase()) {
+        /*
+         * /mobarmy reset world
+         */
+        if (args[0].equalsIgnoreCase("world")) {
 
-            case "arena" -> resetArena(player);
+            game.getPlugin()
+                    .getResetVoteManager()
+                    .startVote(
+                            game.getDisplayName(),
+                            "Alle Welten zurücksetzen",
+                            () -> game.getPlugin()
+                                    .getGameResetManager()
+                                    .resetWorlds(game)
+                    );
 
-            case "lobby" -> resetLobby(player);
-
-            case "teamworld" -> resetTeamWorlds(player);
-
-            case "playerdata" -> resetPlayerData(player);
-
-            default -> {
-                player.sendMessage(
-                        lang("commands.reset.unknown")
-                );
-
-                sendUsage(player);
-            }
+            return true;
         }
+
+        /**
+         * /mobarmy reset arena
+         */
+        if (args[0].equalsIgnoreCase("arena")) {
+
+            game.getPlugin()
+                    .getResetVoteManager()
+                    .startVote(
+                            game.getDisplayName(),
+                            "Arena zurücksetzen",
+                            () -> {
+
+                                if (game.getWorldManager()
+                                        .isWorldResetBlocked()) {
+
+                                    Bukkit.broadcast(
+                                            Component.text(
+                                                    "❌ Es läuft bereits ein Welt-Reset.",
+                                                    NamedTextColor.RED
+                                            )
+                                    );
+
+                                    return;
+                                }
+
+                                showTitleToAll(
+                                        "MobArmyBattle",
+                                        "Arena wird zurückgesetzt...",
+                                        NamedTextColor.GOLD
+                                );
+
+                                game.getWorldManager()
+                                        .resetArenaWorld();
+                            }
+                    );
+
+            return true;
+        }
+
+/**
+ * /mobarmy reset teamwelt
+ */
+        if (args[0].equalsIgnoreCase("teamwelt")
+                || args[0].equalsIgnoreCase("teamworld")) {
+
+            game.getPlugin()
+                    .getResetVoteManager()
+                    .startVote(
+                            game.getDisplayName(),
+                            "Teamwelten neu generieren",
+                            () -> {
+
+                                if (game.getWorldManager()
+                                        .isWorldResetBlocked()) {
+
+                                    Bukkit.broadcast(
+                                            Component.text(
+                                                    "❌ Es läuft bereits ein Welt-Reset.",
+                                                    NamedTextColor.RED
+                                            )
+                                    );
+
+                                    return;
+                                }
+
+                                showTitleToAll(
+                                        "MobArmyBattle",
+                                        "Teamwelten werden neu erstellt...",
+                                        NamedTextColor.GOLD
+                                );
+
+                                game.getWorldManager()
+                                        .resetTeamWorlds();
+                            }
+                    );
+
+            return true;
+        }
+
+        player.sendMessage(
+                Component.text(
+                        "Nutzung: /mobarmy reset [world|arena|teamwelt]",
+                        NamedTextColor.RED
+                )
+        );
 
         return true;
     }
 
-    private void resetTeamWorlds(Player player) {
-
-        WorldManager wm = game.getWorldManager();
-
-        if (wm.isWorldResetBlocked()) {
-
-            player.sendMessage(
-                    lang("commands.reset.already-running")
-            );
-
-            Sounds.playDanger(player);
-            return;
-        }
-
-        Sounds.playReset(player);
-
-        for (Player online : Bukkit.getOnlinePlayers()) {
-
-            showResetTitle(
-                    online,
-                    "commands.reset.teamworld.title",
-                    "commands.reset.teamworld.subtitle",
-                    player.getName()
-            );
-
-            online.playSound(
-                    online.getLocation(),
-                    Sound.BLOCK_NOTE_BLOCK_PLING,
-                    1.0f,
-                    1.2f
-            );
-        }
-
-        Bukkit.getScheduler().runTaskLater(
-                game.getPlugin(),
-                wm::resetTeamWorlds,
-                80L
-        );
-    }
-
-    private void resetLobby(Player player) {
-
-        WorldManager wm = game.getWorldManager();
-
-        if (wm.isWorldResetBlocked()) {
-
-            player.sendMessage(
-                    lang("commands.reset.already-running")
-            );
-
-            Sounds.playDanger(player);
-            return;
-        }
-
-        Sounds.playReset(player);
-
-        for (Player online : Bukkit.getOnlinePlayers()) {
-
-            showResetTitle(
-                    online,
-                    "commands.reset.lobby.title",
-                    "commands.reset.lobby.subtitle",
-                    player.getName()
-            );
-
-            online.playSound(
-                    online.getLocation(),
-                    Sound.BLOCK_NOTE_BLOCK_PLING,
-                    1.0f,
-                    1.2f
-            );
-        }
-
-        Bukkit.getScheduler().runTaskLater(
-                game.getPlugin(),
-                wm::resetLobbyWorld,
-                80L
-        );
-    }
-
-    private void resetArena(Player player) {
-
-        WorldManager wm = game.getWorldManager();
-
-        if (wm.isWorldResetBlocked()) {
-
-            player.sendMessage(
-                    lang("commands.reset.already-running")
-            );
-
-            Sounds.playDanger(player);
-            return;
-        }
-
-        Sounds.playReset(player);
-
-        for (Player online : Bukkit.getOnlinePlayers()) {
-
-            showResetTitle(
-                    online,
-                    "commands.reset.arena.title",
-                    "commands.reset.arena.subtitle",
-                    player.getName()
-            );
-
-            online.playSound(
-                    online.getLocation(),
-                    Sound.BLOCK_NOTE_BLOCK_PLING,
-                    1.0f,
-                    1.2f
-            );
-        }
-
-        Bukkit.getScheduler().runTaskLater(
-                game.getPlugin(),
-                wm::resetArenaWorld,
-                80L
-        );
-    }
-
-    private void resetPlayerData(Player player) {
-
-        Sounds.playReset(player);
-
-        game.getEventManager()
-                .resetGame(player);
-    }
-
-    private void sendUsage(Player player) {
-
-        player.sendMessage(
-                lang("commands.reset.usage.title")
-        );
-
-        player.sendMessage(
-                lang("commands.reset.usage.arena")
-        );
-
-        player.sendMessage(
-                lang("commands.reset.usage.lobby")
-        );
-
-        player.sendMessage(
-                lang("commands.reset.usage.teamworld")
-        );
-
-        player.sendMessage(
-                lang("commands.reset.usage.playerdata")
-        );
-    }
-
-    private void showResetTitle(
-            Player player,
-            String titlePath,
-            String subtitlePath,
-            String playerName
+    private void showTitleToAll(
+            String title,
+            String subtitle,
+            NamedTextColor color
     ) {
 
-        Title title = Title.title(
-                lang(titlePath),
-                game.getLanguageManager().getComponent(
-                        subtitlePath,
-                        "player",
-                        playerName
-                ),
-                Title.Times.times(
-                        Duration.ofMillis(500),
-                        Duration.ofSeconds(5),
-                        Duration.ofSeconds(1)
-                )
-        );
+        Title screenTitle =
+                Title.title(
+                        Component.text(
+                                title,
+                                color
+                        ),
+                        Component.text(
+                                subtitle,
+                                color
+                        ),
+                        Title.Times.times(
+                                Duration.ofMillis(500),
+                                Duration.ofSeconds(3),
+                                Duration.ofMillis(800)
+                        )
+                );
 
-        player.showTitle(title);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            player.showTitle(screenTitle);
+
+            player.playSound(
+                    player.getLocation(),
+                    Sound.BLOCK_NOTE_BLOCK_PLING,
+                    0.7f,
+                    1.1f
+            );
+        }
     }
 
     @Override
@@ -279,21 +259,18 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
 
             return Stream.of(
+                            "world",
                             "arena",
-                            "lobby",
-                            "teamworld",
-                            "playerdata"
+                            "teamwelt"
                     )
-                    .filter(s -> s.startsWith(args[0].toLowerCase()))
+                    .filter(
+                            entry -> entry.startsWith(
+                                    args[0].toLowerCase()
+                            )
+                    )
                     .toList();
         }
 
         return Collections.emptyList();
-    }
-
-    private Component lang(String path) {
-
-        return game.getLanguageManager()
-                .getComponent(path);
     }
 }

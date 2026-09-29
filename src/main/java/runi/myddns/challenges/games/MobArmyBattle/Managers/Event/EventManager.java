@@ -579,16 +579,19 @@ public class EventManager {
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_RED + "   ⚠  MobArmyBattle wurde komplett zurückgesetzt!" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
 
-        player.sendMessage(Component.empty());
-        player.sendMessage(Component.empty());
+        for (Player online : Bukkit.getOnlinePlayers()) {
 
-        player.sendMessage(
-                game.getLanguageManager().getComponent(
-                        "event-manager.reset.complete"
-                )
-        );
+            online.sendMessage(Component.empty());
+            online.sendMessage(Component.empty());
 
-        player.sendMessage(Component.empty());
-        player.sendMessage(Component.empty());
+            online.sendMessage(
+                    game.getLanguageManager().getComponent(
+                            "event-manager.reset.complete"
+                    )
+            );
+
+            online.sendMessage(Component.empty());
+            online.sendMessage(Component.empty());
+        }
     }
 }

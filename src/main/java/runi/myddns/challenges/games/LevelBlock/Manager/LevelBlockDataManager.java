@@ -169,7 +169,6 @@ public class LevelBlockDataManager {
             } catch (NumberFormatException ignored) {}
         }
 
-
         unlockedBlocks.put(
                 worldName,
                 blocks
@@ -431,6 +430,62 @@ public class LevelBlockDataManager {
 
         config.set(
                 path + ".unlocked",
+                new ArrayList<>()
+        );
+
+        saveFile();
+    }
+
+    public void resetAll() {
+
+        startLocations.clear();
+        unlockedBlocks.clear();
+
+        config =
+                new YamlConfiguration();
+
+        config.set(
+                "file-version",
+                2
+        );
+
+        config.set(
+                "event-started",
+                false
+        );
+
+        config.set(
+                "timer.seconds",
+                0
+        );
+
+        config.set(
+                "worlds.world_levelblock.start",
+                null
+        );
+
+        config.set(
+                "worlds.world_levelblock.unlocked",
+                new ArrayList<>()
+        );
+
+        config.set(
+                "worlds.world_levelblock_nether.start",
+                null
+        );
+
+        config.set(
+                "worlds.world_levelblock_nether.unlocked",
+                new ArrayList<>()
+        );
+
+        config.set(
+                "worlds.world_levelblock_the_end.start",
+                null
+        );
+
+        config.set(
+                "worlds.world_levelblock_the_end.unlocked",
                 new ArrayList<>()
         );
 

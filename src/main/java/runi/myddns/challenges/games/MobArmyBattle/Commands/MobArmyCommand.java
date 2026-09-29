@@ -30,62 +30,102 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
     ) {
 
         if (!(sender instanceof Player player)) {
+
             sender.sendMessage(
-                    Component.text("Dieser Befehl kann nur von Spielern verwendet werden.")
+                    Component.text(
+                            "Dieser Befehl kann nur von Spielern verwendet werden."
+                    )
             );
+
             return true;
         }
 
         if (!player.isOp()) {
+
             player.sendMessage(
-                    Component.text("Du hast keine Berechtigung dafür.")
+                    Component.text(
+                            "Du hast keine Berechtigung dafür."
+                    )
             );
+
             return true;
         }
 
+
+        /*
+         * /mobarmy
+         */
         if (args.length == 0) {
-            sendUsage(player);
-            return true;
-        }
 
-        if (args[0].equalsIgnoreCase("info")) {
-
-            player.sendMessage(Component.empty());
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.title"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.goal"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.teams"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.preparation"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.arena"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.team-join"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.team-leave"));
-            player.sendMessage(game.getLanguageManager().getComponent("info-command.lobby"));
-            player.sendMessage(Component.empty());
+            sendCommandOverview(
+                    player
+            );
 
             return true;
         }
 
+
+        /*
+         * /mobarmy info
+         * /mobarmy help
+         */
+        if (args[0].equalsIgnoreCase("info")
+                || args[0].equalsIgnoreCase("help")) {
+
+            sendInfo(
+                    player
+            );
+
+            return true;
+        }
+
+
+        /*
+         * /mobarmy resume
+         */
         if (args[0].equalsIgnoreCase("resume")) {
-            game.getEventResume().resumeEvent();
+
+            game.getEventResume()
+                    .resumeEvent();
+
             return true;
         }
 
+
+        /*
+         * /mobarmy gamesettings
+         */
         if (args[0].equalsIgnoreCase("gamesettings")) {
 
             if (!game.isLoaded()) {
+
                 player.sendMessage(
-                        Component.text("Bitte zuerst MobArmyBattle laden.")
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "mobarmy-command.game-not-loaded"
+                                )
                 );
+
                 return true;
             }
 
-            game.openSettings(player);
+            game.openSettings(
+                    player
+            );
+
             return true;
         }
 
+
+        /*
+         * /mobarmy reset ...
+         */
         if (args[0].equalsIgnoreCase("reset")) {
 
             ResetCommand resetCommand =
-                    new ResetCommand(game);
+                    new ResetCommand(
+                            game
+                    );
 
             String[] shifted =
                     Arrays.copyOfRange(
@@ -102,9 +142,179 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
             );
         }
 
-        sendUsage(player);
+
+        sendCommandOverview(
+                player
+        );
+
         return true;
     }
+
+
+    /*
+     * =========================================================
+     * /MOBARMY
+     * =========================================================
+     */
+
+    private void sendCommandOverview(
+            Player player
+    ) {
+
+        player.sendMessage(
+                Component.empty()
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.title"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.info"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.resume"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.gamesettings"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.team"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.mobstatus"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.arenasummary"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.reset"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.commands.setphase"
+                )
+        );
+
+        player.sendMessage(
+                Component.empty()
+        );
+    }
+
+
+    /*
+     * =========================================================
+     * /MOBARMY INFO / HELP
+     * =========================================================
+     */
+
+    private void sendInfo(
+            Player player
+    ) {
+
+        player.sendMessage(
+                Component.empty()
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.title"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.goal"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.teams"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.preparation"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.arena"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.commands-title"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.team-command"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.status-command"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.settings-command"
+                )
+        );
+
+        player.sendMessage(
+                lang(
+                        "mobarmy-command.info.help-command"
+                )
+        );
+
+        player.sendMessage(
+                Component.empty()
+        );
+    }
+
+
+    private Component lang(
+            String path
+    ) {
+
+        return game.getLanguageManager()
+                .getComponent(
+                        path
+                );
+    }
+
 
     @Override
     public @Nullable List<String> onTabComplete(
@@ -115,10 +325,12 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
     ) {
 
         if (args.length == 1) {
+
             return List.of(
+                    "info",
+                    "help",
                     "resume",
                     "gamesettings",
-                    "info",
                     "reset"
             );
         }
@@ -127,7 +339,9 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
                 && args[0].equalsIgnoreCase("reset")) {
 
             ResetCommand resetCommand =
-                    new ResetCommand(game);
+                    new ResetCommand(
+                            game
+                    );
 
             String[] shifted =
                     Arrays.copyOfRange(
@@ -145,17 +359,5 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
         }
 
         return List.of();
-    }
-
-    private void sendUsage(Player player) {
-
-        player.sendMessage(
-                Component.text(
-                        "/mobarmy info\n" +
-                                "/mobarmy resume\n" +
-                                "/mobarmy gamesettings\n" +
-                                "/mobarmy reset <arena|lobby|teamworld|playerdata>"
-                )
-        );
     }
 }

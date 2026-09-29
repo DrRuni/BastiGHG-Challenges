@@ -262,7 +262,8 @@ public class RandomizerExclusionGUI implements Listener {
 
             Sounds.playClick(player);
 
-            game.getWorldSettingsGUI()
+            game.getPlugin()
+                    .getWorldSettingsGUI()
                     .open(player);
 
             return;

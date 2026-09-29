@@ -1,6 +1,7 @@
 package runi.myddns.challenges.core.gui;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
+import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
 import static runi.myddns.challenges.core.utils.ColorUtil.gradientText;
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
@@ -35,16 +37,8 @@ public class WorldSettingsGUI implements Listener {
         }
     }
 
+    private final ResetManagementGUI resetManagementGUI;
     private final ChallengeMain plugin;
-
-    private static final List<String> DIFFICULTIES = List.of(
-            "peaceful",
-            "easy",
-            "normal",
-            "hard",
-            "ultra-hardcore",
-            "ultra-ultra-hardcore"
-    );
 
     private Component getGameTitle(ChallengeGame game) {
 
@@ -74,6 +68,9 @@ public class WorldSettingsGUI implements Listener {
 
     public WorldSettingsGUI(ChallengeMain plugin) {
         this.plugin = plugin;
+
+        this.resetManagementGUI =
+                new ResetManagementGUI(plugin);
     }
 
     public void open(Player player) {
@@ -96,21 +93,21 @@ public class WorldSettingsGUI implements Listener {
                 45,
                 Component.text(
                         "Settings » ",
-                        TextColor.color(NEON_RED)
+                        TextColor.color(BLACK)
                 ).append(
                         getGameTitle(game)
                 )
         );
 
         inv.setItem(
-                20,
+                10,
                 createDifficultyItem(
                         settings.getDifficulty()
                 )
         );
 
         inv.setItem(
-                22,
+                13,
                 createToggleItem(
                         settings.isMobSpawningEnabled()
                                 ? Material.ZOMBIE_HEAD
@@ -121,7 +118,7 @@ public class WorldSettingsGUI implements Listener {
         );
 
         inv.setItem(
-                24,
+                16,
                 createToggleItem(
                         settings.isKeepInventoryEnabled()
                                 ? Material.LIME_WOOL
@@ -132,7 +129,7 @@ public class WorldSettingsGUI implements Listener {
         );
 
         inv.setItem(
-                29,
+                20,
                 createToggleItem(
                         settings.isNightVisionEnabled()
                                 ? Material.LIGHT
@@ -143,14 +140,14 @@ public class WorldSettingsGUI implements Listener {
         );
 
         inv.setItem(
-                31,
+                22,
                 createTimeItem(
                         settings.getWorldTime()
                 )
         );
 
         inv.setItem(
-                33,
+                24,
                 createToggleItem(
                         settings.isDaylightCycleEnabled()
                                 ? Material.CLOCK
@@ -159,6 +156,112 @@ public class WorldSettingsGUI implements Listener {
                         settings.isDaylightCycleEnabled()
                 )
         );
+
+        if (game.getId().equalsIgnoreCase("levelborder")
+                || game.getId().equalsIgnoreCase("levelblock")) {
+
+            inv.setItem(
+                    4,
+                    createItem(
+                            Material.COMMAND_BLOCK,
+                            Component.text(
+                                    "Reset / Verwaltung",
+                                    NamedTextColor.RED
+                            ),
+                            Component.empty(),
+                            Component.text(
+                                    "Spielstand oder Welten zurücksetzen",
+                                    NamedTextColor.GRAY
+                            )
+                    )
+            );
+        }
+
+        if (game instanceof MobArmyBattleGame mobArmyGame) {
+
+            boolean randomizerOn =
+                    mobArmyGame.getBlockRandomizerManager()
+                            .isGlobalRandomizerEnabled();
+
+            boolean chestRandomizerOn =
+                    mobArmyGame.getWorldSettings()
+                            .isChestRandomizerEnabled();
+
+            inv.setItem(
+                    28,
+                    createItem(
+                            randomizerOn
+                                    ? Material.LIME_WOOL
+                                    : Material.RED_WOOL,
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.name"
+                                    ),
+                            Component.empty(),
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.description-1"
+                                    ),
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.description-2"
+                                    )
+                    )
+            );
+
+            inv.setItem(
+                    30,
+                    createItem(
+                            chestRandomizerOn
+                                    ? Material.CHEST
+                                    : Material.BARRIER,
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.chest-randomizer.name"
+                                    )
+                    )
+            );
+
+            inv.setItem(
+                    32,
+                    createItem(
+                            Material.SPAWNER,
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.exclusions.name"
+                                    ),
+                            Component.empty(),
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.exclusions.description-1"
+                                    ),
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.exclusions.description-2"
+                                    )
+                    )
+            );
+
+            inv.setItem(
+                    34,
+                    createItem(
+                            Material.TNT,
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.reset.name"
+                                    ),
+                            Component.empty(),
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.reset.description-1"
+                                    ),
+                            mobArmyGame.getLanguageManager()
+                                    .getComponent(
+                                            "world-settings-gui.block-randomizer.reset.description-2"
+                                    )
+                    )
+            );
+        }
 
         inv.setItem(
                 40,
@@ -340,25 +443,122 @@ public class WorldSettingsGUI implements Listener {
 
         switch (slot) {
 
-            case 20 -> nextDifficulty(settings);
+            case 4 -> {
 
-            case 22 -> settings.setMobSpawning(
+                if (!game.getId().equalsIgnoreCase("levelborder")
+                        && !game.getId().equalsIgnoreCase("levelblock")) {
+                    return;
+                }
+
+                resetManagementGUI.open(player);
+
+                reopen = false;
+            }
+
+            case 10 -> nextDifficulty(settings);
+
+            case 13 -> settings.setMobSpawning(
                     !settings.isMobSpawningEnabled()
             );
 
-            case 24 -> settings.setKeepInventory(
+            case 16 -> settings.setKeepInventory(
                     !settings.isKeepInventoryEnabled()
             );
 
-            case 29 -> settings.setNightVisionEnabled(
+            case 20 -> settings.setNightVisionEnabled(
                     !settings.isNightVisionEnabled()
             );
 
-            case 31 -> nextWorldTime(settings);
+            case 22 -> nextWorldTime(settings);
 
-            case 33 -> settings.setDaylightCycle(
+            case 24 -> settings.setDaylightCycle(
                     !settings.isDaylightCycleEnabled()
             );
+
+            case 28 -> {
+
+                if (!(game instanceof MobArmyBattleGame mobArmyGame)) {
+                    return;
+                }
+
+                mobArmyGame.getWorldSettings()
+                        .toggleRandomizer();
+
+                boolean newState =
+                        mobArmyGame.getWorldSettings()
+                                .isRandomizerEnabled();
+
+                mobArmyGame.getBlockRandomizerManager()
+                        .setGlobalRandomizerEnabled(newState);
+
+                broadcast(
+                        newState
+                                ? mobArmyGame.getLanguageManager()
+                                .getComponent(
+                                        "world-settings-gui.block-randomizer.enabled"
+                                )
+                                : mobArmyGame.getLanguageManager()
+                                .getComponent(
+                                        "world-settings-gui.block-randomizer.disabled"
+                                )
+                );
+            }
+
+            case 30 -> {
+
+                if (!(game instanceof MobArmyBattleGame mobArmyGame)) {
+                    return;
+                }
+
+                mobArmyGame.getWorldSettings()
+                        .toggleChestRandomizer();
+
+                boolean newState =
+                        mobArmyGame.getWorldSettings()
+                                .isChestRandomizerEnabled();
+
+                broadcast(
+                        newState
+                                ? mobArmyGame.getLanguageManager()
+                                .getComponent(
+                                        "world-settings-gui.chest-randomizer.enabled"
+                                )
+                                : mobArmyGame.getLanguageManager()
+                                .getComponent(
+                                        "world-settings-gui.chest-randomizer.disabled"
+                                )
+                );
+            }
+
+
+            case 32 -> {
+
+                if (!(game instanceof MobArmyBattleGame mobArmyGame)) {
+                    return;
+                }
+
+                mobArmyGame.getSpawnEggGUI()
+                        .openGUI(player);
+
+                reopen = false;
+            }
+
+            case 34 -> {
+
+                if (!(game instanceof MobArmyBattleGame mobArmyGame)) {
+                    return;
+                }
+
+                mobArmyGame.getBlockRandomizerManager()
+                        .resetRandomizer();
+
+                broadcast(
+                        mobArmyGame.getLanguageManager()
+                                .getComponent(
+                                        "world-settings-gui.block-randomizer.reset.message"
+                                )
+                );
+            }
 
             case 40 -> {
                 player.closeInventory();
@@ -370,7 +570,13 @@ public class WorldSettingsGUI implements Listener {
             }
         }
 
-        if (slot != 40) {
+        if (slot == 10
+                || slot == 13
+                || slot == 16
+                || slot == 20
+                || slot == 22
+                || slot == 24) {
+
             settings.save();
             settings.applyAll();
         }
@@ -401,25 +607,7 @@ public class WorldSettingsGUI implements Listener {
             GameWorldSettingsManager settings
     ) {
 
-        String current =
-                settings.getDifficulty()
-                        .toLowerCase(Locale.ROOT);
-
-        int index =
-                DIFFICULTIES.indexOf(current);
-
-        if (index == -1) {
-            index =
-                    DIFFICULTIES.indexOf("normal");
-        }
-
-        int nextIndex =
-                (index + 1)
-                        % DIFFICULTIES.size();
-
-        settings.setDifficulty(
-                DIFFICULTIES.get(nextIndex)
-        );
+        settings.cycleDifficulty();
     }
 
     private Material getDifficultyMaterial(
@@ -480,6 +668,17 @@ public class WorldSettingsGUI implements Listener {
             default ->
                     "Normal";
         };
+    }
+
+    private void broadcast(
+            Component message
+    ) {
+
+        for (Player player :
+                Bukkit.getOnlinePlayers()) {
+
+            player.sendMessage(message);
+        }
     }
 
     private void nextWorldTime(

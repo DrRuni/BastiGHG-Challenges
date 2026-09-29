@@ -31,11 +31,11 @@ public class LobbyDisplayManager {
     private static final String LOAD_CONSOLE_TAG = "challenge_lobby_load_console";
     private static final String LOAD_TITLE_TAG = "challenge_lobby_load_title";
 
-    private static final double START_X = 1.0;
+    private static final double START_X = -6.0;
     private static final double START_Y = 67.0;
-    private static final double START_Z = 48.0;
+    private static final double START_Z = 36.0;
 
-    private static final float WIDTH = 11.5f;
+    private static final float WIDTH = 11.0f;
     private static final float HEIGHT = 6.0f;
 
     private static final double TEXT_CENTER_X = START_X + WIDTH / 2.0;

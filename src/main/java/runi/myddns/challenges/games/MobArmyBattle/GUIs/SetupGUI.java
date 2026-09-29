@@ -186,7 +186,10 @@ public class SetupGUI implements Listener {
 
             case 10 -> {
                 Sounds.playClick(player);
-                game.getWorldSettingsGUI().open(player);
+
+                game.getPlugin()
+                        .getWorldSettingsGUI()
+                        .open(player);
             }
 
             case 12 -> {

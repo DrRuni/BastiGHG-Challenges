@@ -1,4 +1,4 @@
-file-version: 2
+file-version: 6
 
 commands:
   arena-summary:
@@ -39,7 +39,6 @@ commands:
   resume:
     player-only: "<red>❌ Nur Spieler können diesen Befehl nutzen!"
     op-only: "<red>❌ Nur OPs dürfen diesen Befehl ausführen!"
-    usage-resume: "<red>Verwendung: /resume mobarmy"
     usage-mobarmy: "<red>Verwendung: /mobarmy resume"
   set-phase:
     op-only: "<red>❌ Nur OPs dürfen diesen Befehl benutzen."
@@ -451,13 +450,14 @@ world-settings-gui:
   toggle:
     status: "<gray>Status: %status%"
   difficulty:
-    name: "<blue>Schwierigkeit: %phase%"
+    name: "<blue>Schwierigkeit: %difficulty%"
     click: "<gray>Klicke zum Ändern"
-    changed: "<aqua>⚔ <blue>Schwierigkeit geändert: %phase%"
+    changed: "<aqua>⚔ <blue>Schwierigkeit geändert: %difficulty%"
     peaceful: "<white>Friedlich"
     easy: "<green>Leicht"
     normal: "<gold>Normal"
     hard: "<red>Schwer"
+    ultra-hardcore: "<light_purple>Ultra-Hardcore"
     ultra-ultra-hardcore: "<dark_purple>Ultra-Ultra-Hardcore"
     unknown: "<gray>Unbekannt"
   time:
@@ -472,6 +472,10 @@ world-settings-gui:
   back:
     name: "<dark_aqua>Zurück"
     description: "<gray>Zurück zum vorherigen Menü"
+
+standard-settings:
+  name: "<gold>Welteinstellungen"
+  description: "<gray>Öffnet die allgemeinen Welteinstellungen"
 
 bundle-listener:
   drop-denied: "<red>🚫 Du kannst dein Team-Bundle nicht droppen!"
@@ -632,19 +636,36 @@ player-join-listener:
   help-hint: "<gold>Tipp:</gold> <gray>Mit </gray><aqua>/info</aqua><gray> bekommst du eine Übersicht aller Funktionen.</gray>"
   help-hover: "<yellow>Klicken für Hilfe</yellow>"
 
-info-command:
-  title: "<gold>MobArmyBattle - Hilfe</gold>"
-  goal: "<yellow>• Ziel:</yellow> <gray>Bereitet euer Team vor und besiegt die ausgewählten Wellen.</gray>"
-  teams: "<yellow>• Teams:</yellow> <gray>Rot und Blau spielen in eigenen Teamwelten.</gray>"
-  preparation: "<yellow>• Vorbereitung:</yellow> <gray>Sammelt Ausrüstung und bereitet euch auf die Arena vor.</gray>"
-  arena: "<yellow>• Arena:</yellow> <gray>In der Arena werden mehrere Mob-Wellen gespielt.</gray>"
-  team-join: "<aqua>• /team join rot|blau</aqua> <gray>- Team beitreten</gray>"
-  team-leave: "<aqua>• /team leave</aqua> <gray>- Team verlassen</gray>"
-  lobby: "<aqua>• /lobby</aqua> <gray>- zurück zur zentralen Lobby</gray>"
+mobarmy-command:
+  game-not-loaded: "<red>❌ MobArmyBattle muss zuerst geladen werden."
+
+  commands:
+    title: "<gold>══════ MobArmyBattle Befehle ══════"
+    info: "<yellow>/mobarmy info <gray>- Spielinfo und Hilfe"
+    resume: "<yellow>/mobarmy resume <gray>- Event fortsetzen"
+    gamesettings: "<yellow>/mobarmy gamesettings <gray>- Spieleinstellungen öffnen"
+    team: "<yellow>/team join <rot | blau> <gray>- Team betreten  |  <yellow>/team leave"
+    mobstatus: "<yellow>/mobstatus <gray>- Gespeicherte Mobs deines Teams anzeigen"
+    arenasummary: "<yellow>/arenasummary <gray>- Arena-Auswertung anzeigen"
+    reset: "<yellow>/mobarmy reset [world | arena | teamwelt] <gray>- Reset-Funktionen"
+    setphase: "<yellow>/setphase <phase> <gray>- Phase setzen <dark_gray>(OP)"
+
+  info:
+    title: "<gold>══════ MobArmyBattle ══════"
+    goal: "<gray>Ziel: Besiegt die gegnerischen Mob-Wellen und gewinnt den Arena-Kampf."
+    teams: "<gray>Es spielen zwei Teams gegeneinander: <red>Rot <gray>und <blue>Blau<gray>."
+    preparation: "<gray>In der Teamwelt sammelt ihr Ausrüstung und besiegt Mobs für spätere Waves."
+    arena: "<gray>Danach erstellt ihr Waves für den Gegner und kämpft anschließend in der Arena."
+    commands-title: "<gold>Wichtige Befehle:"
+    team-command: "<yellow>/team join <rot | blau> <gray>- Team auswählen"
+    status-command: "<yellow>/mobstatus <gray>- Gespeicherte Team-Mobs anzeigen"
+    settings-command: "<yellow>/mobarmy gamesettings <gray>- Einstellungen öffnen"
+    help-command: "<yellow>/mobarmy <gray>- Alle Befehle anzeigen"
 
 lobby-display:
   waiting-for-load: "WARTET AUF LOAD"
   no-game-selected: "Bitte zuerst ein Game auswählen."
+
   load-first: "Bitte zuerst LOAD drücken."
   settings-load-first: "Settings erst nach LOAD verfügbar."
   lobby-world-missing: "Lobby-Welt nicht gefunden."

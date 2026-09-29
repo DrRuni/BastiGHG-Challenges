@@ -25,6 +25,15 @@ public class GameWorldSettingsManager {
     private final String gameId;
     private final List<String> worldNames;
 
+    private static final List<String> DIFFICULTIES = List.of(
+            "peaceful",
+            "easy",
+            "normal",
+            "hard",
+            "ultra-hardcore",
+            "ultra-ultra-hardcore"
+    );
+
     private File file;
     private FileConfiguration config;
     private boolean keepInventory;
@@ -195,6 +204,28 @@ public class GameWorldSettingsManager {
     }
 
     public String getDifficulty() {
+        return difficulty;
+    }
+
+    public String cycleDifficulty() {
+
+        String current =
+                difficulty.toLowerCase(Locale.ROOT);
+
+        int index =
+                DIFFICULTIES.indexOf(current);
+
+        if (index == -1) {
+            index = DIFFICULTIES.indexOf("normal");
+        }
+
+        int nextIndex =
+                (index + 1)
+                        % DIFFICULTIES.size();
+
+        difficulty =
+                DIFFICULTIES.get(nextIndex);
+
         return difficulty;
     }
 

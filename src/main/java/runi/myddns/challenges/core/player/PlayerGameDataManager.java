@@ -6,11 +6,14 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -20,52 +23,43 @@ public class PlayerGameDataManager {
     private final ChallengeMain plugin;
     private final File playerDataFolder;
 
-    public PlayerGameDataManager(ChallengeMain plugin) {
-        this.plugin = plugin;
+    private final PlayerEnderChestManager enderChestManager;
+
+
+    public PlayerGameDataManager(
+            ChallengeMain plugin
+    ) {
+
+        this.plugin =
+                plugin;
 
         this.playerDataFolder =
-                new File(plugin.getDataFolder(), "playerdata");
+                new File(
+                        plugin.getDataFolder(),
+                        "playerdata"
+                );
 
         if (!playerDataFolder.exists()) {
             playerDataFolder.mkdirs();
         }
+
+        this.enderChestManager =
+                new PlayerEnderChestManager();
     }
 
-    public void savePlayerData(Player player, String gameId) {
+    public void savePlayerData(
+            Player player,
+            String gameId
+    ) {
 
-        File file = getPlayerFile(
-                player.getUniqueId(),
-                gameId
-        );
+        File file =
+                getPlayerFile(
+                        player,
+                        gameId
+                );
 
         YamlConfiguration config =
                 new YamlConfiguration();
-
-        config.set(
-                "inventory.contents",
-                Arrays.asList(
-                        player.getInventory().getStorageContents()
-                )
-        );
-
-        config.set(
-                "inventory.armor",
-                Arrays.asList(
-                        player.getInventory().getArmorContents()
-                )
-        );
-
-        config.set(
-                "inventory.offhand",
-                player.getInventory().getItemInOffHand()
-        );
-
-        config.set(
-                "enderchest",
-                Arrays.asList(
-                        player.getEnderChest().getContents()
-                )
-        );
 
         config.set(
                 "experience.level",
@@ -82,7 +76,16 @@ public class PlayerGameDataManager {
                 player.getTotalExperience()
         );
 
-        // Spielerzustand
+        config.set(
+                "player.uuid",
+                player.getUniqueId().toString()
+        );
+
+        config.set(
+                "player.name",
+                player.getName()
+        );
+
         config.set(
                 "player.health",
                 player.getHealth()
@@ -98,15 +101,51 @@ public class PlayerGameDataManager {
                 player.getSaturation()
         );
 
-        // Position
+        config.set(
+                "effects",
+                new ArrayList<>(
+                        player.getActivePotionEffects()
+                )
+        );
+
         saveLocation(
                 config,
                 player.getLocation()
         );
 
+        config.set(
+                "inventory.contents",
+                Arrays.asList(
+                        player.getInventory()
+                                .getStorageContents()
+                )
+        );
+
+        config.set(
+                "inventory.armor",
+                Arrays.asList(
+                        player.getInventory()
+                                .getArmorContents()
+                )
+        );
+
+        config.set(
+                "inventory.offhand",
+                player.getInventory()
+                        .getItemInOffHand()
+        );
+
+        enderChestManager.save(
+                player,
+                config
+        );
+
+
         try {
 
-            config.save(file);
+            config.save(
+                    file
+            );
 
         } catch (IOException exception) {
 
@@ -123,21 +162,31 @@ public class PlayerGameDataManager {
 
     public void saveOnlinePlayers() {
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player
+                : Bukkit.getOnlinePlayers()) {
 
-            String gameId = null;
+            String gameId =
+                    null;
 
-            for (GameWorldDefinition definition : GameWorldDefinition.ALL) {
+            for (GameWorldDefinition definition
+                    : GameWorldDefinition.ALL) {
 
-                if (definition.worldName().equalsIgnoreCase(
-                        player.getWorld().getName()
-                )) {
-                    gameId = definition.gameId();
+                if (definition.worldName()
+                        .equalsIgnoreCase(
+                                player.getWorld()
+                                        .getName()
+                        )) {
+
+                    gameId =
+                            definition.gameId();
+
                     break;
                 }
             }
 
-            if (gameId == null) continue;
+            if (gameId == null) {
+                continue;
+            }
 
             savePlayerData(
                     player,
@@ -146,82 +195,313 @@ public class PlayerGameDataManager {
         }
     }
 
-    public boolean loadPlayerData(Player player, String gameId) {
-        return loadPlayerData(player, gameId, true);
+    public void deleteGamePlayerData(
+            String gameId
+    ) {
+
+        File gameFolder =
+                new File(
+                        playerDataFolder,
+                        gameId.toLowerCase()
+                );
+
+        if (!gameFolder.exists()) {
+            return;
+        }
+
+        File[] files =
+                gameFolder.listFiles();
+
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
+
+            if (!file.isFile()) {
+                continue;
+            }
+
+            if (!file.delete()) {
+
+                plugin.getLogger()
+                        .warning(
+                                "Playerdaten konnten nicht gelöscht werden: "
+                                        + file.getName()
+                        );
+            }
+        }
+    }
+    public void deletePlayerData(
+            UUID uuid,
+            String gameId
+    ) {
+
+        File file =
+                findPlayerFile(
+                        uuid,
+                        gameId
+                );
+
+        if (file != null) {
+            file.delete();
+        }
     }
 
-    public boolean loadPlayerData(Player player, String gameId, boolean loadLocation) {
-
-        File file = getPlayerFile(player.getUniqueId(), gameId);
-
-        if (!file.exists()) return false;
-
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+    public void resetPlayerState(
+            Player player,
+            boolean keepNightVision
+    ) {
 
         clearPlayerState(player);
 
-        // Inventar
-        List<?> inventoryList = config.getList("inventory.contents");
+        if (keepNightVision) {
+
+            player.addPotionEffect(
+                    new PotionEffect(
+                            PotionEffectType.NIGHT_VISION,
+                            Integer.MAX_VALUE,
+                            0,
+                            false,
+                            false,
+                            false
+                    )
+            );
+        }
+    }
+    public boolean loadPlayerData(
+            Player player,
+            String gameId
+    ) {
+
+        return loadPlayerData(
+                player,
+                gameId,
+                true
+        );
+    }
+
+
+    public boolean loadPlayerData(
+            Player player,
+            String gameId,
+            boolean loadLocation
+    ) {
+
+        File file =
+                findPlayerFile(
+                        player.getUniqueId(),
+                        gameId
+                );
+
+        if (file == null) {
+            return false;
+        }
+
+        if (!file.exists()) {
+            return false;
+        }
+
+        YamlConfiguration config =
+                YamlConfiguration.loadConfiguration(
+                        file
+                );
+
+
+        /*
+         * Alten Zustand komplett entfernen.
+         */
+        clearPlayerState(
+                player
+        );
+
+
+        /*
+         * Potion-Effekte
+         */
+        List<?> effects =
+                config.getList(
+                        "effects"
+                );
+
+        if (effects != null) {
+
+            for (Object object : effects) {
+
+                if (object
+                        instanceof PotionEffect effect) {
+
+                    player.addPotionEffect(
+                            effect,
+                            true
+                    );
+                }
+            }
+        }
+
+
+        /*
+         * Inventar
+         */
+        List<?> inventoryList =
+                config.getList(
+                        "inventory.contents"
+                );
 
         if (inventoryList != null) {
-            player.getInventory().setStorageContents(
-                    inventoryList.toArray(new ItemStack[0])
-            );
+
+            player.getInventory()
+                    .setStorageContents(
+                            inventoryList.toArray(
+                                    new ItemStack[0]
+                            )
+                    );
         }
 
-        // Rüstung
-        List<?> armorList = config.getList("inventory.armor");
+
+        /*
+         * Rüstung
+         */
+        List<?> armorList =
+                config.getList(
+                        "inventory.armor"
+                );
 
         if (armorList != null) {
-            player.getInventory().setArmorContents(
-                    armorList.toArray(new ItemStack[0])
-            );
+
+            player.getInventory()
+                    .setArmorContents(
+                            armorList.toArray(
+                                    new ItemStack[0]
+                            )
+                    );
         }
 
-        // Offhand
-        ItemStack offhand = config.getItemStack("inventory.offhand");
+
+        /*
+         * Offhand
+         */
+        ItemStack offhand =
+                config.getItemStack(
+                        "inventory.offhand"
+                );
 
         if (offhand != null) {
-            player.getInventory().setItemInOffHand(offhand);
+
+            player.getInventory()
+                    .setItemInOffHand(
+                            offhand
+                    );
         }
 
-        // Enderchest
-        List<?> enderChestList = config.getList("enderchest");
 
-        if (enderChestList != null) {
-            player.getEnderChest().setContents(
-                    enderChestList.toArray(new ItemStack[0])
-            );
-        }
+        /*
+         * Enderchest
+         */
+        enderChestManager.load(
+                player,
+                config
+        );
 
-        // XP
-        player.setLevel(config.getInt("experience.level", 0));
-        player.setExp((float) config.getDouble("experience.exp", 0.0));
-        player.setTotalExperience(config.getInt("experience.total", 0));
 
-        // Hunger
-        player.setFoodLevel(config.getInt("player.food", 20));
-        player.setSaturation((float) config.getDouble("player.saturation", 5.0));
+        /*
+         * XP
+         */
+        player.setLevel(
+                config.getInt(
+                        "experience.level",
+                        0
+                )
+        );
 
-        // Gesundheit
-        double health = config.getDouble("player.health", player.getMaxHealth());
-        player.setHealth(Math.min(health, player.getMaxHealth()));
+        player.setExp(
+                (float) config.getDouble(
+                        "experience.exp",
+                        0.0
+                )
+        );
 
-        // Position nur wenn gewünscht
+        player.setTotalExperience(
+                config.getInt(
+                        "experience.total",
+                        0
+                )
+        );
+
+
+        /*
+         * Hunger
+         */
+        player.setFoodLevel(
+                config.getInt(
+                        "player.food",
+                        20
+                )
+        );
+
+        player.setSaturation(
+                (float) config.getDouble(
+                        "player.saturation",
+                        5.0
+                )
+        );
+
+
+        /*
+         * Gesundheit
+         */
+        double health =
+                config.getDouble(
+                        "player.health",
+                        player.getMaxHealth()
+                );
+
+        player.setHealth(
+                Math.min(
+                        health,
+                        player.getMaxHealth()
+                )
+        );
+
+
+        /*
+         * Position
+         */
         if (loadLocation) {
-            Location location = loadLocation(config);
+
+            Location location =
+                    loadLocation(
+                            config
+                    );
 
             if (location != null) {
-                player.teleport(location);
+
+                player.teleport(
+                        location
+                );
             }
         }
 
         return true;
     }
 
-    public void clearPlayerState(Player player) {
 
-        player.getInventory().clear();
+    /*
+     * =========================================================
+     * SPIELERZUSTAND LEEREN
+     * =========================================================
+     */
+
+    public void clearPlayerState(
+            Player player
+    ) {
+
+        clearPotionEffects(
+                player
+        );
+
+        player.getInventory()
+                .clear();
 
         player.getInventory()
                 .setArmorContents(
@@ -229,20 +509,107 @@ public class PlayerGameDataManager {
                 );
 
         player.getInventory()
-                .setItemInOffHand(null);
+                .setItemInOffHand(
+                        null
+                );
 
-        player.getEnderChest().clear();
+        enderChestManager.clear(
+                player
+        );
 
-        player.setLevel(0);
-        player.setExp(0);
-        player.setTotalExperience(0);
+        player.setLevel(
+                0
+        );
 
-        player.setFoodLevel(20);
-        player.setSaturation(5.0f);
+        player.setExp(
+                0
+        );
+
+        player.setTotalExperience(
+                0
+        );
+
+        player.setFoodLevel(
+                20
+        );
+
+        player.setSaturation(
+                5.0f
+        );
 
         player.setHealth(
                 player.getMaxHealth()
         );
+    }
+
+    public void clearPotionEffects(
+            Player player
+    ) {
+
+        for (PotionEffect effect
+                : player.getActivePotionEffects()) {
+
+            player.removePotionEffect(
+                    effect.getType()
+            );
+        }
+    }
+
+    public void clearSavedLocations(
+            String gameId
+    ) {
+
+        File gameFolder =
+                new File(
+                        playerDataFolder,
+                        gameId.toLowerCase()
+                );
+
+        if (!gameFolder.exists()) {
+            return;
+        }
+
+        File[] files =
+                gameFolder.listFiles(
+                        (dir, name) ->
+                                name.toLowerCase()
+                                        .endsWith(".yml")
+                );
+
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
+
+            YamlConfiguration config =
+                    YamlConfiguration
+                            .loadConfiguration(
+                                    file
+                            );
+
+            config.set(
+                    "location",
+                    null
+            );
+
+            try {
+
+                config.save(
+                        file
+                );
+
+            } catch (IOException exception) {
+
+                plugin.getLogger()
+                        .severe(
+                                "Gespeicherte Spielerposition konnte nicht gelöscht werden: "
+                                        + file.getName()
+                        );
+
+                exception.printStackTrace();
+            }
+        }
     }
 
     public boolean hasPlayerData(
@@ -250,30 +617,117 @@ public class PlayerGameDataManager {
             String gameId
     ) {
 
-        return getPlayerFile(
+        return findPlayerFile(
                 uuid,
                 gameId
-        ).exists();
+        ) != null;
     }
 
-    public void deletePlayerData(
+    private File getPlayerFile(
+            Player player,
+            String gameId
+    ) {
+
+        File gameFolder =
+                getGameFolder(
+                        gameId
+                );
+
+        File existingFile =
+                findPlayerFile(
+                        player.getUniqueId(),
+                        gameId
+                );
+
+        if (existingFile != null) {
+
+            File wantedFile =
+                    new File(
+                            gameFolder,
+                            player.getName() + ".yml"
+                    );
+
+            if (!existingFile.getName()
+                    .equalsIgnoreCase(
+                            wantedFile.getName()
+                    )) {
+
+                if (existingFile.renameTo(
+                        wantedFile
+                )) {
+
+                    return wantedFile;
+                }
+            }
+
+            return existingFile;
+        }
+
+        return new File(
+                gameFolder,
+                player.getName() + ".yml"
+        );
+    }
+
+    private File findPlayerFile(
             UUID uuid,
             String gameId
     ) {
 
-        File file =
-                getPlayerFile(
-                        uuid,
+        File gameFolder =
+                getGameFolder(
                         gameId
                 );
 
-        if (file.exists()) {
-            file.delete();
+        File[] files =
+                gameFolder.listFiles(
+                        (dir, name) ->
+                                name.toLowerCase()
+                                        .endsWith(".yml")
+                );
+
+        if (files == null) {
+            return null;
         }
+
+        String wantedUuid =
+                uuid.toString();
+
+        for (File file : files) {
+
+            YamlConfiguration config =
+                    YamlConfiguration
+                            .loadConfiguration(
+                                    file
+                            );
+
+            String savedUuid =
+                    config.getString(
+                            "player.uuid"
+                    );
+
+            if (wantedUuid.equalsIgnoreCase(
+                    savedUuid
+            )) {
+
+                return file;
+            }
+        }
+
+        File oldFile =
+                new File(
+                        gameFolder,
+                        uuid + ".yml"
+                );
+
+        if (oldFile.exists()) {
+            return oldFile;
+        }
+
+        return null;
     }
 
-    private File getPlayerFile(
-            UUID uuid,
+    private File getGameFolder(
             String gameId
     ) {
 
@@ -287,10 +741,7 @@ public class PlayerGameDataManager {
             gameFolder.mkdirs();
         }
 
-        return new File(
-                gameFolder,
-                uuid + ".yml"
-        );
+        return gameFolder;
     }
 
     private void saveLocation(
@@ -300,7 +751,8 @@ public class PlayerGameDataManager {
 
         config.set(
                 "location.world",
-                location.getWorld().getName()
+                location.getWorld()
+                        .getName()
         );
 
         config.set(
@@ -335,17 +787,24 @@ public class PlayerGameDataManager {
     ) {
 
         File file =
-                getPlayerFile(
+                findPlayerFile(
                         uuid,
                         gameId
                 );
 
-        if (!file.exists()) return null;
+        if (file == null) {
+            return null;
+        }
 
         YamlConfiguration config =
-                YamlConfiguration.loadConfiguration(file);
+                YamlConfiguration
+                        .loadConfiguration(
+                                file
+                        );
 
-        return loadLocation(config);
+        return loadLocation(
+                config
+        );
     }
 
     private Location loadLocation(
@@ -362,7 +821,9 @@ public class PlayerGameDataManager {
         }
 
         World world =
-                Bukkit.getWorld(worldName);
+                Bukkit.getWorld(
+                        worldName
+                );
 
         if (world == null) {
             return null;
@@ -370,11 +831,21 @@ public class PlayerGameDataManager {
 
         return new Location(
                 world,
-                config.getDouble("location.x"),
-                config.getDouble("location.y"),
-                config.getDouble("location.z"),
-                (float) config.getDouble("location.yaw"),
-                (float) config.getDouble("location.pitch")
+                config.getDouble(
+                        "location.x"
+                ),
+                config.getDouble(
+                        "location.y"
+                ),
+                config.getDouble(
+                        "location.z"
+                ),
+                (float) config.getDouble(
+                        "location.yaw"
+                ),
+                (float) config.getDouble(
+                        "location.pitch"
+                )
         );
     }
 }

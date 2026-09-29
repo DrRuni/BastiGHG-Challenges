@@ -55,7 +55,6 @@ public class MobArmyBattleGame implements ChallengeGame {
     public BundleGUI bundleGUI;
     public RandomizerExclusionGUI spawnEggGUI;
     private ArenaSettingsGUI arenaSettingsGUI;
-    private WorldSettingsGUI worldSettingsGUI;
     private PlayerGUI playerGUI;
     private PlayerActionGUI playerActionGUI;
     private TeamSettingsGUI teamSettingsGUI;
@@ -235,7 +234,6 @@ public class MobArmyBattleGame implements ChallengeGame {
         bundleGUI = new BundleGUI(this, teamManager);
         spawnEggGUI = new RandomizerExclusionGUI(blockRandomizerManager, this);
         arenaSettingsGUI = new ArenaSettingsGUI(this);
-        worldSettingsGUI = new WorldSettingsGUI(this, blockRandomizerManager);
         playerGUI = new PlayerGUI(this);
         playerActionGUI = new PlayerActionGUI(this);
         teamSettingsGUI = new TeamSettingsGUI(this);
@@ -267,7 +265,6 @@ public class MobArmyBattleGame implements ChallengeGame {
         registerListener(new ArenaMobTargetListener(this));
         registerListener(new BundleListener(this, bundleGUI, teamManager, bundleManager));
         registerListener(arenaSettingsGUI);
-        registerListener(worldSettingsGUI);
         registerListener(arenaCompassManager);
         registerListener(playerGUI);
         registerListener(playerActionGUI);
@@ -552,7 +549,6 @@ public class MobArmyBattleGame implements ChallengeGame {
     public TeamScoreboardManager getTeamScoreboardManager() { return teamScoreboardManager; }
     public ScoreboardSwitcher getScoreboardSwitcher() { return scoreboardSwitcher; }
     public ArenaSettingsGUI getArenaSettingsGUI() { return arenaSettingsGUI; }
-    public WorldSettingsGUI getWorldSettingsGUI() { return worldSettingsGUI; }
     public ArenaCompassManager getArenaCompassManager() { return arenaCompassManager; }
     public PlayerGUI getPlayerGUI() { return playerGUI; }
     public PlayerActionGUI getPlayerActionGUI() { return playerActionGUI; }

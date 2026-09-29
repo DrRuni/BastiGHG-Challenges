@@ -16,6 +16,7 @@ public class PlayerJoinListener implements Listener {
 
     private static final String RESOURCE_PACK_URL =
             "https://github.com/DrRuni/BastiGHG-Challenges/releases/download/V0.1/BastiGHG-Challenges-Fan-Projekt.zip";
+
     private static final String RESOURCE_PACK_SHA1 =
             "5e30419143534a7370f722dbed0310a5487bade9";
 
@@ -28,7 +29,10 @@ public class PlayerJoinListener implements Listener {
 
         Player player = event.getPlayer();
 
-        ChallengeGame game = plugin.getGameManager().getSelectedGame();
+        offerResourcePack(player);
+
+        ChallengeGame game =
+                plugin.getGameManager().getSelectedGame();
 
         boolean joinActiveGame =
                 game != null
@@ -39,7 +43,10 @@ public class PlayerJoinListener implements Listener {
         if (joinActiveGame) {
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (!player.isOnline()) return;
+
+                if (!player.isOnline()) {
+                    return;
+                }
 
                 game.joinActiveGame(player);
 
@@ -48,12 +55,22 @@ public class PlayerJoinListener implements Listener {
             return;
         }
 
-        player.teleport(plugin.getLobbyWorldManager().getSpawn());
+        player.teleport(
+                plugin.getLobbyWorldManager().getSpawn()
+        );
 
-        if (player.isOp() && !plugin.getLanguageManager().hasLanguage()) {
+        if (player.isOp()
+                && !plugin.getLanguageManager().hasLanguage()) {
+
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (!player.isOnline()) return;
-                if (plugin.getLanguageManager().hasLanguage()) return;
+
+                if (!player.isOnline()) {
+                    return;
+                }
+
+                if (plugin.getLanguageManager().hasLanguage()) {
+                    return;
+                }
 
                 plugin.getLanguageSelectionGUI().open(player);
 
@@ -61,15 +78,36 @@ public class PlayerJoinListener implements Listener {
         }
     }
 
-    //        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-//            if (!player.isOnline()) return;
-//
-//            Component prompt = Component.text()
-//                    .append(Component.text("BastiGHG Challenges\n").color(NamedTextColor.GOLD))
-//                    .append(Component.text("Optional resource pack for ").color(NamedTextColor.GRAY))
-//                    .append(Component.text("custom graphics and icons.").color(NamedTextColor.AQUA))
-//                    .build();
-//
-//            player.setResourcePack(RESOURCE_PACK_URL, RESOURCE_PACK_SHA1, false, prompt);
-//        }, 20L);
+    private void offerResourcePack(Player player) {
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+
+            if (!player.isOnline()) {
+                return;
+            }
+
+            Component prompt = Component.text()
+                    .append(
+                            Component.text("BastiGHG Challenges\n")
+                                    .color(NamedTextColor.GOLD)
+                    )
+                    .append(
+                            Component.text("Optional resource pack for ")
+                                    .color(NamedTextColor.GRAY)
+                    )
+                    .append(
+                            Component.text("custom graphics and icons.")
+                                    .color(NamedTextColor.AQUA)
+                    )
+                    .build();
+
+            player.setResourcePack(
+                    RESOURCE_PACK_URL,
+                    RESOURCE_PACK_SHA1,
+                    false,
+                    prompt
+            );
+
+        }, 20L);
+    }
 }

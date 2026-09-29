@@ -4,6 +4,8 @@
 
 ### Neu
 
+- In **BastiGHG Challenges – Fan Project** integriert
+- MobArmyBattle kann nun über die zentrale Lobby ausgewählt und geladen werden
 - Sprachsystem für Deutsch und Englisch hinzugefügt
 - Sprachauswahl über `/language` hinzugefügt
 
@@ -12,6 +14,7 @@
 - Scoreboards überarbeitet und rote Score-Zahlen entfernt
 - Texte, Titel und GUIs überarbeitet
 - Code bereinigt und modernisiert
+- Welt-, Spieler- und Spieldaten an das zentrale Challenge-System angepasst
 
 ### Behoben
 

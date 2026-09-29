@@ -14,6 +14,9 @@ import runi.myddns.challenges.core.gui.WorldSettingsGUI;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.player.PlayerGameDataListener;
 import runi.myddns.challenges.core.player.PlayerGameDataManager;
+import runi.myddns.challenges.core.reset.GameResetManager;
+import runi.myddns.challenges.core.reset.ResetVoteCommand;
+import runi.myddns.challenges.core.reset.ResetVoteManager;
 import runi.myddns.challenges.core.server.ServerIconManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.*;
@@ -39,6 +42,8 @@ public final class ChallengeMain extends JavaPlugin {
     private GameStateManager gameStateManager;
     private PlayerGameDataManager playerGameDataManager;
     private WorldSettingsGUI worldSettingsGUI;
+    private GameResetManager gameResetManager;
+    private ResetVoteManager resetVoteManager;
 
     @Override
     public void onLoad() {
@@ -61,6 +66,7 @@ public final class ChallengeMain extends JavaPlugin {
         LobbyButtonManager lobbyButtonManager = new LobbyButtonManager(this, lobbyDisplayManager, gameManager);
 
         playerGameDataManager = new PlayerGameDataManager(this);
+        resetVoteManager = new ResetVoteManager(this);
 
         registerListeners(serverIconManager, lobbyButtonManager);
         createLobbyDisplay(lobbyButtonManager);
@@ -77,6 +83,7 @@ public final class ChallengeMain extends JavaPlugin {
 
         lobbyWorldManager = new LobbyWorldManager(this);
         lobbyWorldManager.loadWorld();
+        gameResetManager = new GameResetManager(this);
     }
 
     private void setupLanguage() {
@@ -137,7 +144,13 @@ public final class ChallengeMain extends JavaPlugin {
         if (getCommand("language") != null) getCommand("language").setExecutor(new LanguageCommand(this));
         if (getCommand("lobby") != null) getCommand("lobby").setExecutor(new LobbyCommand(this));
         if (getCommand("gamesettings") != null) getCommand("gamesettings").setExecutor(new GameSettingsCommand(this));
+
+        getCommand("resetvote").setExecutor(
+                new ResetVoteCommand(this)
+        );
     }
+
+
 
     @Override
     public void onDisable() {
@@ -189,4 +202,6 @@ public final class ChallengeMain extends JavaPlugin {
     public WorldSourceManager getWorldSourceManager() { return worldSourceManager; }
     public GameWorldManager getGameWorldManager() { return gameWorldManager; }
     public WorldSettingsGUI getWorldSettingsGUI() { return worldSettingsGUI;}
+    public GameResetManager getGameResetManager() {return gameResetManager;}
+    public ResetVoteManager getResetVoteManager() {return resetVoteManager;}
 }

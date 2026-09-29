@@ -25,6 +25,9 @@ commands:
     usage: /gamesettings
     aliases: [ settings, options ]
 
+  resetvote:
+    description: Reset-Abstimmung
+
     # ============================================================
   # MobArmyBattle
   # ============================================================

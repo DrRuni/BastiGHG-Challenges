@@ -83,13 +83,16 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                 borderManager.getData();
 
         if (args.length == 0) {
-            sendStatus(player, data);
+            sendCommandHelp(player);
             return true;
         }
 
         switch (args[0].toLowerCase()) {
 
             case "info" ->
+                    sendGameInfo(player);
+
+            case "status" ->
                     sendDetailedInfo(player, data);
 
             case "gamesettings" -> {
@@ -292,44 +295,56 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
 
             case "reset" -> {
 
-                if (!isAdmin) {
+                if (!game.isLoaded()) {
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "❌ Nur der Admin darf den LevelBorder zurücksetzen!"
+                            ChatColor.RED
+                                    + "❌ LevelBorder muss zuerst geladen werden."
                     );
                     return true;
                 }
 
-                scoreboardManager.reset();
-
-                borderManager.resetBorder(
-                        player
-                );
-
-                timerManager.reset();
-
-                portalManager
-                        .clearPortalWorldData();
-
-                for (Player p :
-                        Bukkit.getOnlinePlayers()) {
-
-                    if (!game.isLevelBorderPlayer(p)) {
-                        continue;
-                    }
-
-                    p.playSound(
-                            p.getLocation(),
-                            Sound.BLOCK_BEACON_DEACTIVATE,
-                            0.6f,
-                            0.7f
+                if (!isAdmin) {
+                    player.sendMessage(
+                            ChatColor.RED
+                                    + "❌ Nur der Admin darf LevelBorder zurücksetzen!"
                     );
+                    return true;
                 }
 
-                player.sendMessage(
-                        ChatColor.GREEN +
-                                "♻ LevelBorder + Portale wurden zurückgesetzt."
-                );
+                if (args.length >= 2
+                        && args[1].equalsIgnoreCase("world")) {
+
+                    game.getPlugin()
+                            .getResetVoteManager()
+                            .startVote(
+                                    game.getDisplayName(),
+                                    "Welten komplett zurücksetzen",
+                                    () -> game.getPlugin()
+                                            .getGameResetManager()
+                                            .resetWorlds(game)
+                            );
+
+                    return true;
+                }
+
+                game.getPlugin()
+                        .getResetVoteManager()
+                        .startVote(
+                                game.getDisplayName(),
+                                "Spielstand zurücksetzen",
+                                () -> {
+
+                                    scoreboardManager.reset();
+                                    borderManager.resetBorder(player);
+                                    timerManager.reset();
+                                    portalManager.clearPortalWorldData();
+
+                                    Bukkit.broadcastMessage(
+                                            ChatColor.GREEN
+                                                    + "✔ LevelBorder wurde zurückgesetzt."
+                                    );
+                                }
+                        );
             }
 
             default ->
@@ -346,49 +361,155 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
         return p.isOp() ? 4 : 2;
     }
 
-    private void sendStatus(
-            Player player,
-            BorderDataManager data
-    ) {
+    private void sendCommandHelp(Player player) {
 
-        player.sendMessage(
-                "\n" +
-                        ChatColor.GOLD +
-                        "============= LevelBorder Befehle ============"
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        " info" +
-                        ChatColor.DARK_GRAY +
-                        " → Status anzeigen"
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        " score" +
-                        ChatColor.DARK_GRAY +
-                        " → Scoreboard anzeigen"
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        " gamesettings" +
-                        ChatColor.DARK_GRAY +
-                        " → Einstellungen öffnen"
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        " start / stop / set / reset / center" +
-                        ChatColor.DARK_GRAY +
-                        " → Admin"
-        );
-
+        player.sendMessage("");
         player.sendMessage(
                 ChatColor.GOLD +
-                        "============================================"
+                        "══════ LevelBorder Befehle ══════"
         );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder info" +
+                        ChatColor.GRAY +
+                        " - Spielinfo anzeigen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder status" +
+                        ChatColor.GRAY +
+                        " - Aktuellen Spielstand anzeigen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder start" +
+                        ChatColor.GRAY +
+                        " - Challenge starten"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder stop" +
+                        ChatColor.GRAY +
+                        " - Challenge stoppen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder center" +
+                        ChatColor.GRAY +
+                        " - Border-Mitte setzen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder set <Größe>" +
+                        ChatColor.GRAY +
+                        " - Bordergröße setzen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder score" +
+                        ChatColor.GRAY +
+                        " - Scoreboard verwalten"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder gamesettings" +
+                        ChatColor.GRAY +
+                        " - Spieleinstellungen öffnen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder reset" +
+                        ChatColor.GRAY +
+                        " - Spielstand zurücksetzen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder reset world" +
+                        ChatColor.GRAY +
+                        " - Welten komplett zurücksetzen"
+        );
+
+        player.sendMessage("");
+    }
+
+    private void sendGameInfo(Player player) {
+
+        player.sendMessage("");
+        player.sendMessage(
+                ChatColor.GOLD +
+                        "══════ LevelBorder ══════"
+        );
+
+        player.sendMessage(
+                ChatColor.GRAY +
+                        "Ziel: Vergrößert gemeinsam die WorldBorder."
+        );
+
+        player.sendMessage(
+                ChatColor.GRAY +
+                        "Die Größe der Border richtet sich nach der Summe"
+        );
+
+        player.sendMessage(
+                ChatColor.GRAY +
+                        "der Spielerlevel aller Teilnehmer."
+        );
+
+        player.sendMessage(
+                ChatColor.GRAY +
+                        "Je mehr Level ihr sammelt, desto größer wird"
+        );
+
+        player.sendMessage(
+                ChatColor.GRAY +
+                        "der Bereich, den ihr erkunden könnt."
+        );
+
+        player.sendMessage("");
+        player.sendMessage(
+                ChatColor.GOLD +
+                        "Wichtige Befehle:"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder status" +
+                        ChatColor.GRAY +
+                        " - Aktuellen Stand anzeigen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder score" +
+                        ChatColor.GRAY +
+                        " - Scoreboard verwalten"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder gamesettings" +
+                        ChatColor.GRAY +
+                        " - Einstellungen öffnen"
+        );
+
+        player.sendMessage(
+                ChatColor.YELLOW +
+                        "/levelborder" +
+                        ChatColor.GRAY +
+                        " - Alle Befehle anzeigen"
+        );
+
+        player.sendMessage("");
     }
 
     private void sendDetailedInfo(
@@ -465,6 +586,7 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
             list.addAll(
                     Arrays.asList(
                             "info",
+                            "status",
                             "score",
                             "gamesettings",
                             "center",
@@ -497,6 +619,12 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                             "reset"
                     )
             );
+        }
+
+        else if (args.length == 2
+                && args[0].equalsIgnoreCase("reset")) {
+
+            list.add("world");
         }
 
         return list;

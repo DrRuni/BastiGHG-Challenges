@@ -3,6 +3,7 @@ package runi.myddns.challenges.core.display;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
@@ -38,16 +39,16 @@ public class LobbyButtonManager implements Listener {
         this.gameManager = gameManager;
     }
 
-    private static final double START_X = 1.0;
+    private static final double START_X = -7.0;
     private static final double START_Y = 67.0;
-    private static final double START_Z = 48.0;
+    private static final double START_Z = 32.0;
 
     private static final double BUTTON_Y = START_Y + 0.42;
     private static final double BUTTON_Z = START_Z - 0.20;
 
     private static final float BUTTON_YAW = 180.0f;
-    private static final float BUTTON_WIDTH = 2.40f;
-    private static final float BUTTON_HEIGHT = 0.90f;
+    private static final float BUTTON_WIDTH = 0.70f;
+    private static final float BUTTON_HEIGHT = 0.50f;
     private static final float BUTTON_SCALE = 0.78f;
 
     private static final String PROTECTED_TAG = "challenge_protected";
@@ -78,6 +79,14 @@ public class LobbyButtonManager implements Listener {
             "WORLDSETTINGS"
     };
 
+    private record ButtonPosition(
+            double x,
+            double y,
+            double z,
+            float yaw,
+            float pitch
+    ) {}
+
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     private final Map<Integer, TextDisplay> buttonDisplays =
@@ -89,30 +98,66 @@ public class LobbyButtonManager implements Listener {
 
         buttonDisplays.clear();
 
-        double[] positionsX = {
-                START_X + 10.20,
-                START_X + 7.75,
-                START_X + 5.30,
-                START_X + 2.85,
-                START_X + 2.85
-        };
+        ButtonPosition[] positions = {
 
-        double[] positionsY = {
-                BUTTON_Y,
-                BUTTON_Y,
-                BUTTON_Y,
-                BUTTON_Y,
-                BUTTON_Y + 1.00
+                // SELECT
+                new ButtonPosition(
+                        START_X + 8.50,
+                        START_Y + 0.00,
+                        START_Z - 0.80,
+                        180.0f,
+                        0.0f
+                ),
+
+                // LOAD
+                new ButtonPosition(
+                        START_X + 7.50,
+                        START_Y + 0.00,
+                        START_Z - 0.80,
+                        180.0f,
+                        0.0f
+                ),
+
+                // START
+                new ButtonPosition(
+                        START_X + 6.50,
+                        START_Y + 0.00,
+                        START_Z - 0.80,
+                        180.0f,
+                        0.0f
+                ),
+
+                // SETTINGS
+                new ButtonPosition(
+                        START_X + 4.50,
+                        START_Y + 0.00,
+                        START_Z - 0.80,
+                        180.0f,
+                        0.0f
+                ),
+
+                // WORLDSETTINGS
+                new ButtonPosition(
+                        START_X + 4.00,
+                        START_Y - 1.00,
+                        START_Z - 1.01,
+                        180.0f,
+                        0.0f
+                )
         };
 
         for (int i = 0; i < BUTTON_NAMES.length; i++) {
+
+            ButtonPosition position =
+                    positions[i];
 
             createButton(
                     world,
                     i,
                     BUTTON_NAMES[i],
-                    positionsX[i],
-                    positionsY[i]
+                    position.x(),
+                    position.y(),
+                    position.z()
             );
         }
     }
@@ -122,7 +167,8 @@ public class LobbyButtonManager implements Listener {
             int index,
             String name,
             double x,
-            double y
+            double y,
+            double z
     ) {
 
         Location textLocation =
@@ -130,7 +176,7 @@ public class LobbyButtonManager implements Listener {
                         world,
                         x,
                         y,
-                        BUTTON_Z,
+                        z,
                         BUTTON_YAW,
                         0.0f
                 );
@@ -208,7 +254,7 @@ public class LobbyButtonManager implements Listener {
                         world,
                         x,
                         y,
-                        BUTTON_Z - 0.05
+                        z - 0.05
                 );
 
         world.spawn(
@@ -265,6 +311,32 @@ public class LobbyButtonManager implements Listener {
 
     private void clickButton(Player player, int index) {
 
+        player.playSound(
+                player.getLocation(),
+                Sound.BLOCK_STONE_BUTTON_CLICK_ON,
+                0.8f,
+                1.0f
+        );
+
+        plugin.getServer()
+                .getScheduler()
+                .runTaskLater(
+                        plugin,
+                        () -> {
+                            if (!player.isOnline()) {
+                                return;
+                            }
+
+                            player.playSound(
+                                    player.getLocation(),
+                                    Sound.BLOCK_STONE_BUTTON_CLICK_OFF,
+                                    0.6f,
+                                    1.0f
+                            );
+                        },
+                        10L
+                );
+
         // =========================
         // SELECT
         // =========================
@@ -292,21 +364,6 @@ public class LobbyButtonManager implements Listener {
 
                 return;
             }
-
-//            if (plugin.getGameStateManager().isStarted()) {
-//                lobbyDisplayManager.setLoadStatus(
-//                        "Das laufende Game kann nicht gewechselt werden.",
-//                        0xA61B1B
-//                );
-//
-//                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-//                    if (currentGame != null && currentGame.isLoaded()) {
-//                        lobbyDisplayManager.setLoadReady(currentGame.getDisplayName());
-//                    }
-//                }, 40L);
-//
-//                return;
-//            }
 
             if (currentGame != null && currentGame.isLoaded()) {
                 currentGame.unload();
@@ -464,17 +521,9 @@ public class LobbyButtonManager implements Listener {
                 return;
             }
 
-            if (game instanceof MobArmyBattleGame mobArmyBattleGame) {
-                mobArmyBattleGame.getWorldSettingsGUI().open(player);
-                return;
-            }
-
-            plugin.getWorldSettingsGUI().open(player);
+            plugin.getWorldSettingsGUI()
+                    .open(player);
         }
-
-        // =========================
-        // NUR OPTISCHE REAKTION
-        // =========================
 
         TextDisplay display =
                 findButtonDisplay(index);

@@ -1,5 +1,7 @@
 package runi.myddns.challenges.games.MobArmyBattle.Managers.World;
 
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import net.kyori.adventure.text.Component;
@@ -7,6 +9,7 @@ import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -86,56 +89,166 @@ public class WorldManager {
     }
 
     public void resetArenaWorld() {
+
         List<Player> players = getPlayersInWorld(WORLD_ARENA);
 
         for (Player p : players) {
+
             if (!p.isOnline()) continue;
 
-            TeleportManager.teleport(game, p, WORLD_LOBBY);
+            TeleportManager.teleport(
+                    game,
+                    p,
+                    WORLD_LOBBY
+            );
 
-            Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-                if (p.isOnline()) {
-                    p.sendActionBar(lang("world-manager.arena-resetting"));
-                    p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.8f);
-                }
-            }, 10L);
+            Bukkit.getScheduler().runTaskLater(
+                    game.getPlugin(),
+                    () -> {
+
+                        if (!p.isOnline()) return;
+
+                        p.sendActionBar(
+                                lang("world-manager.arena-resetting")
+                        );
+
+                        p.playSound(
+                                p.getLocation(),
+                                Sound.ENTITY_ENDERMAN_TELEPORT,
+                                1.0f,
+                                0.8f
+                        );
+                    },
+                    10L
+            );
         }
 
-        Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-            boolean reset = game.getPlugin().getWorldSourceManager().resetWorld(GameWorldDefinition.MOB_ARMY_ARENA);
+        Bukkit.getScheduler().runTaskLater(
+                game.getPlugin(),
+                () -> {
 
-            if (!reset) {
-                game.getPlugin().getLogger().severe("Arena-Welt konnte nicht zurückgesetzt werden.");
-                endWorldReset();
-                return;
-            }
+                    boolean reset =
+                            game.getPlugin()
+                                    .getWorldSourceManager()
+                                    .resetWorld(
+                                            GameWorldDefinition.MOB_ARMY_ARENA
+                                    );
 
-            Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-                World arena = game.getPlugin().getGameWorldManager().loadWorld(GameWorldDefinition.MOB_ARMY_ARENA);
-                game.getPlugin().getGameWorldManager().preloadSpawnChunks(arena, 2);
+                    if (!reset) {
 
-                game.getWorldSettingsManager().applyAll();
-                game.getArenaConfig().reload();
+                        game.getPlugin()
+                                .getLogger()
+                                .severe(
+                                        "Arena-Welt konnte nicht zurückgesetzt werden."
+                                );
 
-                Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.sendMessage(Component.empty());
-                        player.sendMessage(lang("world-manager.arena-reset-complete"));
-                        player.sendMessage(Component.empty());
-                        player.sendMessage(lang("world-manager.progress-still-loaded-1"));
-                        player.sendMessage(lang("world-manager.progress-still-loaded-2"));
-                        player.sendMessage(lang("world-manager.progress-still-loaded-3"));
-                        player.sendMessage(Component.empty());
+                        showResetTitle(
+                                "MobArmyBattle",
+                                "Arena-Reset fehlgeschlagen!",
+                                NamedTextColor.RED
+                        );
+
+                        endWorldReset();
+                        return;
                     }
 
-                    Bukkit.getConsoleSender().sendMessage("");
-                    Bukkit.getConsoleSender().sendMessage(ConsoleColor.LIME + "        ARENA-Welt neu erstellt" + ConsoleColor.RESET);
-                    Bukkit.getConsoleSender().sendMessage("");
+                    Bukkit.getScheduler().runTaskLater(
+                            game.getPlugin(),
+                            () -> {
 
-                    endWorldReset();
-                }, 40L);
-            }, 40L);
-        }, 60L);
+                                World arena =
+                                        game.getPlugin()
+                                                .getGameWorldManager()
+                                                .loadWorld(
+                                                        GameWorldDefinition.MOB_ARMY_ARENA
+                                                );
+
+                                game.getPlugin()
+                                        .getGameWorldManager()
+                                        .preloadSpawnChunks(
+                                                arena,
+                                                2
+                                        );
+
+                                game.getWorldSettingsManager()
+                                        .applyAll();
+
+                                game.getArenaConfig()
+                                        .reload();
+
+                                Bukkit.getScheduler().runTaskLater(
+                                        game.getPlugin(),
+                                        () -> {
+
+                                            for (Player player
+                                                    : Bukkit.getOnlinePlayers()) {
+
+                                                player.sendMessage(
+                                                        Component.empty()
+                                                );
+
+                                                player.sendMessage(
+                                                        lang(
+                                                                "world-manager.arena-reset-complete"
+                                                        )
+                                                );
+
+                                                player.sendMessage(
+                                                        Component.empty()
+                                                );
+
+                                                player.sendMessage(
+                                                        lang(
+                                                                "world-manager.progress-still-loaded-1"
+                                                        )
+                                                );
+
+                                                player.sendMessage(
+                                                        lang(
+                                                                "world-manager.progress-still-loaded-2"
+                                                        )
+                                                );
+
+                                                player.sendMessage(
+                                                        lang(
+                                                                "world-manager.progress-still-loaded-3"
+                                                        )
+                                                );
+
+                                                player.sendMessage(
+                                                        Component.empty()
+                                                );
+                                            }
+
+                                            Bukkit.getConsoleSender()
+                                                    .sendMessage("");
+
+                                            Bukkit.getConsoleSender()
+                                                    .sendMessage(
+                                                            ConsoleColor.LIME
+                                                                    + "        ARENA-Welt neu erstellt"
+                                                                    + ConsoleColor.RESET
+                                                    );
+
+                                            Bukkit.getConsoleSender()
+                                                    .sendMessage("");
+
+                                            showResetTitle(
+                                                    "MobArmyBattle",
+                                                    "Arena bereit!",
+                                                    NamedTextColor.GREEN
+                                            );
+
+                                            endWorldReset();
+                                        },
+                                        40L
+                                );
+                            },
+                            40L
+                    );
+                },
+                60L
+        );
     }
 
     private void checkTeamWorlds() {
@@ -298,8 +411,17 @@ public class WorldManager {
                         }
                         Bukkit.getConsoleSender().sendMessage("");
                         Bukkit.getConsoleSender().sendMessage(
-                                ConsoleColor.LIME + "        TEAM-Welten neu erstellt" + ConsoleColor.RESET);
+                                ConsoleColor.LIME
+                                        + "        TEAM-Welten neu erstellt"
+                                        + ConsoleColor.RESET
+                        );
                         Bukkit.getConsoleSender().sendMessage("");
+
+                        showResetTitle(
+                                "MobArmyBattle",
+                                "Teamwelten bereit!",
+                                NamedTextColor.GREEN
+                        );
 
                         endWorldReset();
                     }, 60L); // Spieler zurück
@@ -367,6 +489,34 @@ public class WorldManager {
 
     private void endWorldReset() {
         isWorldResetRunning = false;
+    }
+
+    private void showResetTitle(
+            String title,
+            String subtitle,
+            NamedTextColor color
+    ) {
+
+        Title screenTitle =
+                Title.title(
+                        Component.text(
+                                title,
+                                color
+                        ),
+                        Component.text(
+                                subtitle,
+                                color
+                        ),
+                        Title.Times.times(
+                                Duration.ofMillis(500),
+                                Duration.ofSeconds(3),
+                                Duration.ofMillis(800)
+                        )
+                );
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.showTitle(screenTitle);
+        }
     }
 
     private Component lang(String path) {

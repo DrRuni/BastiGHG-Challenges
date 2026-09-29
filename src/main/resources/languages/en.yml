@@ -1,4 +1,4 @@
-file-version: 3
+file-version: 6
 
 commands:
   arena-summary:
@@ -39,7 +39,6 @@ commands:
   resume:
     player-only: "<red>❌ Only players can use this command!"
     op-only: "<red>❌ Only operators may use this command!"
-    usage-resume: "<red>Usage: /resume mobarmy"
     usage-mobarmy: "<red>Usage: /mobarmy resume"
   set-phase:
     op-only: "<red>❌ Only operators may use this command."
@@ -449,14 +448,15 @@ world-settings-gui:
   toggle:
     status: "<gray>Status: %status%"
   difficulty:
-    name: "<blue>Difficulty: <difficulty>"
+    name: "<blue>Difficulty: %difficulty%"
     click: "<gray>Click to change"
-    changed: "<aqua>⚔ <blue>Difficulty changed: <difficulty>"
+    changed: "<aqua>⚔ <blue>Difficulty changed: %difficulty%"
     peaceful: "<white>Peaceful"
     easy: "<green>Easy"
     normal: "<gold>Normal"
     hard: "<red>Hard"
-    ultra-ultra-hardcore: "<dark_purple>Ultra-Ultra-Hardcore"
+    ultra-hardcore: "<light_purple>Ultra Hardcore"
+    ultra-ultra-hardcore: "<dark_purple>Ultra Ultra Hardcore"
     unknown: "<gray>Unknown"
   time:
     name: "<blue>Time: <phase>"
@@ -470,6 +470,10 @@ world-settings-gui:
   back:
     name: "<dark_aqua>Back"
     description: "<gray>Back to the previous menu"
+
+standard-settings:
+  name: "<gold>World Settings"
+  description: "<gray>Opens the general world settings"
 
 bundle-listener:
   drop-denied: "<red>🚫 You cannot drop your team bundle!"
@@ -630,15 +634,33 @@ player-join-listener:
   help-hint: "<gold>Tip:</gold> <gray>Use </gray><aqua>/info</aqua><gray> for an overview of all functions.</gray>"
   help-hover: "<yellow>Click for help</yellow>"
 
-info-command:
-  title: "<gold>MobArmyBattle - Help</gold>"
-  goal: "<yellow>• Goal:</yellow> <gray>Prepare your team and defeat the selected waves.</gray>"
-  teams: "<yellow>• Teams:</yellow> <gray>Red and Blue play in their own team worlds.</gray>"
-  preparation: "<yellow>• Preparation:</yellow> <gray>Gather equipment and prepare for the arena.</gray>"
-  arena: "<yellow>• Arena:</yellow> <gray>Several mob waves are fought in the arena.</gray>"
-  team-join: "<aqua>• /team join red|blue</aqua> <gray>- Join a team</gray>"
-  team-leave: "<aqua>• /team leave</aqua> <gray>- Leave your team</gray>"
-  lobby: "<aqua>• /lobby</aqua> <gray>- return to the central lobby</gray>"
+mobarmy-command:
+  game-not-loaded: "<red>❌ MobArmyBattle must be loaded first."
+
+  commands:
+    title: "<gold>══════ MobArmyBattle Commands ══════"
+    info: "<yellow>/mobarmy info <gray>- Game information and help"
+    resume: "<yellow>/mobarmy resume <gray>- Resume the event"
+    gamesettings: "<yellow>/mobarmy gamesettings <gray>- Open game settings"
+
+    team: "<yellow>/team join <red | 
+    blue> <gray>- Join a team  |  <yellow>/team leave"
+    mobstatus: "<yellow>/mobstatus <gray>- Show saved mobs for your team"
+    arenasummary: "<yellow>/arenasummary <gray>- Show arena results"
+    reset: "<yellow>/mobarmy reset [world | arena | teamwelt] <gray>- Reset functions"
+    setphase: "<yellow>/setphase <phase> <gray>- Set event phase <dark_gray>(OP)"
+
+  info:
+    title: "<gold>══════ MobArmyBattle ══════"
+    goal: "<gray>Goal: Defeat the enemy mob waves and win the arena battle."
+    teams: "<gray>Two teams compete against each other: <red>Red <gray>and <blue>Blue<gray>."
+    preparation: "<gray>In the team world, collect equipment and defeat mobs for later waves."
+    arena: "<gray>Then create waves for the enemy and fight in the arena."
+    commands-title: "<gold>Important commands:"
+    team-command: "<yellow>/team join <red | blue> <gray>- Select your team"
+    status-command: "<yellow>/mobstatus <gray>- Show saved team mobs"
+    settings-command: "<yellow>/mobarmy gamesettings <gray>- Open settings"
+    help-command: "<yellow>/mobarmy <gray>- Show all commands"
 
 lobby-display:
   waiting-for-load: "WAITING FOR LOAD"
