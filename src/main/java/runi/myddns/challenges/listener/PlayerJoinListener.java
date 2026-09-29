@@ -15,7 +15,7 @@ public class PlayerJoinListener implements Listener {
     private final ChallengeMain plugin;
 
     private static final String RESOURCE_PACK_URL =
-            "https://github.com/DrRuni/BastiGHG-Challenges/releases/download/V0.1/BastiGHG-Challenges-Fan-Projekt.zip";
+            "https://github.com/DrRuni/BastiGHG-Challenges/releases/download/V0.9.0/BastiGHG-Challenges-Fan-Projekt.zip";
 
     private static final String RESOURCE_PACK_SHA1 =
             "5EBA6902268830FC97376DE75CAF300D1DF5663E";
