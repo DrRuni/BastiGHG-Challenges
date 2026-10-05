@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.utils.ConsoleColor;
@@ -30,6 +31,7 @@ public class LevelBorderGame implements ChallengeGame {
     private final ChallengeMain plugin;
     private final GameWorldSettingsManager worldSettingsManager;
     private final List<Listener> registeredListeners = new ArrayList<>();
+    private final List<BukkitTask> gameTasks = new ArrayList<>();
 
     private boolean loaded = false;
 
@@ -90,10 +92,12 @@ public class LevelBorderGame implements ChallengeGame {
 
         plugin.getLobbyDisplayManager().clearLoadConsole();
         plugin.getLobbyDisplayManager().setLoadStatus("LevelBorder wird geladen...", 0xC47A6B);
-        plugin.getServer().getScheduler().runTaskLater(
-                plugin,
-                this::runLoadSequence,
-                2L
+        gameTasks.add(
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        this::runLoadSequence,
+                        2L
+                )
         );
     }
 
@@ -213,6 +217,21 @@ public class LevelBorderGame implements ChallengeGame {
         for (Listener listener : registeredListeners) HandlerList.unregisterAll(listener);
         registeredListeners.clear();
 
+        for (BukkitTask task : gameTasks) {
+            task.cancel();
+        }
+        gameTasks.clear();
+
+        if (plugin.getCommand("levelborder") != null) {
+            plugin.getCommand("levelborder").setExecutor(null);
+            plugin.getCommand("levelborder").setTabCompleter(null);
+        }
+
+        if (plugin.getCommand("lbscore") != null) {
+            plugin.getCommand("lbscore").setExecutor(null);
+            plugin.getCommand("lbscore").setTabCompleter(null);
+        }
+
         plugin.getGameWorldManager().unloadGameWorlds(getId(), true);
 
         mobSpawnManager = null;
@@ -250,7 +269,13 @@ public class LevelBorderGame implements ChallengeGame {
             return;
         }
 
-        plugin.getServer().getScheduler().runTaskLater(plugin, next, 15L);
+        gameTasks.add(
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        next,
+                        15L
+                )
+        );
     }
 
     @Override

@@ -42,7 +42,6 @@ public class ArenaBuildProtectionManager implements Listener {
 
     public ArenaBuildProtectionManager(MobArmyBattleGame game) {
         this.game = game;
-        Bukkit.getPluginManager().registerEvents(this, game.getPlugin());
     }
 
     public void loadSpawnProtectionAreas() {
@@ -212,7 +211,6 @@ public class ArenaBuildProtectionManager implements Listener {
                 game.getArenaConfig().getActiveArena();
 
         if (arena == null) {
-            e.setCancelled(true);
             return;
         }
 
@@ -294,7 +292,6 @@ public class ArenaBuildProtectionManager implements Listener {
                 game.getArenaConfig().getActiveArena();
 
         if (arena == null) {
-            e.setCancelled(true);
             return;
         }
 

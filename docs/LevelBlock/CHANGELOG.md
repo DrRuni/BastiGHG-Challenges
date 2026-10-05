@@ -1,5 +1,24 @@
 # LevelBlock Changelog
 
+## v0.9 Beta
+
+### Added
+
+- Multiworld support for Overworld, Nether and End
+- LevelBlock progression in Nether and End
+- Custom Nether portal handling
+- Portal return to already unlocked Overworld areas
+
+### Changed
+
+- Improved border updates after portal travel and height changes
+- Improved multiworld data handling
+
+### Fixed
+
+- Fixed portals sending players to the normal Nether
+- Fixed border display not updating correctly after dimension changes
+
 ## v0.8
 
 ### Added

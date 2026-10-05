@@ -1,4 +1,4 @@
-file-version: 6
+file-version: 7
 
 commands:
   arena-summary:
@@ -552,7 +552,7 @@ event-manager:
     teleported: "<green>🚀 You were teleported to the wave configuration!"
     message: "<aqua>  ⚔ Prepare the waves for your opponent."
     title: "Preparation"
-    subtitle: "<dark_aqua>Create the waves and prepare for battle."
+    subtitle: "<dark_aqua>Prepare for battle."
   reset:
     complete: "<dark_red>   MobArmyBattle has been completely reset!"
 

@@ -47,10 +47,17 @@ public class MoveListener implements Listener {
                         || from.getBlockZ() != to.getBlockZ();
 
         if (changedBlock) {
+
             border.getDisplayManager().updatePlayerView(
                     player,
                     to
             );
+
+            if (from.getBlockY() != to.getBlockY()) {
+
+                border.getLineManager()
+                        .refreshAll();
+            }
         }
 
         if (from.getBlockX() == to.getBlockX()

@@ -69,6 +69,81 @@ public class BorderManager {
         return true;
     }
 
+    public void initializePortalArea(
+            Location location
+    ) {
+
+        if (location == null
+                || location.getWorld() == null) {
+
+            return;
+        }
+
+        World world =
+                location.getWorld();
+
+        if (isInitialized(world)) {
+            return;
+        }
+
+        int centerX =
+                location.getBlockX();
+
+        int centerZ =
+                location.getBlockZ();
+
+        /*
+         * Startpunkt dieser Dimension speichern.
+         */
+        dataManager.saveStartLocation(
+                world,
+                location
+        );
+
+        /*
+         * 3x3 Bereich um das Portal kostenlos freischalten.
+         */
+        for (
+                int x = centerX - 1;
+                x <= centerX + 1;
+                x++
+        ) {
+
+            for (
+                    int z = centerZ - 1;
+                    z <= centerZ + 1;
+                    z++
+            ) {
+
+                dataManager.saveUnlockedBlock(
+                        world,
+                        x,
+                        z
+                );
+            }
+        }
+
+        /*
+         * Border-Anzeige neu aufbauen.
+         */
+        lineManager.reset();
+
+        for (
+                LevelBlockPos pos :
+                dataManager.getUnlockedBlocks(world)
+        ) {
+
+            lineManager.rebuildColumn(
+                    world,
+                    pos.x(),
+                    pos.z()
+            );
+        }
+
+        displayManager.refreshAll();
+        lineManager.refreshAll();
+    }
+
     public boolean isInside(
             Location location
     ) {

@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.game.ChallengeGame;
@@ -28,6 +29,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     private final ChallengeMain plugin;
     private final LobbyDisplayManager lobbyDisplayManager;
     private final List<Listener> registeredListeners = new ArrayList<>();
+    private final List<BukkitTask> gameTasks = new ArrayList<>();
 
     private WorldManager worldManager;
     public TimerManager timerManager;
@@ -134,10 +136,12 @@ public class MobArmyBattleGame implements ChallengeGame {
 
         lobbyDisplayManager.clearLoadConsole();
         lobbyDisplayManager.setLoadStatus("MobArmyBattle wird geladen...", 0xC47A6B);
-        plugin.getServer().getScheduler().runTaskLater(
-                plugin,
-                this::runLoadSequence,
-                2L
+        gameTasks.add(
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        this::runLoadSequence,
+                        2L
+                )
         );
     }
 
@@ -251,6 +255,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         registerListener(playerListener);
         registerListener(new PlayerRespawnListener(this));
         registerListener(new PortalListener(this));
+        registerListener(arenaBuildProtectionManager);
         registerListener(blockRandomizerManager);
         registerListener(mobSaveListener);
         registerListener(timerManager);
@@ -336,6 +341,11 @@ public class MobArmyBattleGame implements ChallengeGame {
 
         registeredListeners.clear();
 
+        for (BukkitTask task : gameTasks) {
+            task.cancel();
+        }
+        gameTasks.clear();
+
         if (worldManager != null) worldManager.unloadWorlds();
 
         loaded = false;
@@ -358,17 +368,19 @@ public class MobArmyBattleGame implements ChallengeGame {
         worldSettingsManager.applyPlayerSettings(player);
         playerListener.showWelcomeSequence(player);
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (!player.isOnline()) return;
+        gameTasks.add(
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (!player.isOnline()) return;
 
-            timerManager.ensureBossBarExists();
-            timerManager.addPlayerToBossBar(player);
-            timerManager.updatePauseState();
+                    timerManager.ensureBossBarExists();
+                    timerManager.addPlayerToBossBar(player);
+                    timerManager.updatePauseState();
 
-            teamScoreboardManager.updateBoard();
-            scoreboardSwitcher.switchToTeam(player);
+                    teamScoreboardManager.updateBoard();
+                    scoreboardSwitcher.switchToTeam(player);
 
-        }, 20L * 7);
+                }, 20L * 7)
+        );
     }
 
     @Override
@@ -390,18 +402,20 @@ public class MobArmyBattleGame implements ChallengeGame {
     }
 
     private void scheduleArenaReload() {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            try {
-                arenaConfig.reload();
-                arenaBuildProtectionManager.loadSpawnProtectionAreas();
-            } catch (Exception ex) {
-                plugin.getLogger().log(
-                        java.util.logging.Level.SEVERE,
-                        "Failed to reload build protection.",
-                        ex
-                );
-            }
-        }, 20L);
+        gameTasks.add(
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    try {
+                        arenaConfig.reload();
+                        arenaBuildProtectionManager.loadSpawnProtectionAreas();
+                    } catch (Exception ex) {
+                        plugin.getLogger().log(
+                                java.util.logging.Level.SEVERE,
+                                "Failed to reload build protection.",
+                                ex
+                        );
+                    }
+                }, 20L)
+        );
     }
 
     private void registerCommand(String name, org.bukkit.command.CommandExecutor executor, org.bukkit.command.TabCompleter completer) {
@@ -435,7 +449,13 @@ public class MobArmyBattleGame implements ChallengeGame {
             return;
         }
 
-        plugin.getServer().getScheduler().runTaskLater(plugin, next, 15L);
+        gameTasks.add(
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        next,
+                        15L
+                )
+        );
     }
 
     private void finishLoading() {
@@ -487,24 +507,28 @@ public class MobArmyBattleGame implements ChallengeGame {
             worldSettingsManager.applyPlayerSettings(player);
             playerListener.showWelcomeSequence(player);
 
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (!player.isOnline()) return;
+            gameTasks.add(
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        if (!player.isOnline()) return;
 
-                timerManager.ensureBossBarExists();
-                timerManager.addPlayerToBossBar(player);
-                timerManager.updatePauseState();
+                        timerManager.ensureBossBarExists();
+                        timerManager.addPlayerToBossBar(player);
+                        timerManager.updatePauseState();
 
-                teamScoreboardManager.updateBoard();
-                scoreboardSwitcher.switchToTeam(player);
+                        teamScoreboardManager.updateBoard();
+                        scoreboardSwitcher.switchToTeam(player);
 
-            }, 20L * 7);
+                    }, 20L * 7)
+            );
         }
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (worldManager != null) {
-                worldManager.preloadTeamWorlds();
-            }
-        }, 80L);
+        gameTasks.add(
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (worldManager != null) {
+                        worldManager.preloadTeamWorlds();
+                    }
+                }, 80L)
+        );
     }
 
     @Override

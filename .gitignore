@@ -1,6 +1,6 @@
 # Interne Projektdateien
-src/main/resources/PLAY.md
-src/main/resources/BUG.md
+PLAN.md
+BUGs.md
 
 # User-specific stuff
 .idea/

@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.scheduler.BukkitTask;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.game.ChallengeGame;
@@ -16,12 +17,14 @@ import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.LevelBlock.Listeners.BorderBlockListener;
 import runi.myddns.challenges.games.LevelBlock.Listeners.PlayerListener;
+import runi.myddns.challenges.games.LevelBlock.Listeners.PortalListener;
 import runi.myddns.challenges.games.LevelBlock.Manager.BorderManager;
 import runi.myddns.challenges.games.LevelBlock.Commands.LevelBlockCommand;
 import runi.myddns.challenges.games.LevelBlock.Listeners.MoveListener;
 import runi.myddns.challenges.games.LevelBlock.Manager.LevelBlockGameManager;
 import runi.myddns.challenges.games.LevelBlock.Manager.TimerManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
@@ -40,9 +43,11 @@ public class LevelBlockGame implements ChallengeGame {
     private PlayerListener playerListener;
     private final GameTimerManager gameTimerManager;
     private final TimerManager timerManager;
+    private PortalListener portalListener;
 
     private boolean loaded;
     private boolean loading;
+    private final List<BukkitTask> gameTasks = new ArrayList<>();
 
     public LevelBlockGame(ChallengeMain plugin) {
         this.plugin = plugin;
@@ -103,10 +108,12 @@ public class LevelBlockGame implements ChallengeGame {
                 LOAD_RED
         );
 
-        plugin.getServer().getScheduler().runTaskLater(
-                plugin,
-                this::runLoadSequence,
-                2L
+        gameTasks.add(
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        this::runLoadSequence,
+                        2L
+                )
         );
     }
 
@@ -160,10 +167,12 @@ public class LevelBlockGame implements ChallengeGame {
                                                                 "Listener registrieren...",
                                                                 () -> {
                                                                     moveListener = new MoveListener(this);
+                                                                    portalListener = new PortalListener(this);
                                                                     borderBlockListener = new BorderBlockListener(this);
                                                                     playerListener = new PlayerListener(this);
 
                                                                     Bukkit.getPluginManager().registerEvents(moveListener, plugin);
+                                                                    Bukkit.getPluginManager().registerEvents(portalListener, plugin);
                                                                     Bukkit.getPluginManager().registerEvents(borderBlockListener, plugin);
                                                                     Bukkit.getPluginManager().registerEvents(playerListener, plugin);
                                                                 },
@@ -209,12 +218,19 @@ public class LevelBlockGame implements ChallengeGame {
         borderManager.stopRenderer();
 
         if (moveListener != null) HandlerList.unregisterAll(moveListener);
+        if (portalListener != null) HandlerList.unregisterAll(portalListener);
         if (borderBlockListener != null) HandlerList.unregisterAll(borderBlockListener);
         if (playerListener != null) HandlerList.unregisterAll(playerListener);
+
+        for (BukkitTask task : gameTasks) {
+            task.cancel();
+        }
+        gameTasks.clear();
 
         gameTimerManager.pause();
         timerManager.stop();
         moveListener = null;
+        portalListener = null;
         borderBlockListener = null;
         playerListener = null;
 
@@ -308,10 +324,12 @@ public class LevelBlockGame implements ChallengeGame {
             return;
         }
 
-        plugin.getServer().getScheduler().runTaskLater(
-                plugin,
-                next,
-                15L
+        gameTasks.add(
+                plugin.getServer().getScheduler().runTaskLater(
+                        plugin,
+                        next,
+                        15L
+                )
         );
     }
 
@@ -339,7 +357,7 @@ public class LevelBlockGame implements ChallengeGame {
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(
                 ConsoleColor.DARK_GOLDEN_LIME
-                        + "  ═══════════════  LevelBlock V0.8 ═══════════════"
+                        + "  ═══════════════  LevelBlock V0.9 BETA ═══════════════"
                         + ConsoleColor.RESET
         );
         Bukkit.getConsoleSender().sendMessage(
@@ -409,27 +427,29 @@ public class LevelBlockGame implements ChallengeGame {
             gameTimerManager.resume();
         }
 
-        plugin.getServer()
-                .getScheduler()
-                .runTaskLater(
-                        plugin,
-                        () -> {
+        gameTasks.add(
+                plugin.getServer()
+                        .getScheduler()
+                        .runTaskLater(
+                                plugin,
+                                () -> {
 
-                            borderManager
-                                    .getDisplayManager()
-                                    .updatePlayerView(
-                                            player,
-                                            player.getLocation()
-                                    );
+                                    borderManager
+                                            .getDisplayManager()
+                                            .updatePlayerView(
+                                                    player,
+                                                    player.getLocation()
+                                            );
 
-                            borderManager
-                                    .getLineManager()
-                                    .updatePlayerView(
-                                            player
-                                    );
-                        },
-                        1L
-                );
+                                    borderManager
+                                            .getLineManager()
+                                            .updatePlayerView(
+                                                    player
+                                            );
+                                },
+                                1L
+                        )
+        );
     }
 
     @Override

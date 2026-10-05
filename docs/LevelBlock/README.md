@@ -8,7 +8,7 @@ At the beginning, only a very small area is available. Players can spend their e
 
 ## Current Version
 
-`v0.8 Beta`
+`v0.9 Beta`
 
 ## Features
 

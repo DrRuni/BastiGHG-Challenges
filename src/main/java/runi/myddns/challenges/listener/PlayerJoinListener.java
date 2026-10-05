@@ -6,14 +6,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class PlayerJoinListener implements Listener {
 
     private final ChallengeMain plugin;
-
     private static final String RESOURCE_PACK_URL =
             "https://github.com/DrRuni/BastiGHG-Challenges/releases/download/V0.9.0/BastiGHG-Challenges-Fan-Projekt.zip";
 
@@ -109,5 +115,22 @@ public class PlayerJoinListener implements Listener {
             );
 
         }, 20L);
+    }
+
+    @EventHandler
+    public void onResourcePackStatus(PlayerResourcePackStatusEvent event) {
+
+        plugin.getLogger().info(
+                "RESOURCE PACK STATUS: "
+                        + event.getPlayer().getName()
+                        + " -> "
+                        + event.getStatus()
+        );
+
+        if (event.getStatus()
+                == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
+
+            plugin.getLobbyDisplayManager().refreshLogo();
+        }
     }
 }

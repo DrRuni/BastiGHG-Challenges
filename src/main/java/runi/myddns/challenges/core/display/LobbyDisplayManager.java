@@ -7,12 +7,8 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import runi.myddns.challenges.ChallengeMain;
-import org.bukkit.entity.Interaction;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -30,6 +26,7 @@ public class LobbyDisplayManager {
     private static final String PROTECTED_TAG = "challenge_protected";
     private static final String LOAD_CONSOLE_TAG = "challenge_lobby_load_console";
     private static final String LOAD_TITLE_TAG = "challenge_lobby_load_title";
+    private static final String VERSION_TAG = "challenge_lobby_version";
 
     private static final double START_X = -6.0;
     private static final double START_Y = 67.0;
@@ -39,6 +36,7 @@ public class LobbyDisplayManager {
     private static final float HEIGHT = 6.0f;
 
     private static final double TEXT_CENTER_X = START_X + WIDTH / 2.0;
+    private static final double LOGO_X = TEXT_CENTER_X;
 
     private static final float OUTER_FRAME = 0.16f;
     private static final float INNER_FRAME = 0.06f;
@@ -59,6 +57,7 @@ public class LobbyDisplayManager {
     private TextDisplay gameNameDisplay;
     private TextDisplay loadConsoleDisplay;
     private TextDisplay loadTitleDisplay;
+    private TextDisplay versionDisplay;
 
     public LobbyDisplayManager(ChallengeMain plugin) {
         this.plugin = plugin;
@@ -120,6 +119,21 @@ public class LobbyDisplayManager {
 
             protectDisplayEntities(world);
 
+            titleDisplay.teleport(
+                    new Location(
+                            world,
+                            LOGO_X,
+                            START_Y + 4.20,
+                            START_Z + TEXT_Z_OFFSET,
+                            180.0f,
+                            0.0f
+                    )
+            );
+
+            titleDisplay.text(
+                    Component.text("\uE030")
+            );
+
             return;
         }
 
@@ -130,6 +144,7 @@ public class LobbyDisplayManager {
         createInnerFrame(world);
         createAccentElements(world);
         createTexts(world);
+        createVersion(world);
         createLoadTitle(world);
         createLoadConsole(world);
 
@@ -148,6 +163,24 @@ public class LobbyDisplayManager {
         );
 
         loadTitleDisplay.addScoreboardTag(LOAD_TITLE_TAG);
+    }
+
+    private void createVersion(World world) {
+
+        versionDisplay = createText(
+                world,
+                TEXT_CENTER_X,
+                START_Y + 3.55,
+                START_Z + TEXT_Z_OFFSET,
+                0.55f,
+                Component.text(
+                        plugin.getDisplayVersion(),
+                        TextColor.color(0x888888)
+                ),
+                500
+        );
+
+        versionDisplay.addScoreboardTag(VERSION_TAG);
     }
 
     public void setLoadUnloaded(String gameName) {
@@ -373,17 +406,19 @@ public class LobbyDisplayManager {
 
     private void createTexts(World world) {
 
-        Component title = Component.text("\uE030");
+        Component title = Component.empty();
 
         titleDisplay = createText(
                 world,
-                TEXT_CENTER_X + 0.0,
+                LOGO_X,
                 START_Y + 4.20,
                 START_Z + TEXT_Z_OFFSET,
                 2.00f,
                 title,
                 1000
         );
+
+        titleDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
 
         titleDisplay.addScoreboardTag(
                 TITLE_TAG
@@ -778,6 +813,27 @@ public class LobbyDisplayManager {
                 );
             }
         }
+    }
+
+    public void refreshLogo() {
+
+        if (titleDisplay == null || !titleDisplay.isValid()) {
+            return;
+        }
+
+        titleDisplay.text(Component.empty());
+
+        plugin.getServer().getScheduler().runTaskLater(
+                plugin,
+                () -> {
+                    if (titleDisplay == null || !titleDisplay.isValid()) {
+                        return;
+                    }
+
+                    titleDisplay.text(Component.text("\uE030"));
+                },
+                2L
+        );
     }
 
     public void removeAllDisplayEntities() {
