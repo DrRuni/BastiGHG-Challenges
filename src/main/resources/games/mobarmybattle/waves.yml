@@ -1,5 +1,5 @@
 # Speicherort für Wavekonfiguration
-file-version: 3
+file-version: 1
 waves:
   Blau:
     wave0: []

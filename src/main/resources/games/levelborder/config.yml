@@ -1,5 +1,5 @@
 # Levelborder Config
-file-version: 3
+file-version: 1
 
 mob-spawning:
   enabled: true

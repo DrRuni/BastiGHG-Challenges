@@ -1,5 +1,5 @@
 # Lobby Spawn
-file-version: 2
+file-version: 1
 lobbyspawn:
   world: world_mobarmy_lobby
   min:
