@@ -37,7 +37,7 @@ Current internal version: `v1.1`
 
 The playable world expands block by block as the players progress.
 
-Current internal version: `v0.8`
+Current internal version: `v0.9`
 
 
 ## Commands
