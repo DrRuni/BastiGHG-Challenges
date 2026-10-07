@@ -1,5 +1,5 @@
 name: BastiGHG-Challenges
-version: '0.9.0 BETA'
+version: '0.9.1 BETA'
 
 main: runi.myddns.challenges.ChallengeMain
 api-version: '26.2'
@@ -24,6 +24,10 @@ commands:
     description: Opens the settings for the currently loaded game
     usage: /gamesettings
     aliases: [ settings, options ]
+
+  info:
+    description: Zeigt Informationen zu einem Challenge-Game
+    usage: /info [game]
 
   resetvote:
     description: Reset-Abstimmung

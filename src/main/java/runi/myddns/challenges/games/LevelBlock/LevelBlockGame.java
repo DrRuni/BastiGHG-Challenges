@@ -341,9 +341,8 @@ public class LevelBlockGame implements ChallengeGame {
 
         plugin.getGameStateManager().setLoaded(true);
         timerManager.start();
-        lobbyDisplayManager.setLoadReady(
-                getDisplayName()
-        );
+        lobbyDisplayManager.setLoadReady(getDisplayName());
+        lobbyDisplayManager.sendGameInfoHint(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(

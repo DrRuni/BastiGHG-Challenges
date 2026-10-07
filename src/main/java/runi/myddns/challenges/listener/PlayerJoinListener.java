@@ -2,6 +2,7 @@ package runi.myddns.challenges.listener;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +29,29 @@ public class PlayerJoinListener implements Listener {
 
     public PlayerJoinListener(ChallengeMain plugin) {
         this.plugin = plugin;
+    }
+
+    private void sendWelcome(Player player) {
+
+        MiniMessage mm = MiniMessage.miniMessage();
+
+        Component message = mm.deserialize(
+                "\n" +
+                        "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>\n" +
+                        "<bold><gradient:#FF5ACD:#8B5CFF:#20D5FF>       BastiGHG's Challenges</gradient></bold>\n" +
+                        "<#C38CFF>              Fan Project</#C38CFF>\n" +
+                        "\n" +
+                        "<gray>Willkommen auf dem </gray>" +
+                        "<bold><gradient:#FF4FD8:#8C63FF:#22D3FF>Challenge Network</gradient></bold><gray>!</gray>\n" +
+                        "\n" +
+                        "<gray>Wähle in der Lobby eine Challenge aus,</gray>\n" +
+                        "<gray>lade sie und starte dein Game.</gray>\n" +
+                        "\n" +
+                        "<#22D3FF>Viel Spaß!</#22D3FF>\n" +
+                        "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>\n"
+        );
+
+        player.sendMessage(message);
     }
 
     @EventHandler
@@ -82,6 +106,16 @@ public class PlayerJoinListener implements Listener {
 
             }, 80L);
         }
+
+        Bukkit.getScheduler().runTaskLater(
+                plugin,
+                () -> {
+                    if (player.isOnline()) {
+                        sendWelcome(player);
+                    }
+                },
+                40L
+        );
     }
 
     private void offerResourcePack(Player player) {

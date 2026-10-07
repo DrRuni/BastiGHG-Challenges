@@ -75,8 +75,7 @@ public class LobbyButtonManager implements Listener {
             "SELECT",
             "LOAD",
             "START",
-            "SETTINGS",
-            "WORLDSETTINGS"
+            "SETTINGS"
     };
 
     private record ButtonPosition(
@@ -135,15 +134,6 @@ public class LobbyButtonManager implements Listener {
                         180.0f,
                         0.0f
                 ),
-
-                // WORLDSETTINGS
-                new ButtonPosition(
-                        START_X + 4.00,
-                        START_Y - 1.00,
-                        START_Z - 1.01,
-                        180.0f,
-                        0.0f
-                )
         };
 
         for (int i = 0; i < BUTTON_NAMES.length; i++) {
@@ -473,56 +463,16 @@ public class LobbyButtonManager implements Listener {
                 return;
             }
 
-            if (game.getId().equalsIgnoreCase("levelborder")) {
-                lobbyDisplayManager.setLoadStatus(
-                        "LevelBorder-Einstellungen sind derzeit noch nicht verfügbar.",
-                        0xA61B1B
-                );
-
-                plugin.getServer().getScheduler().runTaskLater(
-                        plugin,
-                        () -> {
-                            if (game.isLoaded()) {
-                                lobbyDisplayManager.setLoadReady(game.getDisplayName());
-                            }
-                        },
-                        40L
-                );
-
-                return;
-            }
-
             if (game instanceof MobArmyBattleGame mobArmyBattleGame) {
                 mobArmyBattleGame.getOptionenGUI().open(player);
-            }
-        }
-
-        // =========================
-        // WORLDSETTINGS
-        // =========================
-
-        if (index == 4) {
-
-            ChallengeGame game = gameManager.getSelectedGame();
-
-            if (game == null) {
-                lobbyDisplayManager.setLoadStatus(
-                        plugin.getLanguageManager().get("lobby-display.no-game-selected"),
-                        0xFF5555
-                );
                 return;
             }
 
-            if (!game.isLoaded()) {
-                lobbyDisplayManager.setLoadStatus(
-                        "Bitte zuerst ein Game laden.",
-                        0xFFAA00
-                );
-                return;
-            }
+            if (game.getId().equalsIgnoreCase("levelborder")
+                    || game.getId().equalsIgnoreCase("levelblock")) {
 
-            plugin.getWorldSettingsGUI()
-                    .open(player);
+                plugin.getWorldSettingsGUI().open(player);
+            }
         }
 
         TextDisplay display =

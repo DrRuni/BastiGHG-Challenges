@@ -199,37 +199,25 @@ public class MobArmyBattleGame implements ChallengeGame {
         arenaManager = new ArenaEventManager(this);
         teamManager = new TeamManager(this);
         arenaBuildProtectionManager = new ArenaBuildProtectionManager(this);
-        arenaBuildProtectionManager.loadSpawnProtectionAreas();
-
         mobSaveManager = new MobSaveManager(this, teamManager);
         waveManager = new WaveManager(mobSaveManager);
-
         waveStorage = new WaveStorage(plugin, getDataFolder(), waveManager);
-
         scoreboardManager = arenaManager.getScoreboardManager();
         waveManager.setScoreboardManager(scoreboardManager);
-
         eventResume = new ResumeManager(this);
         timerManager = new TimerManager(this);
         mobSaveManager.setTimerManager(timerManager);
-
         mobSaveListener = new MobSaveListener(plugin, mobSaveManager);
-
         bundleManager = new BundleManager(this);
         bundleManager.setTeamManager(teamManager);
-
         eventManager = new EventManager(this, mobSaveManager);
-
         portalManager = new PortalManager(this);
         portalManager.loadAllPortals();
-
         teamScoreboardManager = new TeamScoreboardManager(this);
         scoreboardSwitcher = new ScoreboardSwitcher(plugin, teamScoreboardManager, scoreboardManager);
-
         arenaCompassManager = new ArenaCompassManager(this);
         teamEquipmentManager = new TeamEquipmentManager(this);
         chestRandomizerManager = new ChestRandomizerManager(this, blockRandomizerManager);
-
         optionenGUI = new OptionsGUI(this, plugin.getLanguageManager());
         timerGUI = new TimerGUI(this, timerManager);
         eventSettingsGUI = new SetupGUI(this);
@@ -406,7 +394,6 @@ public class MobArmyBattleGame implements ChallengeGame {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     try {
                         arenaConfig.reload();
-                        arenaBuildProtectionManager.loadSpawnProtectionAreas();
                     } catch (Exception ex) {
                         plugin.getLogger().log(
                                 java.util.logging.Level.SEVERE,
@@ -464,6 +451,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         plugin.getGameStateManager().setLoaded(true);
 
         lobbyDisplayManager.setLoadReady(getDisplayName());
+        lobbyDisplayManager.sendGameInfoHint(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 1.4f);

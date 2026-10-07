@@ -3,15 +3,14 @@ package runi.myddns.challenges.core.display;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import runi.myddns.challenges.ChallengeMain;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import runi.myddns.challenges.core.game.ChallengeGame;
 
 import static runi.myddns.challenges.core.utils.ColorUtil.gradientText;
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
@@ -100,6 +99,7 @@ public class LobbyDisplayManager {
                 );
 
         loadTitleDisplay = findTextDisplay(world, LOAD_TITLE_TAG);
+        versionDisplay = findTextDisplay(world, VERSION_TAG);
 
         if (titleDisplay != null
                 && gameLabelDisplay != null
@@ -117,6 +117,10 @@ public class LobbyDisplayManager {
                 createLoadConsole(world);
             }
 
+            if (versionDisplay == null) {
+                createVersion(world);
+            }
+
             protectDisplayEntities(world);
 
             titleDisplay.teleport(
@@ -131,7 +135,7 @@ public class LobbyDisplayManager {
             );
 
             titleDisplay.text(
-                    Component.text("\uE030")
+                    Component.empty()
             );
 
             return;
@@ -830,7 +834,9 @@ public class LobbyDisplayManager {
                         return;
                     }
 
-                    titleDisplay.text(Component.text("\uE030"));
+                    titleDisplay.text(
+                            Component.text("\uE030")
+                    );
                 },
                 2L
         );
@@ -847,7 +853,8 @@ public class LobbyDisplayManager {
                                 || entity.getScoreboardTags().contains(GAME_NAME_TAG)
                                 || entity.getScoreboardTags().contains(LOAD_CONSOLE_TAG)
                                 || entity.getScoreboardTags().contains(INTERACTION_TAG)
-                                || entity.getScoreboardTags().contains(LOAD_TITLE_TAG);
+                                || entity.getScoreboardTags().contains(LOAD_TITLE_TAG)
+                                || entity.getScoreboardTags().contains(VERSION_TAG);
 
                 boolean lobbyButton =
                         entity.getScoreboardTags().contains("challenge_lobby_button_visual")
@@ -865,5 +872,75 @@ public class LobbyDisplayManager {
         gameNameDisplay = null;
         loadConsoleDisplay = null;
         loadTitleDisplay = null;
+    }
+
+    public void sendGameInfoHint(ChallengeGame game) {
+
+        Component gameName;
+
+        if (game.getId().equalsIgnoreCase("mobarmybattle")) {
+
+            gameName = gradientText(
+                    game.getDisplayName().toUpperCase(),
+                    BRIGHT_RED,
+                    BLUE
+            );
+
+        } else if (game.getId().equalsIgnoreCase("levelborder")) {
+
+            gameName = gradientText(
+                    game.getDisplayName().toUpperCase(),
+                    LIGHT_BLUE,
+                    DEEP_BLUE
+            );
+
+        } else if (game.getId().equalsIgnoreCase("levelblock")) {
+
+            gameName = gradientText(
+                    game.getDisplayName().toUpperCase(),
+                    LIME,
+                    DARK_GREEN
+            );
+
+        } else {
+
+            gameName = Component.text(
+                    game.getDisplayName().toUpperCase()
+            );
+        }
+
+        Component infoButton =
+                Component.text(
+                                "[INFO]",
+                                TextColor.color(0x20D5FF)
+                        )
+                        .decorate(TextDecoration.BOLD)
+                        .clickEvent(
+                                net.kyori.adventure.text.event.ClickEvent.runCommand("/info")
+                        )
+                        .hoverEvent(
+                                Component.text(
+                                        "Game-Info öffnen",
+                                        TextColor.color(0xCCCCCC)
+                                )
+                        );
+
+        Component message =
+                Component.text(
+                                "✔ ",
+                                TextColor.color(0x00FF66)
+                        )
+                        .append(gameName)
+                        .append(
+                                Component.text(
+                                        " ist geladen. ",
+                                        TextColor.color(0xDDDDDD)
+                                )
+                        )
+                        .append(infoButton);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(message);
+        }
     }
 }

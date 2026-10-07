@@ -3,17 +3,21 @@ package runi.myddns.challenges;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import runi.myddns.challenges.core.commands.GameSettingsCommand;
+import runi.myddns.challenges.core.commands.InfoCommand;
 import runi.myddns.challenges.core.commands.LanguageCommand;
 import runi.myddns.challenges.core.commands.LobbyCommand;
 import runi.myddns.challenges.core.display.LobbyButtonManager;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.files.PluginFileManager;
 import runi.myddns.challenges.core.game.*;
+import runi.myddns.challenges.core.gui.GameInfoGUI;
 import runi.myddns.challenges.core.gui.LanguageSelectionGUI;
 import runi.myddns.challenges.core.gui.WorldSettingsGUI;
+import runi.myddns.challenges.core.info.GameInfoManager;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.player.PlayerGameDataListener;
 import runi.myddns.challenges.core.player.PlayerGameDataManager;
+import runi.myddns.challenges.core.protection.WorldProtectionManager;
 import runi.myddns.challenges.core.reset.GameResetManager;
 import runi.myddns.challenges.core.reset.ResetVoteCommand;
 import runi.myddns.challenges.core.reset.ResetVoteManager;
@@ -44,6 +48,9 @@ public final class ChallengeMain extends JavaPlugin {
     private WorldSettingsGUI worldSettingsGUI;
     private GameResetManager gameResetManager;
     private ResetVoteManager resetVoteManager;
+    private GameInfoGUI gameInfoGUI;
+    private GameInfoManager gameInfoManager;
+    private WorldProtectionManager worldProtectionManager;
 
     @Override
     public void onLoad() {
@@ -59,7 +66,20 @@ public final class ChallengeMain extends JavaPlugin {
         setupWorlds();
         setupLanguage();
         setupLobby();
+        worldProtectionManager =
+                new WorldProtectionManager(this);
+
+        getServer().getPluginManager().registerEvents(
+                worldProtectionManager,
+                this
+        );
+
+        worldProtectionManager.applyLoadedWorlds();
         setupGames();
+
+        gameInfoManager = new GameInfoManager(this);
+
+        gameInfoGUI = new GameInfoGUI(this);
 
         worldSettingsGUI = new WorldSettingsGUI(this);
 
@@ -119,6 +139,7 @@ public final class ChallengeMain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerGameDataListener(this), this);
         getServer().getPluginManager().registerEvents(new UltraUltraHardcoreListener(this), this);
+        getServer().getPluginManager().registerEvents(gameInfoGUI, this);
     }
 
     private void createLobbyDisplay(LobbyButtonManager lobbyButtonManager) {
@@ -145,12 +166,19 @@ public final class ChallengeMain extends JavaPlugin {
         if (getCommand("lobby") != null) getCommand("lobby").setExecutor(new LobbyCommand(this));
         if (getCommand("gamesettings") != null) getCommand("gamesettings").setExecutor(new GameSettingsCommand(this));
 
-        getCommand("resetvote").setExecutor(
-                new ResetVoteCommand(this)
-        );
+        InfoCommand infoCommand = new InfoCommand(this);
+
+        if (getCommand("info") != null) {
+            getCommand("info").setExecutor(infoCommand);
+            getCommand("info").setTabCompleter(infoCommand);
+        }
+
+        if (getCommand("resetvote") != null) {
+            getCommand("resetvote").setExecutor(
+                    new ResetVoteCommand(this)
+            );
+        }
     }
-
-
 
     @Override
     public void onDisable() {
@@ -179,6 +207,7 @@ public final class ChallengeMain extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                       " + getDisplayVersion() + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                      L O A D I N G" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
     }
@@ -188,6 +217,7 @@ public final class ChallengeMain extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                       " + getDisplayVersion() + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                        R E A D Y" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
     }
@@ -205,4 +235,6 @@ public final class ChallengeMain extends JavaPlugin {
     public WorldSettingsGUI getWorldSettingsGUI() { return worldSettingsGUI;}
     public GameResetManager getGameResetManager() {return gameResetManager;}
     public ResetVoteManager getResetVoteManager() {return resetVoteManager;}
+    public GameInfoGUI getGameInfoGUI() {return gameInfoGUI;}
+    public GameInfoManager getGameInfoManager() {return gameInfoManager;}
 }

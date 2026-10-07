@@ -2,8 +2,6 @@ package runi.myddns.challenges.games.MobArmyBattle.Managers.Event;
 
 import org.bukkit.*;
 import org.bukkit.Tag;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,16 +13,13 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
-import java.io.File;
 import java.util.*;
 
 public class ArenaBuildProtectionManager implements Listener {
 
     private final MobArmyBattleGame game;
     private final Map<String, Set<BlockPos>> placedBlocks = new HashMap<>();
-    private final List<ProtectedArea> opProtectedLobbyAreas = new ArrayList<>();
 
-    private record ProtectedArea(String world, Location corner1, Location corner2) { }
     private record BlockPos(String world, int x, int y, int z) { }
 
     private BlockPos toPos(Location loc) {
@@ -36,70 +31,13 @@ public class ArenaBuildProtectionManager implements Listener {
         );
     }
 
-    private boolean isLobbyProtectedFor(Player player) {
-        return !player.isOp();
-    }
-
     public ArenaBuildProtectionManager(MobArmyBattleGame game) {
         this.game = game;
-    }
-
-    public void loadSpawnProtectionAreas() {
-        File file = new File(game.getDataFolder(), "spawns.yml");
-
-        if (!file.exists()) {
-            game.getPlugin().getLogger().warning("[MobArmyBattle] ⚠ spawns.yml nicht gefunden – Lobby-Schutzbereiche nicht geladen!");
-            return;
-        }
-
-        FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
-        opProtectedLobbyAreas.clear();
-
-        loadWaveArea(cfg, "wave-auswahl.rot");
-        loadWaveArea(cfg, "wave-auswahl.blau");
-    }
-
-    private void loadWaveArea(FileConfiguration cfg, String path) {
-        String worldName = cfg.getString("wave-auswahl.world", "world_mobarmy_lobby");
-        World world = Bukkit.getWorld(worldName);
-
-        if (world == null) {
-            game.getPlugin().getLogger().warning("[MobArmyBattle] ⚠ Welt '" + worldName + "' für " + path + " nicht gefunden!");
-            return;
-        }
-
-        Location c1 = toLoc(world, cfg.getIntegerList(path + ".corner1"));
-        Location c2 = toLoc(world, cfg.getIntegerList(path + ".corner2"));
-
-        if (c1 == null || c2 == null) {
-            game.getPlugin().getLogger().warning("[MobArmyBattle] ⚠ Ungültige Corner für " + path);
-            return;
-        }
-        opProtectedLobbyAreas.add(new ProtectedArea(worldName, c1, c2));
-    }
-
-    private boolean isInsideOpProtectedLobbyArea(Location loc) {
-        if (loc == null || loc.getWorld() == null) return false;
-
-        for (ProtectedArea area : opProtectedLobbyAreas) {
-            if (!area.world().equalsIgnoreCase(loc.getWorld().getName())) continue;
-
-            if (isInside(loc, area.corner1(), area.corner2())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Location toLoc(World w, List<Integer> list) {
-        if (list == null || list.size() < 3) return null;
-        return new Location(w, list.get(0), list.get(1), list.get(2));
     }
 
     private boolean isAllowedNaturalBlock(Material type) {
         if (type == null) return false;
 
-        // Vanilla-Tags
         if (Tag.FLOWERS.isTagged(type)) return true;
         if (Tag.SAPLINGS.isTagged(type)) return true;
         if (Tag.CROPS.isTagged(type)) return true;
@@ -113,16 +51,10 @@ public class ArenaBuildProtectionManager implements Listener {
                  FERN,
                  LARGE_FERN,
                  DEAD_BUSH,
-
-                 // Azalea / kleine Büsche
                  AZALEA,
                  FLOWERING_AZALEA,
-
-                 // Pilze
                  BROWN_MUSHROOM,
                  RED_MUSHROOM,
-
-                 // Beeren / Ranken / Kletterpflanzen
                  SWEET_BERRY_BUSH,
                  VINE,
                  CAVE_VINES,
@@ -131,25 +63,17 @@ public class ArenaBuildProtectionManager implements Listener {
                  TWISTING_VINES_PLANT,
                  WEEPING_VINES,
                  WEEPING_VINES_PLANT,
-
-                 // Wasserpflanzen
                  LILY_PAD,
                  SEAGRASS,
                  TALL_SEAGRASS,
                  KELP,
                  KELP_PLANT,
-
-                 // Dripleaf
                  SMALL_DRIPLEAF,
                  BIG_DRIPLEAF,
                  BIG_DRIPLEAF_STEM,
-
-                 // Zucker/Bambus
                  SUGAR_CANE,
                  BAMBOO,
                  BAMBOO_SAPLING,
-
-                 // Feld / Garten
                  COCOA,
                  MELON_STEM,
                  ATTACHED_MELON_STEM,
@@ -157,8 +81,6 @@ public class ArenaBuildProtectionManager implements Listener {
                  ATTACHED_PUMPKIN_STEM,
                  TORCHFLOWER_CROP,
                  PITCHER_CROP,
-
-                 // Nether / spezielles
                  TRIPWIRE,
                  NETHER_WART,
                  CRIMSON_ROOTS,
@@ -193,19 +115,6 @@ public class ArenaBuildProtectionManager implements Listener {
         }
 
         String worldName = loc.getWorld().getName().toLowerCase();
-
-        // Lobby: komplett schützen, außer OP
-        if (worldName.equals("world_mobarmy_lobby")) {
-            if (isInsideOpProtectedLobbyArea(loc)) {
-                e.setCancelled(true);
-                return;
-            }
-
-            if (isLobbyProtectedFor(p)) {
-                e.setCancelled(true);
-            }
-            return;
-        }
 
         ArenaConfig.ArenaData arena =
                 game.getArenaConfig().getActiveArena();
@@ -275,19 +184,6 @@ public class ArenaBuildProtectionManager implements Listener {
 
         String worldName = loc.getWorld().getName().toLowerCase();
 
-        // Lobby: komplett schützen, außer OP
-        if (worldName.equals("world_mobarmy_lobby")) {
-            if (isInsideOpProtectedLobbyArea(loc)) {
-                e.setCancelled(true);
-                return;
-            }
-
-            if (isLobbyProtectedFor(p)) {
-                e.setCancelled(true);
-            }
-            return;
-        }
-
         ArenaConfig.ArenaData arena =
                 game.getArenaConfig().getActiveArena();
 
@@ -353,17 +249,13 @@ public class ArenaBuildProtectionManager implements Listener {
     private boolean isProtectedMobArmyWorld(World world) {
         if (world == null) return false;
 
-        String name = world.getName().toLowerCase();
-
-        if (name.equals("world_mobarmy_lobby")) {
-            return true;
-        }
-
         ArenaConfig.ArenaData arena =
                 game.getArenaConfig().getActiveArena();
 
         return arena != null
-                && name.equalsIgnoreCase(arena.world());
+                && world.getName().equalsIgnoreCase(
+                arena.world()
+        );
     }
 
     private boolean isInsideTeamArea(Location loc, String team, ArenaConfig.ArenaData arena) {

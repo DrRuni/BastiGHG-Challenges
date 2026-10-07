@@ -163,6 +163,7 @@ public class LevelBorderGame implements ChallengeGame {
         plugin.getGameStateManager().setLoaded(true);
 
         plugin.getLobbyDisplayManager().setLoadReady(getDisplayName());
+        plugin.getLobbyDisplayManager().sendGameInfoHint(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 1.4f);

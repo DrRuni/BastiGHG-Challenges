@@ -27,6 +27,18 @@ public class GameManager {
         );
     }
 
+    public ChallengeGame getGame(String gameId) {
+
+        for (ChallengeGame game : games) {
+
+            if (game.getId().equalsIgnoreCase(gameId)) {
+                return game;
+            }
+        }
+
+        return null;
+    }
+
     public void selectGame(String gameId) {
         for (int i = 0; i < games.size(); i++) {
             if (games.get(i).getId().equalsIgnoreCase(gameId)) {
