@@ -88,7 +88,7 @@ public class GameWorldSettingsManager {
         } catch (IOException e) {
             plugin.getLogger().log(
                     Level.SEVERE,
-                    "Fehler beim Speichern von " + file.getPath(),
+                    "Failed to save " + file.getPath(),
                     e
             );
         }

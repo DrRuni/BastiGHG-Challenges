@@ -25,7 +25,10 @@ public class GameSettingsCommand implements CommandExecutor {
     ) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Dieser Befehl kann nur von Spielern verwendet werden.");
+            sender.sendMessage(
+                    plugin.getLanguageManager()
+                            .getComponent("commands.gamesettings.player-only")
+            );
             return true;
         }
 
@@ -34,12 +37,18 @@ public class GameSettingsCommand implements CommandExecutor {
                         .getSelectedGame();
 
         if (game == null) {
-            player.sendMessage("§cKein Game ausgewählt.");
+            player.sendMessage(
+                    plugin.getLanguageManager()
+                            .getComponent("commands.gamesettings.no-game-selected")
+            );
             return true;
         }
 
         if (!game.isLoaded()) {
-            player.sendMessage("§6Bitte zuerst das Game laden.");
+            player.sendMessage(
+                    plugin.getLanguageManager()
+                            .getComponent("commands.gamesettings.load-first")
+            );
             return true;
         }
 

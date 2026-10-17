@@ -47,7 +47,7 @@ public class ResumeCommand implements CommandExecutor, TabCompleter {
             if (args.length == 1
                     && args[0].equalsIgnoreCase("mobarmy")) {
 
-                game.getEventResume().resumeEvent();
+                game.getEventResume().resumeEvent(player);
                 return true;
             }
 
@@ -63,7 +63,7 @@ public class ResumeCommand implements CommandExecutor, TabCompleter {
             if (args.length == 1
                     && args[0].equalsIgnoreCase("resume")) {
 
-                game.getEventResume().resumeEvent();
+                game.getEventResume().resumeEvent(player);
                 return true;
             }
 

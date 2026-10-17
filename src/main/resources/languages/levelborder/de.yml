@@ -1,0 +1,106 @@
+file-version: 1
+
+commands:
+  levelborder:
+    player-only: "<red>Nur Spieler können diesen Befehl nutzen."
+
+    load-first-settings: "<gold>Bitte zuerst LevelBorder laden."
+
+    center:
+      admin-only: "<red>❌ Nur der Admin darf die Border-Mitte setzen!"
+      success: "<green>📍 Border-Mitte exakt auf Blockgrenze gesetzt!"
+
+    start:
+      admin-only: "<red>❌ Nur der Admin darf LevelBorder starten!"
+      success: "<green>✅ Border aktiviert!"
+
+    stop:
+      admin-only: "<red>❌ Nur der Admin darf LevelBorder stoppen!"
+      success: "<red>🛑 Border deaktiviert!"
+
+    set:
+      admin-only: "<red>❌ Nur der Admin darf die Bordergröße ändern!"
+      usage: "<red>⚠ Nutzung: /levelborder set [Größe]"
+      success: "<yellow>📏 Bordergröße gesetzt auf %size% Blöcke."
+      invalid-number: "<red>Bitte eine gültige Zahl eingeben!"
+
+    reset:
+      load-first: "<red>❌ LevelBorder muss zuerst geladen werden."
+      admin-only: "<red>❌ Nur der Admin darf LevelBorder zurücksetzen!"
+      vote-worlds: "Welten komplett zurücksetzen"
+      vote-progress: "Spielstand zurücksetzen"
+      success: "<green>✔ LevelBorder wurde zurückgesetzt."
+
+    unknown: "<red>Unbekannter Unterbefehl. Nutze /levelborder für Hilfe."
+
+    help:
+      title: "<gold>══════ LevelBorder Befehle ══════"
+      info: "<yellow>/levelborder info <gray>- Spielinfo anzeigen"
+      status: "<yellow>/levelborder status <gray>- Aktuellen Spielstand anzeigen"
+      start: "<yellow>/levelborder start <gray>- Challenge starten"
+      stop: "<yellow>/levelborder stop <gray>- Challenge stoppen"
+      center: "<yellow>/levelborder center <gray>- Border-Mitte setzen"
+      set: "<yellow>/levelborder set <Größe> <gray>- Bordergröße setzen"
+      score: "<yellow>/levelborder score <gray>- Scoreboard verwalten"
+      settings: "<yellow>/levelborder gamesettings <gray>- Spieleinstellungen öffnen"
+      reset: "<yellow>/levelborder reset <gray>- Spielstand zurücksetzen"
+      reset-world: "<yellow>/levelborder reset world <gray>- Welten komplett zurücksetzen"
+
+    info:
+      title: "<gold>══════ LevelBorder ══════"
+      goal: "<gray>Ziel: Vergrößert gemeinsam die WorldBorder."
+      description-1: "<gray>Die Größe der Border richtet sich nach der Summe"
+      description-2: "<gray>der Spielerlevel aller Teilnehmer."
+      description-3: "<gray>Je mehr Level ihr sammelt, desto größer wird"
+      description-4: "<gray>der Bereich, den ihr erkunden könnt."
+      commands-title: "<gold>Wichtige Befehle:"
+      status: "<yellow>/levelborder status <gray>- Aktuellen Stand anzeigen"
+      score: "<yellow>/levelborder score <gray>- Scoreboard verwalten"
+      settings: "<yellow>/levelborder gamesettings <gray>- Einstellungen öffnen"
+      help: "<yellow>/levelborder <gray>- Alle Befehle anzeigen"
+
+    status:
+      title: "<aqua>============= 📊 LevelBorder Info ============="
+      total-level: "<gray>Aktuelle Gesamt-Level: <yellow>%value%"
+      record: "<gray>Bisheriger Rekord: <gold>%value%"
+      border-size: "<gray>Border-Größe: <green>%value%"
+      active: "<gray>Aktiv: <value>"
+      yes: "<green>Ja"
+      no: "<red>Nein"
+      footer: "<aqua>============================================"
+
+scoreboard-command:
+  player-only: "<red>Nur Spieler können diesen Befehl verwenden."
+  hidden: "<gray>📉 Scoreboard ausgeblendet."
+  shown: "<green>📈 Scoreboard wieder eingeblendet."
+  admin-reset-only: "<red>❌ Nur der Admin darf das Scoreboard zurücksetzen!"
+  reset: "<gold>♻ Scoreboard-Daten wurden zurückgesetzt."
+
+  help:
+    title: "<gold>========== LevelBorder Scoreboard =========="
+    hide: "<gray>/lbscore hide <dark_gray>→ Scoreboard ausblenden"
+    reload: "<gray>/lbscore reload <dark_gray>→ Scoreboard wieder anzeigen"
+    reset: "<gray>/lbscore reset <dark_gray>→ Admin"
+    footer: "<gold>==========================================="
+
+player-listener:
+  welcome:
+    name: "Run´s LevelBorder"
+    start: "<gray>Starte mit <aqua>/levelborder <gold>start"
+
+scoreboard:
+  title: "- LevelBorder -"
+  players: "<aqua>🧍 Spieler:"
+  player-line: "<gray>   - <green><player><gray>: <gold><level>"
+  border-size: "<aqua>🌐 Bordergröße:"
+  border-size-value: "<gray>   - <gold><size> m"
+  objective-title: "<gold>🌍 LevelBorder"
+
+loading:
+  starting: "LevelBorder wird geladen..."
+  worlds: "Welten laden..."
+  managers: "Manager initialisieren..."
+  listeners: "Listener registrieren..."
+  commands: "Befehle registrieren..."
+  prepare: "LevelBorder vorbereiten..."
+  error: "FEHLER: %status%"

@@ -14,6 +14,7 @@ import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
+import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.LevelBorder.Commands.LevelBorderCommand;
 import runi.myddns.challenges.games.LevelBorder.Commands.ScoreboardCommand;
@@ -32,6 +33,7 @@ public class LevelBorderGame implements ChallengeGame {
     private final GameWorldSettingsManager worldSettingsManager;
     private final List<Listener> registeredListeners = new ArrayList<>();
     private final List<BukkitTask> gameTasks = new ArrayList<>();
+    private final LanguageManager languageManager;
 
     private boolean loaded = false;
 
@@ -48,6 +50,7 @@ public class LevelBorderGame implements ChallengeGame {
 
     public LevelBorderGame(ChallengeMain plugin) {
         this.plugin = plugin;
+        this.languageManager = plugin.getLanguageManager().forGroup(getId());
 
         this.worldSettingsManager =
                 new GameWorldSettingsManager(plugin, getId(), List.of(
@@ -91,7 +94,10 @@ public class LevelBorderGame implements ChallengeGame {
         loading = true;
 
         plugin.getLobbyDisplayManager().clearLoadConsole();
-        plugin.getLobbyDisplayManager().setLoadStatus("LevelBorder wird geladen...", 0xC47A6B);
+        plugin.getLobbyDisplayManager().setLoadStatus(
+                languageManager.get("loading.starting"),
+                0xC47A6B
+        );
         gameTasks.add(
                 plugin.getServer().getScheduler().runTaskLater(
                         plugin,
@@ -103,7 +109,7 @@ public class LevelBorderGame implements ChallengeGame {
 
     private void runLoadSequence() {
         runStep(
-                "Welten laden...",
+                languageManager.get("loading.worlds"),
                 () -> {
                     loadConfig();
 
@@ -120,16 +126,16 @@ public class LevelBorderGame implements ChallengeGame {
                     }
                 },
                 () -> runStep(
-                        "Manager initialisieren...",
+                        languageManager.get("loading.managers"),
                         this::initializeManagers,
                         () -> runStep(
-                                "Listener registrieren...",
+                                languageManager.get("loading.listeners"),
                                 this::registerListeners,
                                 () -> runStep(
-                                        "Befehle registrieren...",
+                                        languageManager.get("loading.commands"),
                                         this::registerCommands,
                                         () -> runStep(
-                                                "LevelBorder vorbereiten...",
+                                                languageManager.get("loading.prepare"),
                                                 () -> {
                                                     portalManager.loadAllPortals();
                                                     scoreboardManager.startUpdater();
@@ -170,8 +176,8 @@ public class LevelBorderGame implements ChallengeGame {
         }
 
         Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  LevelBorder - V1.1 ═══════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                       geladen" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  LevelBorder - V1.2 ═══════════════" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                         loaded" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
     }
 
@@ -183,7 +189,7 @@ public class LevelBorderGame implements ChallengeGame {
             plugin.getCommand("levelborder").setTabCompleter(levelBorderCommand);
         }
 
-        ScoreboardCommand scoreboardCommand = new ScoreboardCommand(scoreboardManager);
+        ScoreboardCommand scoreboardCommand = new ScoreboardCommand(this, scoreboardManager);
 
         if (plugin.getCommand("lbscore") != null) {
             plugin.getCommand("lbscore").setExecutor(scoreboardCommand);
@@ -249,7 +255,9 @@ public class LevelBorderGame implements ChallengeGame {
         plugin.getGameStateManager().setStarted(false);
         plugin.getLobbyDisplayManager().setLoadUnloaded(getDisplayName());
 
-        plugin.getLogger().info("LevelBorder wurde entladen.");
+        plugin.getLogger().info(
+                "LevelBorder unloaded."
+        );
     }
 
     private void runStep(String status, Runnable action, Runnable next) {
@@ -264,8 +272,17 @@ public class LevelBorderGame implements ChallengeGame {
 
         } catch (Exception ex) {
             loading = false;
-            plugin.getLobbyDisplayManager().setLoadStatus("FEHLER: " + status, 0xFF3333);
-            plugin.getLogger().severe("Fehler beim Laden von LevelBorder: " + status);
+            plugin.getLobbyDisplayManager().setLoadStatus(
+                    languageManager.get(
+                            "loading.error",
+                            "status",
+                            status
+                    ),
+                    0xFF3333
+            );
+            plugin.getLogger().severe(
+                    "Error while loading LevelBorder: " + status
+            );
             ex.printStackTrace();
             return;
         }
@@ -361,4 +378,5 @@ public class LevelBorderGame implements ChallengeGame {
 
     public FileConfiguration getConfig() {return config;}
     public ChallengeMain getPlugin() {return plugin;}
+    public LanguageManager getLanguageManager() {return languageManager;}
 }

@@ -1,6 +1,7 @@
 package runi.myddns.challenges.games.MobArmyBattle.GUIs;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import runi.myddns.challenges.games.MobArmyBattle.Managers.Event.TeamManager;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+
+import java.util.List;
 
 public class TeamSelectionGUI implements Listener {
 
@@ -84,7 +87,8 @@ public class TeamSelectionGUI implements Listener {
             InventoryClickEvent event
     ) {
 
-        if (!(event.getWhoClicked() instanceof Player player)) {
+        if (!(event.getWhoClicked()
+                instanceof Player player)) {
             return;
         }
 
@@ -99,65 +103,191 @@ public class TeamSelectionGUI implements Listener {
         int slot = event.getRawSlot();
 
         if (slot < 0
-                || slot >= event.getView().getTopInventory().getSize()) {
+                || slot >= event.getView()
+                .getTopInventory()
+                .getSize()) {
             return;
         }
 
         switch (slot) {
 
-            case 2 -> {
+            case 2 ->
+                    requestTeamJoin(
+                            player,
+                            "Blau"
+                    );
 
-                teamManager.assignTeam(
-                        player,
-                        "Blau"
-                );
+            case 4 ->
+                    requestNoTeam(player);
 
-                Component message =
-                        langPlayer(
-                                "team-selection-gui.messages.blue",
-                                player.getName()
-                        );
-
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.sendMessage(message);
-                }
-
-                player.closeInventory();
-            }
-
-            case 4 -> {
-
-                teamManager.removePlayerFromTeam(player);
-
-                player.sendMessage(Component.empty());
-
-                player.sendMessage(
-                        lang("team-selection-gui.messages.none")
-                );
-
-                player.closeInventory();
-            }
-
-            case 6 -> {
-
-                teamManager.assignTeam(
-                        player,
-                        "Rot"
-                );
-
-                Component message =
-                        langPlayer(
-                                "team-selection-gui.messages.red",
-                                player.getName()
-                        );
-
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.sendMessage(message);
-                }
-
-                player.closeInventory();
-            }
+            case 6 ->
+                    requestTeamJoin(
+                            player,
+                            "Rot"
+                    );
         }
+    }
+
+    private void requestTeamJoin(
+            Player player,
+            String team
+    ) {
+
+        /*
+         * Event noch nicht gestartet:
+         * normale Teamwahl.
+         */
+        if (!game.getEventResume().isEventStarted()) {
+
+            assignTeam(
+                    player,
+                    team
+            );
+
+            return;
+        }
+
+        /*
+         * Spieler gehört bereits zum laufenden Match.
+         * Team darf jetzt nicht mehr gewechselt werden.
+         */
+        if (teamManager.isRegisteredParticipant(player)) {
+
+            player.closeInventory();
+
+            player.sendMessage(
+                    Component.text(
+                            "Du gehörst bereits zum laufenden Event. "
+                                    + "Dein Team kann jetzt nicht mehr geändert werden.",
+                            NamedTextColor.RED
+                    )
+            );
+
+            return;
+        }
+
+        var voters =
+                Bukkit.getOnlinePlayers()
+                        .stream()
+                        .filter(game::isMobArmyPlayer)
+                        .filter(teamManager::isRegisteredParticipant)
+                        .filter(p -> !p.equals(player))
+                        .toList();
+
+        player.closeInventory();
+
+        game.getPlugin()
+                .getVoteManager()
+                .startVote(
+                        game.getDisplayName(),
+                        "Spielerbeitritt",
+                        player.getName()
+                                + " möchte Team "
+                                + team
+                                + " beitreten.",
+                        voters,
+
+                        () -> {
+
+                            if (!player.isOnline()) {
+                                return;
+                            }
+
+                            assignTeam(
+                                    player,
+                                    team
+                            );
+
+                            player.sendMessage(
+                                    Component.text(
+                                            "✔ Dein Beitritt wurde angenommen.",
+                                            NamedTextColor.GREEN
+                                    )
+                            );
+                        },
+
+                        () -> {
+
+                            if (!player.isOnline()) {
+                                return;
+                            }
+
+                            player.sendMessage(
+                                    Component.text(
+                                            "❌ Dein Beitritt wurde abgelehnt.",
+                                            NamedTextColor.RED
+                                    )
+                            );
+                        }
+                );
+    }
+
+    private void requestNoTeam(
+            Player player
+    ) {
+
+        if (game.getEventResume().isEventStarted()
+                && teamManager.isRegisteredParticipant(player)) {
+
+            player.closeInventory();
+
+            player.sendMessage(
+                    Component.text(
+                            "Du kannst dein Team während des laufenden Events nicht verlassen.",
+                            NamedTextColor.RED
+                    )
+            );
+
+            return;
+        }
+
+        teamManager.removePlayerFromTeam(player);
+
+        player.sendMessage(
+                Component.empty()
+        );
+
+        player.sendMessage(
+                lang(
+                        "team-selection-gui.messages.none"
+                )
+        );
+
+        player.closeInventory();
+    }
+
+    private void assignTeam(
+            Player player,
+            String team
+    ) {
+
+        teamManager.assignTeam(
+                player,
+                team
+        );
+
+        String path =
+                team.equalsIgnoreCase("Blau")
+                        ? "team-selection-gui.messages.blue"
+                        : "team-selection-gui.messages.red";
+
+        Component message =
+                langPlayer(
+                        path,
+                        player.getName()
+                );
+
+        for (Player onlinePlayer :
+                Bukkit.getOnlinePlayers()) {
+
+            if (!game.isMobArmyPlayer(onlinePlayer)) {
+                continue;
+            }
+
+            onlinePlayer.sendMessage(message);
+        }
+
+        player.closeInventory();
     }
 
     private Component lang(String path) {

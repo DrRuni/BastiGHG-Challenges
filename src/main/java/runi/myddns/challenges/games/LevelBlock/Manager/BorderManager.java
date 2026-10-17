@@ -233,7 +233,7 @@ public class BorderManager {
         }
 
         throw new IllegalStateException(
-                "Für LevelBlock wurde kein sicherer Startblock gefunden."
+                "No safe start block found for LevelBlock."
         );
     }
 
@@ -348,23 +348,12 @@ public class BorderManager {
                 location
         );
 
-
-        /*
-         * Startblock gleichzeitig freischalten.
-         */
         dataManager.saveUnlockedBlock(
                 world,
                 x,
                 z
         );
 
-
-        /*
-         * Liniencache dieser Welt neu aufbauen.
-         *
-         * Diesen Teil passen wir im nächsten
-         * Schritt noch auf Multiworld an.
-         */
         lineManager.reset();
 
 
@@ -374,13 +363,6 @@ public class BorderManager {
 
         return location.clone();
     }
-
-
-    /*
-     * =========================================================
-     * FREIGESCHALTETE BLÖCKE
-     * =========================================================
-     */
 
     public boolean isUnlocked(
             World world,
@@ -424,13 +406,6 @@ public class BorderManager {
         );
     }
 
-
-    /*
-     * =========================================================
-     * BLOCK FREISCHALTEN
-     * =========================================================
-     */
-
     public boolean unlockBlock(
             World world,
             int x,
@@ -461,10 +436,6 @@ public class BorderManager {
             return false;
         }
 
-
-        /*
-         * RAM + gamedata.yml
-         */
         dataManager.saveUnlockedBlock(
                 world,
                 x,
@@ -515,13 +486,6 @@ public class BorderManager {
         lineManager.stop();
         displayManager.stop();
     }
-
-
-    /*
-     * =========================================================
-     * DATEN ABFRAGEN
-     * =========================================================
-     */
 
     public Set<LevelBlockPos> getUnlockedBlocks(
             World world

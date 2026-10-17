@@ -19,11 +19,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class TeamManager implements Listener {
 
     private final MobArmyBattleGame game;
-    private final Map<String, String> playerTeams = new HashMap<>();
+
+    private final Map<UUID, String> playerTeams = new HashMap<>();
+    private final Map<UUID, String> playerNames = new HashMap<>();
 
     public TeamManager(MobArmyBattleGame game) {
         this.game = game;
@@ -31,20 +34,17 @@ public class TeamManager implements Listener {
 
     public void assignTeam(Player player, String team) {
 
+        UUID uuid = player.getUniqueId();
+
         String oldTeam = getPlayerTeam(player);
 
-        playerTeams.put(player.getName(), team);
-        saveTeamToFile(player.getName(), team);
+        playerTeams.put(uuid, team);
+        playerNames.put(uuid, player.getName());
+
+        saveTeamToFile(player, team);
 
         game.getTeamScoreboardManager()
                 .addPlayerToTeam(player, team);
-
-        if (oldTeam != null
-                && !oldTeam.equalsIgnoreCase("Kein Team")
-                && !oldTeam.equalsIgnoreCase(team)) {
-
-            playTeamLeaveSound(player, oldTeam);
-        }
 
         playTeamJoinSound(player, team);
         showTeamTitle(player, team);
@@ -55,41 +55,70 @@ public class TeamManager implements Listener {
 
     public void loadTeams() {
 
-        File teamsFile = new File(game.getDataFolder(), "teams.yml");
+        File teamsFile =
+                new File(game.getDataFolder(), "teams.yml");
 
         if (!teamsFile.exists()) {
             return;
         }
 
-        YamlConfiguration teamsConfig = YamlConfiguration.loadConfiguration(teamsFile);
+        YamlConfiguration teamsConfig =
+                YamlConfiguration.loadConfiguration(teamsFile);
 
         playerTeams.clear();
+        playerNames.clear();
 
-        ConfigurationSection teamsSection = teamsConfig.getConfigurationSection("teams");
+        ConfigurationSection teamsSection =
+                teamsConfig.getConfigurationSection("teams");
 
         if (teamsSection == null) {
             return;
         }
 
-        for (String playerName :
+        for (String uuidString :
                 teamsSection.getKeys(false)) {
 
-            String team = teamsConfig.getString(
-                    "teams." + playerName,
-                    "Kein Team"
-            );
+            try {
 
-            playerTeams.put(
-                    playerName,
-                    team
-            );
+                UUID uuid =
+                        UUID.fromString(uuidString);
+
+                String team =
+                        teamsConfig.getString(
+                                "teams." + uuidString + ".team"
+                        );
+
+                String name =
+                        teamsConfig.getString(
+                                "teams." + uuidString + ".name",
+                                "Unbekannt"
+                        );
+
+                if (team == null
+                        || team.equalsIgnoreCase("Kein Team")) {
+                    continue;
+                }
+
+                playerTeams.put(uuid, team);
+                playerNames.put(uuid, name);
+
+            } catch (IllegalArgumentException ignored) {
+
+                /*
+                 * Alter Eintrag mit Spielername.
+                 * Wird ignoriert.
+                 *
+                 * Für den ersten Test am besten
+                 * die alte teams.yml löschen.
+                 */
+            }
         }
     }
 
     public String getPlayerTeam(Player player) {
 
         return playerTeams.getOrDefault(
-                player.getName(),
+                player.getUniqueId(),
                 "Kein Team"
         );
     }
@@ -98,27 +127,36 @@ public class TeamManager implements Listener {
             OfflinePlayer offlinePlayer
     ) {
 
-        String name = offlinePlayer.getName();
-
-        if (name == null) {
-            return "Kein Team";
-        }
-
         return playerTeams.getOrDefault(
-                name,
+                offlinePlayer.getUniqueId(),
                 "Kein Team"
         );
     }
 
     public boolean isInTeam(Player player) {
 
-        return !getPlayerTeam(player)
-                .equalsIgnoreCase("Kein Team");
+        return playerTeams.containsKey(
+                player.getUniqueId()
+        );
+    }
+
+    /*
+     * Wichtig für unsere spätere Abstimmung:
+     *
+     * true = Spieler steht bereits in teams.yml
+     * und gehört damit schon zum Match.
+     */
+    public boolean isRegisteredParticipant(Player player) {
+
+        return playerTeams.containsKey(
+                player.getUniqueId()
+        );
     }
 
     public void resetTeams() {
 
         playerTeams.clear();
+        playerNames.clear();
 
         game.getTeamScoreboardManager()
                 .rebuildBoard();
@@ -159,20 +197,18 @@ public class TeamManager implements Listener {
 
     public void removePlayerFromTeam(Player player) {
 
+        UUID uuid = player.getUniqueId();
+
         String oldTeam =
                 getPlayerTeam(player);
 
         game.getBundleManager()
                 .removeTeamBundle(player);
 
-        playerTeams.remove(
-                player.getName()
-        );
+        playerTeams.remove(uuid);
+        playerNames.remove(uuid);
 
-        saveTeamToFile(
-                player.getName(),
-                "Kein Team"
-        );
+        removeTeamFromFile(uuid);
 
         game.getTeamScoreboardManager()
                 .removePlayer(player);
@@ -188,18 +224,50 @@ public class TeamManager implements Listener {
     }
 
     private void saveTeamToFile(
-            String playerName,
+            Player player,
             String team
     ) {
 
-        File teamsFile = new File(game.getDataFolder(), "teams.yml");
+        File teamsFile =
+                new File(game.getDataFolder(), "teams.yml");
+
+        YamlConfiguration teamsConfig =
+                YamlConfiguration.loadConfiguration(teamsFile);
+
+        String path =
+                "teams." + player.getUniqueId();
+
+        teamsConfig.set(
+                path + ".name",
+                player.getName()
+        );
+
+        teamsConfig.set(
+                path + ".team",
+                team
+        );
+
+        try {
+            teamsConfig.save(teamsFile);
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void removeTeamFromFile(UUID uuid) {
+
+        File teamsFile =
+                new File(game.getDataFolder(), "teams.yml");
+
+        if (!teamsFile.exists()) {
+            return;
+        }
 
         YamlConfiguration teamsConfig =
                 YamlConfiguration.loadConfiguration(teamsFile);
 
         teamsConfig.set(
-                "teams." + playerName,
-                team
+                "teams." + uuid,
+                null
         );
 
         try {
@@ -210,7 +278,8 @@ public class TeamManager implements Listener {
 
     private void deleteAllTeamsFromFile() {
 
-        File teamsFile = new File(game.getDataFolder(), "teams.yml");
+        File teamsFile =
+                new File(game.getDataFolder(), "teams.yml");
 
         if (!teamsFile.exists()) {
             return;
@@ -310,7 +379,7 @@ public class TeamManager implements Listener {
     public Set<String> getAllTeamPlayers() {
 
         return new HashSet<>(
-                playerTeams.keySet()
+                playerNames.values()
         );
     }
 

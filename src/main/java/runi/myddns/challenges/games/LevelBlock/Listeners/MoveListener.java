@@ -1,7 +1,5 @@
 package runi.myddns.challenges.games.LevelBlock.Listeners;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -95,10 +93,10 @@ public class MoveListener implements Listener {
             event.setTo(blocked);
 
             player.sendActionBar(
-                    Component.text(
-                            "Du benötigst 1 Level!",
-                            NamedTextColor.RED
-                    )
+                    game.getLanguageManager()
+                            .getComponent(
+                                    "move-listener.need-level"
+                            )
             );
 
             return;
@@ -129,15 +127,10 @@ public class MoveListener implements Listener {
         );
 
         player.sendActionBar(
-                Component.text(
-                        "Neuer Block freigeschaltet! ",
-                        NamedTextColor.GREEN
-                ).append(
-                        Component.text(
-                                "-1 Level",
-                                NamedTextColor.GRAY
+                game.getLanguageManager()
+                        .getComponent(
+                                "move-listener.block-unlocked"
                         )
-                )
         );
     }
 }

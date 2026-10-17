@@ -1,7 +1,6 @@
 package runi.myddns.challenges.games.LevelBlock.Commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,8 +47,12 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
 
             if (!game.isLoaded()) {
                 player.sendMessage(
-                        "§6Bitte zuerst LevelBlock laden."
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelblock.load-first-settings"
+                                )
                 );
+
                 return true;
             }
 
@@ -61,15 +64,23 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
 
             if (!game.isLoaded()) {
                 player.sendMessage(
-                        "§cLevelBlock muss zuerst geladen werden."
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelblock.load-first"
+                                )
                 );
+
                 return true;
             }
 
             if (!isAdmin) {
                 player.sendMessage(
-                        "§c❌ Nur ein Admin darf LevelBlock starten."
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelblock.admin-start-only"
+                                )
                 );
+
                 return true;
             }
 
@@ -79,13 +90,20 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
 
             if (!started) {
                 player.sendMessage(
-                        "§cLevelBlock wurde bereits gestartet."
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelblock.already-started"
+                                )
                 );
+
                 return true;
             }
 
             player.sendMessage(
-                    "§aLevelBlock wurde gestartet."
+                    game.getLanguageManager()
+                            .getComponent(
+                                    "commands.levelblock.started"
+                            )
             );
 
             return true;
@@ -95,15 +113,23 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
 
             if (!game.isLoaded()) {
                 player.sendMessage(
-                        "§cLevelBlock muss zuerst geladen werden."
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelblock.load-first"
+                                )
                 );
+
                 return true;
             }
 
             if (!isAdmin) {
                 player.sendMessage(
-                        "§c❌ Nur ein Admin darf LevelBlock zurücksetzen."
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelblock.admin-reset-only"
+                                )
                 );
+
                 return true;
             }
 
@@ -111,10 +137,13 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                     && args[1].equalsIgnoreCase("world")) {
 
                 game.getPlugin()
-                        .getResetVoteManager()
+                        .getVoteManager()
                         .startVote(
                                 game.getDisplayName(),
-                                "Welten komplett zurücksetzen",
+                                game.getLanguageManager()
+                                        .get(
+                                                "commands.levelblock.vote.reset-worlds"
+                                        ),
                                 () -> game.getPlugin()
                                         .getGameResetManager()
                                         .resetWorlds(game)
@@ -126,10 +155,13 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
             World resetWorld = player.getWorld();
 
             game.getPlugin()
-                    .getResetVoteManager()
+                    .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            "Spielstand zurücksetzen",
+                            game.getLanguageManager()
+                                    .get(
+                                            "commands.levelblock.vote.reset-progress"
+                                    ),
                             () -> {
 
                                 game.getLevelBlockGameManager()
@@ -137,9 +169,11 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                                                 resetWorld
                                         );
 
-                                Bukkit.broadcastMessage(
-                                        ChatColor.GREEN
-                                                + "✔ LevelBlock wurde zurückgesetzt."
+                                Bukkit.broadcast(
+                                        game.getLanguageManager()
+                                                .getComponent(
+                                                        "commands.levelblock.reset-complete"
+                                                )
                                 );
                             }
                     );
@@ -148,7 +182,10 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
         }
 
         player.sendMessage(
-                "§cUnbekannter Unterbefehl."
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.unknown"
+                        )
         );
 
         return true;
@@ -157,28 +194,121 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
     private void sendCommandHelp(Player player) {
 
         player.sendMessage("");
-        player.sendMessage("§6══════ LevelBlock Befehle ══════");
-        player.sendMessage("§e/levelblock info §7- Spielinfo anzeigen");
-        player.sendMessage("§e/levelblock start §7- Challenge starten");
-        player.sendMessage("§e/levelblock gamesettings §7- Spieleinstellungen öffnen");
-        player.sendMessage("§e/levelblock reset §7- Spielstand zurücksetzen");
-        player.sendMessage("§e/levelblock reset world §7- Welten komplett zurücksetzen");
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.help.title"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.help.info"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.help.start"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.help.settings"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.help.reset"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.help.reset-world"
+                        )
+        );
+
         player.sendMessage("");
     }
 
     private void sendGameInfo(Player player) {
 
         player.sendMessage("");
-        player.sendMessage("§6══════ LevelBlock ══════");
-        player.sendMessage("§7Ziel: Erweitert eure Welt Block für Block.");
-        player.sendMessage("§7Zu Beginn steht euch nur ein kleiner Bereich zur Verfügung.");
-        player.sendMessage("§7Durch euren Level Fortschritt werden weitere Blöcke freigeschaltet");
-        player.sendMessage("§7und die spielbare Welt wächst immer weiter.");
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.title"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.goal"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.start-area"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.progress-1"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.progress-2"
+                        )
+        );
+
         player.sendMessage("");
-        player.sendMessage("§6Wichtige Befehle:");
-        player.sendMessage("§e/levelblock start §7- Challenge starten");
-        player.sendMessage("§e/levelblock gamesettings §7- Einstellungen öffnen");
-        player.sendMessage("§e/levelblock §7- Alle Befehle anzeigen");
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.commands-title"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.start-command"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.settings-command"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelblock.info.help-command"
+                        )
+        );
+
         player.sendMessage("");
     }
 

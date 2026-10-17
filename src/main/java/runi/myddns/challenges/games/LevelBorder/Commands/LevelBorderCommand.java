@@ -1,7 +1,7 @@
 package runi.myddns.challenges.games.LevelBorder.Commands;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -51,7 +51,14 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
     ) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Nur Spieler können diesen Befehl nutzen.");
+
+            sender.sendMessage(
+                    game.getLanguageManager()
+                            .getComponent(
+                                    "commands.levelborder.player-only"
+                            )
+            );
+
             return true;
         }
 
@@ -61,8 +68,7 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
         if (args.length > 0
                 && args[0].equalsIgnoreCase("score")) {
 
-            ScoreboardCommand scoreCmd =
-                    new ScoreboardCommand(scoreboardManager);
+            ScoreboardCommand scoreCmd = new ScoreboardCommand(game, scoreboardManager);
 
             String[] shifted =
                     Arrays.copyOfRange(
@@ -98,10 +104,14 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
             case "gamesettings" -> {
 
                 if (!game.isLoaded()) {
+
                     player.sendMessage(
-                            ChatColor.GOLD +
-                                    "Bitte zuerst LevelBorder laden."
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.load-first-settings"
+                                    )
                     );
+
                     return true;
                 }
 
@@ -111,10 +121,14 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
             case "center" -> {
 
                 if (!isAdmin) {
+
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "❌ Nur der Admin darf die Border-Mitte setzen!"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.center.admin-only"
+                                    )
                     );
+
                     return true;
                 }
 
@@ -145,18 +159,24 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                 borderManager.setCenter(centered);
 
                 player.sendMessage(
-                        ChatColor.GREEN +
-                                "📍 Border-Mitte exakt auf Blockgrenze gesetzt!"
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelborder.center.success"
+                                )
                 );
             }
 
             case "start" -> {
 
                 if (!isAdmin) {
+
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "❌ Nur der Admin darf den LevelBorder starten!"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.start.admin-only"
+                                    )
                     );
+
                     return true;
                 }
 
@@ -215,18 +235,24 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                 }
 
                 player.sendMessage(
-                        ChatColor.GREEN +
-                                "✅ Border aktiviert!"
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelborder.start.success"
+                                )
                 );
             }
 
             case "stop" -> {
 
                 if (!isAdmin) {
+
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "❌ Nur der Admin darf den LevelBorder stoppen!"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.stop.admin-only"
+                                    )
                     );
+
                     return true;
                 }
 
@@ -240,26 +266,36 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                 );
 
                 player.sendMessage(
-                        ChatColor.RED +
-                                "🛑 Border deaktiviert!"
+                        game.getLanguageManager()
+                                .getComponent(
+                                        "commands.levelborder.stop.success"
+                                )
                 );
             }
 
             case "set" -> {
 
                 if (!isAdmin) {
+
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "❌ Nur der Admin darf die Bordergröße ändern!"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.set.admin-only"
+                                    )
                     );
+
                     return true;
                 }
 
                 if (args.length < 2) {
+
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "⚠ Nutzung: /levelborder set <größe>"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.set.usage"
+                                    )
                     );
+
                     return true;
                 }
 
@@ -271,17 +307,21 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                     borderManager.setSize(size);
 
                     player.sendMessage(
-                            ChatColor.YELLOW +
-                                    "📏 Bordergröße gesetzt auf " +
-                                    size +
-                                    " Blöcke."
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.set.success",
+                                            "size",
+                                            size
+                                    )
                     );
 
                 } catch (NumberFormatException e) {
 
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "Bitte eine gültige Zahl eingeben!"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.set.invalid-number"
+                                    )
                     );
                 }
 
@@ -296,18 +336,26 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
             case "reset" -> {
 
                 if (!game.isLoaded()) {
+
                     player.sendMessage(
-                            ChatColor.RED
-                                    + "❌ LevelBorder muss zuerst geladen werden."
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.reset.load-first"
+                                    )
                     );
+
                     return true;
                 }
 
                 if (!isAdmin) {
+
                     player.sendMessage(
-                            ChatColor.RED
-                                    + "❌ Nur der Admin darf LevelBorder zurücksetzen!"
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.reset.admin-only"
+                                    )
                     );
+
                     return true;
                 }
 
@@ -315,10 +363,13 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                         && args[1].equalsIgnoreCase("world")) {
 
                     game.getPlugin()
-                            .getResetVoteManager()
+                            .getVoteManager()
                             .startVote(
                                     game.getDisplayName(),
-                                    "Welten komplett zurücksetzen",
+                                    game.getLanguageManager()
+                                            .get(
+                                                    "commands.levelborder.reset.vote-worlds"
+                                            ),
                                     () -> game.getPlugin()
                                             .getGameResetManager()
                                             .resetWorlds(game)
@@ -328,10 +379,13 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                 }
 
                 game.getPlugin()
-                        .getResetVoteManager()
+                        .getVoteManager()
                         .startVote(
                                 game.getDisplayName(),
-                                "Spielstand zurücksetzen",
+                                game.getLanguageManager()
+                                        .get(
+                                                "commands.levelborder.reset.vote-progress"
+                                        ),
                                 () -> {
 
                                     scoreboardManager.reset();
@@ -339,9 +393,11 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                                     timerManager.reset();
                                     portalManager.clearPortalWorldData();
 
-                                    Bukkit.broadcastMessage(
-                                            ChatColor.GREEN
-                                                    + "✔ LevelBorder wurde zurückgesetzt."
+                                    Bukkit.broadcast(
+                                            game.getLanguageManager()
+                                                    .getComponent(
+                                                            "commands.levelborder.reset.success"
+                                                    )
                                     );
                                 }
                         );
@@ -349,94 +405,99 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
 
             default ->
                     player.sendMessage(
-                            ChatColor.RED +
-                                    "Unbekannter Unterbefehl. Nutze /levelborder für Hilfe."
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "commands.levelborder.unknown"
+                                    )
                     );
         }
 
         return true;
     }
 
-    private int getPlayerStufe(Player p) {
-        return p.isOp() ? 4 : 2;
+    private int getPlayerStufe(Player player) {
+        return player.isOp() ? 4 : 2;
     }
 
     private void sendCommandHelp(Player player) {
 
         player.sendMessage("");
+
         player.sendMessage(
-                ChatColor.GOLD +
-                        "══════ LevelBorder Befehle ══════"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.title"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder info" +
-                        ChatColor.GRAY +
-                        " - Spielinfo anzeigen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.info"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder status" +
-                        ChatColor.GRAY +
-                        " - Aktuellen Spielstand anzeigen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.status"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder start" +
-                        ChatColor.GRAY +
-                        " - Challenge starten"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.start"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder stop" +
-                        ChatColor.GRAY +
-                        " - Challenge stoppen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.stop"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder center" +
-                        ChatColor.GRAY +
-                        " - Border-Mitte setzen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.center"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder set <Größe>" +
-                        ChatColor.GRAY +
-                        " - Bordergröße setzen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.set"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder score" +
-                        ChatColor.GRAY +
-                        " - Scoreboard verwalten"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.score"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder gamesettings" +
-                        ChatColor.GRAY +
-                        " - Spieleinstellungen öffnen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.settings"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder reset" +
-                        ChatColor.GRAY +
-                        " - Spielstand zurücksetzen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.reset"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder reset world" +
-                        ChatColor.GRAY +
-                        " - Welten komplett zurücksetzen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.help.reset-world"
+                        )
         );
 
         player.sendMessage("");
@@ -445,68 +506,84 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
     private void sendGameInfo(Player player) {
 
         player.sendMessage("");
+
         player.sendMessage(
-                ChatColor.GOLD +
-                        "══════ LevelBorder ══════"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.title"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.GRAY +
-                        "Ziel: Vergrößert gemeinsam die WorldBorder."
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.goal"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.GRAY +
-                        "Die Größe der Border richtet sich nach der Summe"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.description-1"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.GRAY +
-                        "der Spielerlevel aller Teilnehmer."
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.description-2"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.GRAY +
-                        "Je mehr Level ihr sammelt, desto größer wird"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.description-3"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.GRAY +
-                        "der Bereich, den ihr erkunden könnt."
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.description-4"
+                        )
         );
 
         player.sendMessage("");
+
         player.sendMessage(
-                ChatColor.GOLD +
-                        "Wichtige Befehle:"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.commands-title"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder status" +
-                        ChatColor.GRAY +
-                        " - Aktuellen Stand anzeigen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.status"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder score" +
-                        ChatColor.GRAY +
-                        " - Scoreboard verwalten"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.score"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder gamesettings" +
-                        ChatColor.GRAY +
-                        " - Einstellungen öffnen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.settings"
+                        )
         );
 
         player.sendMessage(
-                ChatColor.YELLOW +
-                        "/levelborder" +
-                        ChatColor.GRAY +
-                        " - Alle Befehle anzeigen"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.info.help"
+                        )
         );
 
         player.sendMessage("");
@@ -529,44 +606,64 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                         .sum();
 
         player.sendMessage(
-                ChatColor.AQUA +
-                        "============= 📊 LevelBorder Info ============="
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        "Aktuelle Gesamt-Level: " +
-                        ChatColor.YELLOW +
-                        total
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        "Bisheriger Rekord: " +
-                        ChatColor.GOLD +
-                        data.getMaxTotalLevel()
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        "Border-Größe: " +
-                        ChatColor.GREEN +
-                        data.getSize()
-        );
-
-        player.sendMessage(
-                ChatColor.GRAY +
-                        "Aktiv: " +
-                        (
-                                data.isActive()
-                                        ? ChatColor.GREEN + "Ja"
-                                        : ChatColor.RED + "Nein"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.title"
                         )
         );
 
         player.sendMessage(
-                ChatColor.AQUA +
-                        "============================================"
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.total-level",
+                                "value",
+                                total
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.record",
+                                "value",
+                                data.getMaxTotalLevel()
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.border-size",
+                                "value",
+                                data.getSize()
+                        )
+        );
+
+        Component activeValue =
+                data.isActive()
+                        ? game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.yes"
+                        )
+                        : game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.no"
+                        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.active",
+                                "value",
+                                activeValue
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "commands.levelborder.status.footer"
+                        )
         );
     }
 
@@ -619,9 +716,8 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                             "reset"
                     )
             );
-        }
 
-        else if (args.length == 2
+        } else if (args.length == 2
                 && args[0].equalsIgnoreCase("reset")) {
 
             list.add("world");

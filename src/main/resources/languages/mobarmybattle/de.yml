@@ -4,8 +4,6 @@ commands:
   arena-summary:
     player-only: "<red>Dieser Command ist nur für Spieler."
     manager-unavailable: "<red>ArenaManager nicht verfügbar."
-  language:
-    player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
   mob-status:
     player-only: "<red>Nur Spieler können diesen Befehl ausführen."
     invalid-team: "<red>❌ Ungültiges Team. Benutze: rot oder blau"
@@ -116,18 +114,8 @@ bundle:
   red-inventory-title: "<gold>Rot Inventar"
   inventory-not-found: "<red>Kein Inventar für dieses Team gefunden!"
 
-language-selection:
-  title: "<blue>Sprachauswahl"
-  german:
-    name: "<gold>Deutsch"
-    description: "<gray>Ändert die Sprache auf Deutsch"
-
-  english:
-    name: "<gold>English"
-    description: "<gray>Ändert die Sprache auf Englisch"
-  back: "<dark_aqua>Zurück"
-  changed-de: "<green>✓ Sprache auf Deutsch gesetzt!"
-  changed-en: "<green>✓ Sprache auf Englisch gesetzt!"
+  blue-name: "<blue>Blaues Team-Bundle"
+  red-name: "<red>Rotes Team-Bundle"
 
 options-gui:
   title: "<blue>MobArmyBattle Optionen"
@@ -228,8 +216,8 @@ setup-gui:
     name: "<dark_red>Reset Team-Welten"
     description: "<red>Welten Rot & Blau werden neu generiert"
   reset-lobby:
-    name: "<dark_red>Reset Lobby-Welt"
-    description: "<red>Lobby wird komplett zurückgesetzt"
+    name: "<dark_red>Alle Welten zurücksetzen"
+    description: "<red>Alle MobArmyBattle-Welten werden komplett neu erstellt"
   reset-arena:
     name: "<dark_red>Reset Arena-Welt"
     description: "<red>Arena wird komplett zurückgesetzt"
@@ -473,10 +461,6 @@ world-settings-gui:
     name: "<dark_aqua>Zurück"
     description: "<gray>Zurück zum vorherigen Menü"
 
-standard-settings:
-  name: "<gold>Welteinstellungen"
-  description: "<gray>Öffnet die allgemeinen Welteinstellungen"
-
 bundle-listener:
   drop-denied: "<red>🚫 Du kannst dein Team-Bundle nicht droppen!"
 
@@ -623,16 +607,10 @@ world-manager:
   progress-still-loaded-3: "<dark_red>zurückgesetzt werden!"
 
 player-join-listener:
-  notice:
-    line-1: "<gold><bold>Wichtige Mitteilung:</bold> <yellow>Klicke <aqua><bold>HIER</bold></aqua>, um weitere Informationen zu erhalten."
-    details-1: "<gray>Diese Version wird vorerst die letzte Version von MobArmyBattle sein."
-    details-2: "<gray>Mein nächstes Projekt wird <gold>BastiGHG Challenges - Fan Project</gold> heißen."
-    details-3: "<gray>MobArmyBattle wird dort wieder enthalten sein – unter dem ursprünglichen Namen <aqua>MobArmyBattle</aqua>."
-    details-4: "<yellow>Habt etwas Geduld – es wird kommen. :D"
-    hover: "<yellow>Klicken für weitere Informationen"
   welcome:
-    title: "Willkommen"
-    to: "zu"
+    name: "Runi´s MobArmyBattle"
+    settings: "<gray>Einstellungen: <aqua>/gamesettings"
+    info: "<gray>Infos zum Spiel: <aqua>/mobarmy info"
   help-hint: "<gold>Tipp:</gold> <gray>Mit </gray><aqua>/info</aqua><gray> bekommst du eine Übersicht aller Funktionen.</gray>"
   help-hover: "<yellow>Klicken für Hilfe</yellow>"
 
@@ -662,13 +640,21 @@ mobarmy-command:
     settings-command: "<yellow>/mobarmy gamesettings <gray>- Einstellungen öffnen"
     help-command: "<yellow>/mobarmy <gray>- Alle Befehle anzeigen"
 
-lobby-display:
-  waiting-for-load: "WARTET AUF LOAD"
-  no-game-selected: "Bitte zuerst ein Game auswählen."
+loading:
+  starting: "MobArmyBattle wird geladen..."
+  worlds: "Welten prüfen..."
+  managers: "Manager initialisieren..."
+  listeners: "Listener registrieren..."
+  commands: "Befehle registrieren..."
+  waves: "Waves laden..."
+  teams: "Teams laden..."
+  scoreboard: "Scoreboard vorbereiten..."
+  timer: "Timer vorbereiten..."
+  error: "FEHLER: %status%"
 
-  load-first: "Bitte zuerst LOAD drücken."
-  settings-load-first: "Settings erst nach LOAD verfügbar."
-  lobby-world-missing: "Lobby-Welt nicht gefunden."
-  loading: "%game% wird geladen..."
-  unloaded: "%game% entladen"
-  ready: "%game% BEREIT"
+resume:
+  paused-hint: |
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+    <yellow>⚠ Das Event ist derzeit pausiert.</yellow>
+    <gray>Fortsetzen mit </gray><green><bold>/mobarmy resume</bold></green>
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>

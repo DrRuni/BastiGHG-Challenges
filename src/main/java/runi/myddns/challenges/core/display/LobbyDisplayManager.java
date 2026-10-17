@@ -189,7 +189,7 @@ public class LobbyDisplayManager {
 
     public void setLoadUnloaded(String gameName) {
         setLoadStatus(
-                plugin.getLanguageManager().get(
+                plugin.getLanguageManager().get("core",
                         "lobby-display.unloaded",
                         "game",
                         gameName
@@ -436,7 +436,8 @@ public class LobbyDisplayManager {
                         START_Z + TEXT_Z_OFFSET,
                         1.02f,
                         Component.text(
-                                "GAME //",
+                                plugin.getLanguageManager()
+                                        .get("lobby-display.game-label"),
                                 TextColor.color(0x20D5C2)
                         ).decorate(
                                 TextDecoration.BOLD
@@ -456,7 +457,8 @@ public class LobbyDisplayManager {
                         START_Z + TEXT_Z_OFFSET,
                         1.20f,
                         Component.text(
-                                "NONE",
+                                plugin.getLanguageManager()
+                                        .get("lobby-display.none"),
                                 TextColor.color(0xB8FF32)
                         ).decorate(
                                 TextDecoration.BOLD
@@ -583,7 +585,12 @@ public class LobbyDisplayManager {
         if (loadTitleDisplay != null) {
             loadTitleDisplay.text(
                     Component.text(
-                            gameName + " ist geladen",
+                            plugin.getLanguageManager()
+                                    .get(
+                                            "lobby-display.loaded",
+                                            "game",
+                                            gameName
+                                    ),
                             TextColor.color(0x55CC44)
                     ).decorate(TextDecoration.BOLD)
             );
@@ -911,7 +918,8 @@ public class LobbyDisplayManager {
 
         Component infoButton =
                 Component.text(
-                                "[INFO]",
+                                plugin.getLanguageManager()
+                                        .get("lobby-display.info.button"),
                                 TextColor.color(0x20D5FF)
                         )
                         .decorate(TextDecoration.BOLD)
@@ -920,7 +928,8 @@ public class LobbyDisplayManager {
                         )
                         .hoverEvent(
                                 Component.text(
-                                        "Game-Info öffnen",
+                                        plugin.getLanguageManager()
+                                                .get("lobby-display.info.hover"),
                                         TextColor.color(0xCCCCCC)
                                 )
                         );
@@ -933,7 +942,8 @@ public class LobbyDisplayManager {
                         .append(gameName)
                         .append(
                                 Component.text(
-                                        " ist geladen. ",
+                                        plugin.getLanguageManager()
+                                                .get("lobby-display.info.loaded"),
                                         TextColor.color(0xDDDDDD)
                                 )
                         )

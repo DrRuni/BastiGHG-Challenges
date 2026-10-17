@@ -79,22 +79,14 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-
-        /*
-         * /mobarmy resume
-         */
         if (args[0].equalsIgnoreCase("resume")) {
 
             game.getEventResume()
-                    .resumeEvent();
+                    .resumeEvent(player);
 
             return true;
         }
 
-
-        /*
-         * /mobarmy gamesettings
-         */
         if (args[0].equalsIgnoreCase("gamesettings")) {
 
             if (!game.isLoaded()) {
@@ -116,10 +108,6 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-
-        /*
-         * /mobarmy reset ...
-         */
         if (args[0].equalsIgnoreCase("reset")) {
 
             ResetCommand resetCommand =

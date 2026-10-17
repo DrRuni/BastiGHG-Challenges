@@ -85,6 +85,7 @@ public class ArenaEventManager implements Listener {
     public void teleportTeamsToArena() {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!game.isMobArmyPlayer(player)) continue;
             if (!game.getTeamManager().isInTeam(player)) continue;
 
             game.getEventResume().savePlayerSpawn(player, player.getLocation());
@@ -198,6 +199,10 @@ public class ArenaEventManager implements Listener {
                     for (Player player :
                             Bukkit.getOnlinePlayers()) {
 
+                        if (!game.isMobArmyPlayer(player)) {
+                            continue;
+                        }
+
                         if (!game.getTeamManager()
                                 .isInTeam(player)) {
                             continue;
@@ -227,6 +232,10 @@ public class ArenaEventManager implements Listener {
 
                 for (Player player :
                         Bukkit.getOnlinePlayers()) {
+
+                    if (!game.isMobArmyPlayer(player)) {
+                        continue;
+                    }
 
                     if (!game.getTeamManager()
                             .isInTeam(player)) {
@@ -388,6 +397,7 @@ public class ArenaEventManager implements Listener {
         teamBossBars.put(teamFighting, bar);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
+            if (!game.isMobArmyPlayer(p)) continue;
             String team = game.getTeamManager().getPlayerTeam(p);
             if (team != null && team.equalsIgnoreCase(teamFighting)) {
                 bar.addPlayer(p);
@@ -401,6 +411,8 @@ public class ArenaEventManager implements Listener {
 
     private Player findNearestEnemy(LivingEntity mob, String enemyTeam) {
         return Bukkit.getOnlinePlayers().stream()
+                .filter(game::isMobArmyPlayer)
+                .filter(p -> p.getWorld().equals(mob.getWorld()))
                 .filter(p -> {
                     String team = game.getTeamManager().getPlayerTeam(p);
                     return team != null && team.equalsIgnoreCase(enemyTeam);
@@ -523,6 +535,8 @@ public class ArenaEventManager implements Listener {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
+            if (!game.isMobArmyPlayer(player)) continue;
+
             String team =
                     game.getTeamManager()
                             .getPlayerTeam(player);
@@ -569,6 +583,8 @@ public class ArenaEventManager implements Listener {
 
                 for (Player p :
                         Bukkit.getOnlinePlayers()) {
+
+                    if (!game.isMobArmyPlayer(p)) continue;
 
                     String team =
                             game.getTeamManager()
@@ -636,6 +652,8 @@ public class ArenaEventManager implements Listener {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
+            if (!game.isMobArmyPlayer(player)) continue;
+
             String team =
                     game.getTeamManager()
                             .getPlayerTeam(player);
@@ -700,6 +718,7 @@ public class ArenaEventManager implements Listener {
             currentWave.put(teamFighting, nextWave);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!game.isMobArmyPlayer(p)) continue;
                 String team = game.getTeamManager().getPlayerTeam(p);
                 if (team != null && team.equalsIgnoreCase(teamFighting)) {
                     showWaveCompleted(p, finishedWave);
@@ -724,6 +743,7 @@ public class ArenaEventManager implements Listener {
         List<? extends Player> teamPlayers =
                 Bukkit.getOnlinePlayers()
                         .stream()
+                        .filter(game::isMobArmyPlayer)
                         .filter(player ->
                                 team.equalsIgnoreCase(
                                         game.getTeamManager()
@@ -758,7 +778,7 @@ public class ArenaEventManager implements Listener {
 
                 for (Player player : teamPlayers) {
 
-                    if (player.isOnline()) {
+                    if (player.isOnline() && game.isMobArmyPlayer(player)) {
                         player.sendActionBar(message);
                     }
                 }
@@ -798,6 +818,7 @@ public class ArenaEventManager implements Listener {
         List<? extends Player> teamPlayers =
                 Bukkit.getOnlinePlayers()
                         .stream()
+                        .filter(game::isMobArmyPlayer)
                         .filter(player ->
                                 team.equalsIgnoreCase(
                                         game.getTeamManager()
@@ -824,7 +845,7 @@ public class ArenaEventManager implements Listener {
 
                 for (Player player : teamPlayers) {
 
-                    if (player.isOnline()) {
+                    if (player.isOnline() && game.isMobArmyPlayer(player)) {
                         player.sendActionBar(message);
                     }
                 }
@@ -875,6 +896,8 @@ public class ArenaEventManager implements Listener {
         for (Player player :
                 Bukkit.getOnlinePlayers()) {
 
+            if (!game.isMobArmyPlayer(player)) continue;
+
             player.sendMessage(
                     Component.empty()
             );
@@ -923,6 +946,8 @@ public class ArenaEventManager implements Listener {
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 
+            if (!game.isMobArmyPlayer(onlinePlayer)) continue;
+
             String onlineTeam =
                     game.getTeamManager().getPlayerTeam(onlinePlayer);
 
@@ -966,6 +991,8 @@ public class ArenaEventManager implements Listener {
 
         for (Player onlinePlayer :
                 Bukkit.getOnlinePlayers()) {
+
+            if (!game.isMobArmyPlayer(onlinePlayer)) continue;
 
             String world =
                     onlinePlayer.getWorld()
@@ -1058,7 +1085,15 @@ public class ArenaEventManager implements Listener {
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            TeleportManager.teleportToWaveSelection(game, player);
+
+            if (!isArenaWorld(player.getWorld())) {
+                continue;
+            }
+
+            TeleportManager.teleportToWaveSelection(
+                    game,
+                    player
+            );
 
             player.setGameMode(GameMode.SURVIVAL);
             player.setInvulnerable(false);
@@ -1217,6 +1252,14 @@ public class ArenaEventManager implements Listener {
                 }
             }
         }.runTaskTimer(game.getPlugin(), 0L, 20L).getTaskId();
+    }
+
+    public void removePlayer(Player player) {
+        if (player == null) return;
+
+        for (BossBar bar : teamBossBars.values()) {
+            bar.removePlayer(player);
+        }
     }
 
     private String formatMillis(long ms) {

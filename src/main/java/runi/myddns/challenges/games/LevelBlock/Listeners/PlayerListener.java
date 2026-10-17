@@ -29,10 +29,32 @@ public class PlayerListener implements Listener {
         if (!game.isLevelBlockPlayer(player)) return;
 
         player.sendMessage("");
-        player.sendMessage(ColorUtil.borderColor("Run´s LevelBlock"));
+
+        player.sendMessage(
+                ColorUtil.borderColor(
+                        game.getLanguageManager()
+                                .get(
+                                        "player-listener.welcome.name"
+                                )
+                )
+        );
+
         player.sendMessage("");
-        player.sendMessage(ChatColor.GRAY + "Einstellungen: " + ChatColor.AQUA + "/gamesettings");
-        player.sendMessage(ChatColor.GRAY + "Spielinfo: " + ChatColor.AQUA + "/levelblock info");
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "player-listener.welcome.settings"
+                        )
+        );
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "player-listener.welcome.info"
+                        )
+        );
+
         player.sendMessage("");
 
         Bukkit.getScheduler().runTaskLater(

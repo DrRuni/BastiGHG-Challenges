@@ -1,0 +1,165 @@
+file-version: 1
+
+commands:
+  language:
+    player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
+  gamesettings:
+    player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
+    no-game-selected: "<red>Kein Game ausgewählt."
+    load-first: "<gold>Bitte zuerst das Game laden."
+  info:
+    player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
+    no-game-loaded: "<red>Aktuell ist kein Game geladen."
+    game-not-found: "<red>Dieses Game wurde nicht gefunden."
+    usage: "<gray>Verwendung: <aqua>/info [game]"
+  lobby:
+    op-only: "<red>Dafür musst du OP sein."
+    all-teleported: "<green>Alle Spieler wurden in die Lobby teleportiert."
+    player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
+
+lobby-buttons:
+  select: "AUSWAHL"
+  load: "LADEN"
+  start: "START"
+  settings: "EINSTELLUNGEN"
+  change-blocked-loading: "Während des Ladens kann das Game nicht gewechselt werden."
+  loading: "%game% wird geladen..."
+  already-loaded: "%game% wurde bereits geladen"
+  no-game-selected: "Bitte zuerst ein Game auswählen."
+
+language-selection:
+  title: "<blue>Sprachauswahl"
+  german:
+    name: "<gold>Deutsch"
+    description: "<gray>Ändert die Sprache auf Deutsch"
+  english:
+    name: "<gold>English"
+    description: "<gray>Ändert die Sprache auf Englisch"
+  back: "<dark_aqua>Zurück"
+  changed-de: "<green>✓ Sprache auf Deutsch gesetzt!"
+  changed-en: "<green>✓ Sprache auf Englisch gesetzt!"
+
+lobby-display:
+  waiting-for-load: "WARTET AUF LOAD"
+  no-game-selected: "Bitte zuerst ein Game auswählen."
+  load-first: "Bitte zuerst LOAD drücken."
+  settings-load-first: "Settings erst nach LOAD verfügbar."
+  lobby-world-missing: "Lobby-Welt nicht gefunden."
+  loading: "%game% wird geladen..."
+  loaded: "%game% ist geladen"
+  unloaded: "%game% entladen"
+  ready: "%game% BEREIT"
+  game-label: "GAME //"
+  none: "KEINS"
+  info:
+    button: "[INFO]"
+    hover: "Game-Info öffnen"
+    loaded: " ist geladen. "
+
+standard-settings:
+  name: "<gold>Welteinstellungen"
+  description: "<gray>Öffnet die allgemeinen Welteinstellungen"
+
+game-info:
+  title-suffix: " • INFO"
+  description: "Spielinfo"
+  features: "Features"
+  commands: "Befehle"
+  close: "Schließen"
+  no-information: "Keine Informationen verfügbar."
+
+reset-management:
+  load-first: "<red>Bitte zuerst ein Game laden."
+  unsupported-game: "<red>Für dieses Spiel gibt es hier keine Reset-Verwaltung."
+  title-prefix: "Reset » "
+  progress:
+    name: "Spielstand zurücksetzen"
+    line-1: "Setzt den Fortschritt des Spiels zurück."
+    line-2: "Die Welten bleiben erhalten."
+  worlds:
+    name: "Welten zurücksetzen"
+    line-1: "Löscht und erstellt die Spielwelten neu."
+    line-2: "Achtung: Alle Änderungen in den Welten gehen verloren!"
+  back:
+    name: "Zurück"
+    description: "Zurück zu den WorldSettings."
+
+world-settings:
+  load-first: "Bitte zuerst ein Game laden."
+  title-prefix: "Settings » "
+  mob-spawning: "Mob Spawning"
+  keep-inventory: "Keep Inventory"
+  night-vision: "Night Vision"
+  daylight-cycle: "Daylight Cycle"
+  reset:
+    name: "Reset / Verwaltung"
+    description: "Spielstand oder Welten zurücksetzen"
+  state:
+    "on": "AN"
+    "off": "AUS"
+    status: "Status: %state%"
+  difficulty:
+    title: "Difficulty: %difficulty%"
+    click: "Klicken zum Ändern"
+    peaceful: "Peaceful"
+    easy: "Easy"
+    normal: "Normal"
+    hard: "Hard"
+    ultra-hardcore: "Ultra Hardcore"
+    ultra-ultra-hardcore: "Ultra Ultra Hardcore"
+  time:
+    title: "World Time: %phase%"
+    click: "Klicken zum Ändern"
+    morning: "Morgen"
+    noon: "Mittag"
+    evening: "Abend"
+    night: "Nacht"
+  back:
+    name: "Zurück"
+    description: "Zurück zur Lobby"
+
+vote:
+  already-running: "<red>Es läuft bereits eine Abstimmung."
+  accepted-self: "<green>✔ Du hast zugestimmt."
+  cancelled: "hat die Abstimmung abgebrochen."
+  rejected: "hat die Abstimmung abgelehnt."
+  yes:
+    name: "JA"
+    description: "Zustimmen"
+  no:
+    name: "NEIN"
+    description: "Ablehnen"
+
+game-reset:
+  already-running: "<red>❌ Es läuft bereits ein Reset."
+  game:
+    resetting: "Spielstand wird zurückgesetzt..."
+    finished: "Reset abgeschlossen!"
+    broadcast-finished: "<green>✔ %game% wurde zurückgesetzt."
+  worlds:
+    resetting: "Welten werden zurückgesetzt..."
+    broadcast-resetting: "<gold>⏳ %game%-Welten werden zurückgesetzt..."
+    recreating: "Welten werden neu erstellt..."
+    failed: "Reset fehlgeschlagen!"
+    broadcast-failed: "<red>❌ Fehler beim Zurücksetzen der %game%-Welten."
+    finished: "Reset abgeschlossen!"
+    broadcast-finished: "<green>✔ %game%-Welten wurden neu erstellt."
+
+player-join:
+  welcome: |
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+    <bold><gradient:#FF5ACD:#8B5CFF:#20D5FF>       BastiGHG's Challenges</gradient></bold>
+    <#C38CFF>              Fan Project</#C38CFF>
+    
+    <gray>Willkommen auf dem </gray><bold><gradient:#FF4FD8:#8C63FF:#22D3FF>Challenge Network</gradient></bold><gray>!</gray>
+
+    <gray>Wähle in der Lobby eine Challenge aus,</gray>
+    <gray>lade sie und starte dein Game.</gray>
+
+    <#22D3FF>Viel Spaß!</#22D3FF>
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+
+  resource-pack:
+    title: "BastiGHG Challenges"
+    line-1: "Optionales Resource Pack für"
+    line-2: "eigene Grafiken und Icons."

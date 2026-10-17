@@ -69,9 +69,9 @@ public class LevelBorderManager {
 
     public void resetBorder(Player initiator) {
         game.getPlugin().getLogger().info(
-                ConsoleColor.RED + "     🔄 LevelBorder-Reset wurde von "
+                ConsoleColor.RED + "     🔄 LevelBorder reset was executed by "
                         + initiator.getName()
-                        + " ausgeführt."
+                        + "."
                         + ConsoleColor.RESET
         );
 

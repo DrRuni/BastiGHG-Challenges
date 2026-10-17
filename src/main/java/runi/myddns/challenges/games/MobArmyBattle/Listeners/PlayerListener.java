@@ -23,12 +23,20 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+
         Player player = event.getPlayer();
 
-        game.getEventResume().savePlayerLastLocation(player);
-        game.getScoreboardSwitcher().removePlayer(player);
+        if (game.isMobArmyPlayer(player)) {
+            game.getEventResume()
+                    .savePlayerLastLocation(player);
+        }
 
-        TimerManager timer = game.getTimerManager();
+        game.getScoreboardSwitcher()
+                .removePlayer(player);
+
+        TimerManager timer =
+                game.getTimerManager();
+
         if (timer != null) {
             timer.removeBossBarFor(player);
         }
@@ -45,14 +53,28 @@ public class PlayerListener implements Listener {
                     player.sendMessage("");
                     player.sendMessage(
                             GradientText.gradient(
-                                    "Runi´s MobArmyBattle",
+                                    game.getLanguageManager()
+                                            .get("player-join-listener.welcome.name"),
                                     220, 50, 50,
                                     50, 110, 255
                             )
                     );
                     player.sendMessage("");
-                    player.sendMessage("§7Einstellungen: §b/gamesettings");
-                    player.sendMessage("§7Infos zum Spiel: §b/mobarmy info");
+
+                    player.sendMessage(
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "player-join-listener.welcome.settings"
+                                    )
+                    );
+
+                    player.sendMessage(
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "player-join-listener.welcome.info"
+                                    )
+                    );
+
                     player.sendMessage("");
 
                     player.playSound(
@@ -77,29 +99,7 @@ public class PlayerListener implements Listener {
                             )
                     );
                 },
-                40L
+                20L
         );
-    }
-
-    public void showHelpHint(Player player) {
-        Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-            if (!player.isOnline()) return;
-
-            Component message = game.getLanguageManager()
-                    .getComponent("player-join-listener.help-hint")
-                    .clickEvent(ClickEvent.runCommand("/info"))
-                    .hoverEvent(
-                            HoverEvent.showText(
-                                    game.getLanguageManager().getComponent(
-                                            "player-join-listener.help-hover"
-                                    )
-                            )
-                    );
-
-            player.sendMessage(Component.empty());
-            player.sendMessage(message);
-            player.sendMessage(Component.empty());
-
-        }, 100L);
     }
 }

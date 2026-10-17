@@ -1,5 +1,6 @@
 package runi.myddns.challenges.games.LevelBorder.Manager;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -61,6 +62,7 @@ public class ScoreboardManager {
     }
 
     private void updateBoard(Player player) {
+
         Scoreboard board = boards.get(player);
         Objective objective = objectives.get(player);
 
@@ -71,7 +73,8 @@ public class ScoreboardManager {
 
         objective.setDisplayName(
                 ColorUtil.animatedBlueGradient(
-                        "- LevelBorder -",
+                        game.getLanguageManager()
+                                .get("scoreboard.title"),
                         titleTick
                 )
         );
@@ -86,43 +89,113 @@ public class ScoreboardManager {
 
         AtomicInteger score = new AtomicInteger(0);
 
-        addLine(player, score.getAndIncrement(), ChatColor.AQUA + "🧍 Spieler:");
-        addLine(player, score.getAndIncrement(), " ");
+        addLine(
+                player,
+                score.getAndIncrement(),
+                game.getLanguageManager()
+                        .getComponent("scoreboard.players")
+        );
 
-        Map<String, Integer> allPlayers = new HashMap<>(data.getAllPlayerLevels());
+        addLine(
+                player,
+                score.getAndIncrement(),
+                Component.empty()
+        );
+
+        Map<String, Integer> allPlayers =
+                new HashMap<>(
+                        data.getAllPlayerLevels()
+                );
 
         allPlayers.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey(String.CASE_INSENSITIVE_ORDER))
-                .forEach(entry -> addLine(
-                        player,
-                        score.getAndIncrement(),
-                        ChatColor.GRAY + "   - " + ChatColor.GREEN + entry.getKey()
-                                + ": " + ChatColor.GOLD + entry.getValue()
-                ));
+                .sorted(
+                        Map.Entry.comparingByKey(
+                                String.CASE_INSENSITIVE_ORDER
+                        )
+                )
+                .forEach(entry -> {
 
-        addLine(player, score.getAndIncrement(), " ");
-        addLine(player, score.getAndIncrement(), ChatColor.AQUA + "🌐 Bordergröße:");
-        addLine(player, score.getAndIncrement(),
-                ChatColor.GRAY + "   - " + ChatColor.GOLD + (int) data.getSize() + " m");
+                    Component playerLine =
+                            game.getLanguageManager()
+                                    .getComponent(
+                                            "scoreboard.player-line",
+                                            Map.of(
+                                                    "player",
+                                                    Component.text(entry.getKey()),
+
+                                                    "level",
+                                                    Component.text(String.valueOf(entry.getValue()))
+                                            )
+                                    );
+
+                    addLine(
+                            player,
+                            score.getAndIncrement(),
+                            playerLine
+                    );
+                });
+
+        addLine(
+                player,
+                score.getAndIncrement(),
+                Component.empty()
+        );
+
+        addLine(
+                player,
+                score.getAndIncrement(),
+                game.getLanguageManager()
+                        .getComponent(
+                                "scoreboard.border-size"
+                        )
+        );
+
+        addLine(
+                player,
+                score.getAndIncrement(),
+                game.getLanguageManager()
+                        .getComponent(
+                                "scoreboard.border-size-value",
+                                "size",
+                                Component.text(
+                                        (int) data.getSize()
+                                )
+                        )
+        );
     }
 
-    private void addLine(Player player, int lineNumber, String text) {
+    private void addLine(
+            Player player,
+            int lineNumber,
+            Component text
+    ) {
+
         Scoreboard board = boards.get(player);
         Objective objective = objectives.get(player);
 
-        String entry = ChatColor.values()[lineNumber].toString();
+        String entry =
+                ChatColor.values()[lineNumber]
+                        .toString();
 
-        Team team = board.getTeam("line" + lineNumber);
+        Team team =
+                board.getTeam(
+                        "line" + lineNumber
+                );
 
         if (team == null) {
-            team = board.registerNewTeam("line" + lineNumber);
+
+            team = board.registerNewTeam(
+                    "line" + lineNumber
+            );
+
             team.addEntry(entry);
         }
 
-        team.setPrefix(text);
-        team.setSuffix("");
+        team.prefix(text);
+        team.suffix(Component.empty());
 
-        objective.getScore(entry).setScore(0);
+        objective.getScore(entry)
+                .setScore(0);
     }
 
     public void hide() {
@@ -166,7 +239,10 @@ public class ScoreboardManager {
         Objective objective = board.registerNewObjective(
                 "lbinfo",
                 "dummy",
-                ChatColor.GOLD + "🌍 LevelBorder"
+                game.getLanguageManager()
+                        .getComponent(
+                                "scoreboard.objective-title"
+                        )
         );
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);

@@ -28,7 +28,6 @@ public class PluginFileManager {
 
     private static final List<String> ROOT_RESOURCE_FILES = List.of("config.yml");
     private static final List<String> ROOT_EMPTY_FILES = List.of("game-state.yml");
-    private static final List<String> LANGUAGE_FILES = List.of("de.yml", "en.yml");
     private static final String WORLD_SETTINGS_RESOURCE = "core/gamesettings.yml";
 
     private static final GameFiles MOB_ARMY_BATTLE = new GameFiles(
@@ -79,6 +78,18 @@ public class PluginFileManager {
             LEVEL_BLOCK
     );
 
+    private static final List<String> LANGUAGE_GROUPS = List.of(
+            "core",
+            "mobarmybattle",
+            "levelborder",
+            "levelblock"
+    );
+
+    private static final List<String> LANGUAGE_FILES = List.of(
+            "de.yml",
+            "en.yml"
+    );
+
     public PluginFileManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
@@ -121,9 +132,9 @@ public class PluginFileManager {
 
     private void checkLanguageFiles() {
 
-        File languageFolder = new File(plugin.getDataFolder(), "languages");
+        File languageRoot = new File(plugin.getDataFolder(), "languages");
 
-        if (!languageFolder.exists() && !languageFolder.mkdirs()) {
+        if (!languageRoot.exists() && !languageRoot.mkdirs()) {
             plugin.getLogger().warning("Sprachordner konnte nicht erstellt werden.");
             return;
         }
@@ -136,8 +147,26 @@ public class PluginFileManager {
         );
         Bukkit.getConsoleSender().sendMessage("");
 
-        for (String fileName : LANGUAGE_FILES) {
-            checkYamlFile(languageFolder, "languages/", fileName);
+        for (String group : LANGUAGE_GROUPS) {
+
+            File groupFolder = new File(languageRoot, group);
+
+            if (!groupFolder.exists() && !groupFolder.mkdirs()) {
+                plugin.getLogger().warning(
+                        "Sprachordner konnte nicht erstellt werden: " + groupFolder.getPath()
+                );
+                continue;
+            }
+
+            String resourcePrefix = "languages/" + group + "/";
+
+            for (String fileName : LANGUAGE_FILES) {
+                checkYamlFile(
+                        groupFolder,
+                        resourcePrefix,
+                        fileName
+                );
+            }
         }
 
         Bukkit.getConsoleSender().sendMessage("");

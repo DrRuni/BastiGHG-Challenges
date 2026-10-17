@@ -286,7 +286,7 @@ public class BorderDataManager {
             game.getPlugin()
                     .getLogger()
                     .warning(
-                            "Fehler beim Speichern von gamedata.yml"
+                            "Failed to save gamedata.yml"
                     );
         }
     }

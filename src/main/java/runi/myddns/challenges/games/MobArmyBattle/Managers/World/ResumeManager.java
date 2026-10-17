@@ -123,7 +123,7 @@ public class ResumeManager {
         saveConfig();
     }
 
-    public boolean resumeEvent() {
+    public boolean resumeEvent(Player initiator) {
 
         if (!isEventStarted()) {
             broadcast(
@@ -139,37 +139,81 @@ public class ResumeManager {
             return false;
         }
 
+        String initiatorTeam =
+                game.getTeamManager()
+                        .getPlayerTeam(initiator);
+
+        if (initiatorTeam == null
+                || initiatorTeam.equalsIgnoreCase("Kein Team")) {
+
+            initiator.sendMessage(
+                    lang("resume-manager.no-team")
+            );
+
+            game.getTeamSelectionGUI()
+                    .openGUI(initiator);
+
+            return false;
+        }
+
         int phase = loadPhase();
 
-        boolean allPlayersHaveTeam = true;
+        java.util.List<Player> playersWithoutTeam =
+                new java.util.ArrayList<>();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            String team = game.getTeamManager().getPlayerTeam(player);
 
-            if (team == null || team.equalsIgnoreCase("Kein Team")) {
-                allPlayersHaveTeam = false;
-                player.sendMessage(
-                        lang("resume-manager.no-team")
-                );
-                game.getTeamSelectionGUI().openGUI(player);
+            if (!game.isMobArmyPlayer(player)) {
+                continue;
+            }
+
+            String team =
+                    game.getTeamManager()
+                            .getPlayerTeam(player);
+
+            if (team == null
+                    || team.equalsIgnoreCase("Kein Team")) {
+
+                playersWithoutTeam.add(player);
             }
         }
 
-        if (!allPlayersHaveTeam) {
-            broadcast(
-                    lang("resume-manager.missing-teams")
+        if (!playersWithoutTeam.isEmpty()) {
+
+            initiator.sendMessage(
+                    net.kyori.adventure.text.minimessage.MiniMessage
+                            .miniMessage()
+                            .deserialize(
+                                    "<yellow>⚠ Es befinden sich noch Spieler ohne Team in der Lobby.</yellow>\n"
+                                            + "<gray>Diese können ein Team auswählen, "
+                                            + "die Abstimmung abwarten und danach erneut "
+                                            + "auf START klicken.</gray>"
+                            )
             );
-            return false;
         }
 
         game.getTimerManager().stopTimer();
         game.getTimerManager().updateBossBar();
 
         if (phase == PHASE_TEAMWELT) {
+
             for (Player p : Bukkit.getOnlinePlayers()) {
-                String team = game.getTeamManager().getPlayerTeam(p);
+
+                if (!game.isMobArmyPlayer(p)) {
+                    continue;
+                }
+
+                String team =
+                        game.getTeamManager()
+                                .getPlayerTeam(p);
+
+                if (team == null
+                        || team.equalsIgnoreCase("Kein Team")) {
+                    continue;
+                }
 
                 String worldName = null;
+
                 if ("rot".equalsIgnoreCase(team)) {
                     worldName = "world_rot";
                 } else if ("blau".equalsIgnoreCase(team)) {
@@ -181,31 +225,49 @@ public class ResumeManager {
                 }
 
                 World teamWorld = Bukkit.getWorld(worldName);
+
                 if (teamWorld == null) {
                     continue;
                 }
 
-                Location last = locationManager.getLastLocation(p);
-                Location current = p.getLocation();
+                Location last =
+                        locationManager.getLastLocation(p);
+
+                Location current =
+                        p.getLocation();
+
                 Location target;
 
                 if (isInPlayersTeamWorldGroup(p, current)) {
+
                     target = current;
-                } else if (last != null && isInPlayersTeamWorldGroup(p, last)) {
+
+                } else if (last != null
+                        && isInPlayersTeamWorldGroup(p, last)) {
+
                     target = last;
+
                 } else {
-                    target = teamWorld.getSpawnLocation();
+
+                    target =
+                            teamWorld.getSpawnLocation();
                 }
 
                 p.teleport(target);
-                p.setGameMode(org.bukkit.GameMode.SURVIVAL);
+
+                p.setGameMode(
+                        org.bukkit.GameMode.SURVIVAL
+                );
+
                 p.setInvulnerable(false);
             }
 
             game.getTimerManager().setForward(false);
             game.getTimerManager().startTimer();
 
-            game.getMobSaveManager().setMobSaveMode(MobSaveManager.MobSaveMode.ENABLED);
+            game.getMobSaveManager().setMobSaveMode(
+                    MobSaveManager.MobSaveMode.ENABLED
+            );
 
             setEventStarted(true);
             setEventPaused(false);
@@ -213,23 +275,56 @@ public class ResumeManager {
             broadcast(
                     lang("resume-manager.resumed-team-world")
             );
+
+            sendJoinHintToPlayersWithoutTeam(
+                    playersWithoutTeam
+            );
+
             return true;
         }
 
         if (phase == PHASE_WAVEAUSWAHL) {
+
             for (Player p : Bukkit.getOnlinePlayers()) {
-                TeleportManager.teleportToWaveSelection(game, p);
-                p.setGameMode(org.bukkit.GameMode.SURVIVAL);
+
+                if (!game.isMobArmyPlayer(p)) {
+                    continue;
+                }
+
+                String team =
+                        game.getTeamManager()
+                                .getPlayerTeam(p);
+
+                if (team == null
+                        || team.equalsIgnoreCase("Kein Team")) {
+                    continue;
+                }
+
+                TeleportManager.teleportToWaveSelection(
+                        game,
+                        p
+                );
+
+                p.setGameMode(
+                        org.bukkit.GameMode.SURVIVAL
+                );
+
                 p.setInvulnerable(false);
 
-                savePlayerSpawn(p, p.getLocation());
+                savePlayerSpawn(
+                        p,
+                        p.getLocation()
+                );
             }
 
             saveTimerState(0, true);
+
             game.getTimerManager().setForward(true);
             game.getTimerManager().startTimer();
 
-            game.getMobSaveManager().setMobSaveMode(MobSaveManager.MobSaveMode.DISABLED);
+            game.getMobSaveManager().setMobSaveMode(
+                    MobSaveManager.MobSaveMode.DISABLED
+            );
 
             setEventStarted(true);
             setEventPaused(false);
@@ -237,23 +332,56 @@ public class ResumeManager {
             broadcast(
                     lang("resume-manager.resumed-wave-selection")
             );
+
+            sendJoinHintToPlayersWithoutTeam(
+                    playersWithoutTeam
+            );
+
             return true;
         }
 
         if (phase == PHASE_ARENA) {
+
             for (Player p : Bukkit.getOnlinePlayers()) {
-                TeleportManager.teleportToArena(game, p);
-                p.setGameMode(org.bukkit.GameMode.SURVIVAL);
+
+                if (!game.isMobArmyPlayer(p)) {
+                    continue;
+                }
+
+                String team =
+                        game.getTeamManager()
+                                .getPlayerTeam(p);
+
+                if (team == null
+                        || team.equalsIgnoreCase("Kein Team")) {
+                    continue;
+                }
+
+                TeleportManager.teleportToArena(
+                        game,
+                        p
+                );
+
+                p.setGameMode(
+                        org.bukkit.GameMode.SURVIVAL
+                );
+
                 p.setInvulnerable(false);
 
-                savePlayerSpawn(p, p.getLocation());
+                savePlayerSpawn(
+                        p,
+                        p.getLocation()
+                );
             }
 
             saveTimerState(0, true);
+
             game.getTimerManager().setForward(true);
             game.getTimerManager().startTimer();
 
-            game.getMobSaveManager().setMobSaveMode(MobSaveManager.MobSaveMode.DISABLED);
+            game.getMobSaveManager().setMobSaveMode(
+                    MobSaveManager.MobSaveMode.DISABLED
+            );
 
             setEventStarted(true);
             setEventPaused(false);
@@ -261,12 +389,18 @@ public class ResumeManager {
             broadcast(
                     lang("resume-manager.resumed-arena")
             );
+
+            sendJoinHintToPlayersWithoutTeam(
+                    playersWithoutTeam
+            );
+
             return true;
         }
 
         broadcast(
                 lang("resume-manager.unknown-phase")
         );
+
         return false;
     }
 
@@ -322,6 +456,37 @@ public class ResumeManager {
     private void broadcast(Component message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(message);
+        }
+    }
+    private void sendJoinHintToPlayersWithoutTeam(
+            java.util.List<Player> players
+    ) {
+
+        if (players.isEmpty()) {
+            return;
+        }
+
+        for (Player player : players) {
+
+            if (!player.isOnline()) {
+                continue;
+            }
+
+            player.sendMessage(
+                    net.kyori.adventure.text.minimessage.MiniMessage
+                            .miniMessage()
+                            .deserialize(
+                                    "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>\n"
+                                            + "<green><bold>MobArmyBattle wurde fortgesetzt.</bold></green>\n"
+                                            + "<gray>Wenn du teilnehmen möchtest, wähle bitte ein Team.</gray>\n"
+                                            + "<gray>Warte die Abstimmung ab und klicke danach erneut auf </gray>"
+                                            + "<aqua><bold>START</bold></aqua><gray>.</gray>\n"
+                                            + "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>"
+                            )
+            );
+
+            game.getTeamSelectionGUI()
+                    .openGUI(player);
         }
     }
 }

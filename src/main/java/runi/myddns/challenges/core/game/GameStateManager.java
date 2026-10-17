@@ -73,7 +73,9 @@ public class GameStateManager {
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().severe("game-state.yml konnte nicht gespeichert werden: " + e.getMessage());
+            plugin.getLogger().severe(
+                    "Could not save game-state.yml: " + e.getMessage()
+            );
         }
     }
 }

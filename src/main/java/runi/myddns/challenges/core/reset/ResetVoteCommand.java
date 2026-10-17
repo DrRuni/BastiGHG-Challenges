@@ -26,12 +26,12 @@ public class ResetVoteCommand implements CommandExecutor {
         if (args.length != 1) return true;
 
         if (args[0].equalsIgnoreCase("yes")) {
-            plugin.getResetVoteManager().vote(player, true);
+            plugin.getVoteManager().vote(player, true);
             return true;
         }
 
         if (args[0].equalsIgnoreCase("no")) {
-            plugin.getResetVoteManager().vote(player, false);
+            plugin.getVoteManager().vote(player, false);
             return true;
         }
 

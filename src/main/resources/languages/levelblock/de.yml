@@ -1,0 +1,58 @@
+file-version: 1
+
+loading:
+  starting: "LevelBlock wird geladen..."
+  worlds: "Welten laden..."
+  world-settings: "Welteneinstellungen laden..."
+  data: "LevelBlock-Daten laden..."
+  overworld: "Overworld vorbereiten..."
+  nether: "Nether vorbereiten..."
+  end: "End vorbereiten..."
+  listeners: "Listener registrieren..."
+  commands: "Commands registrieren..."
+  border: "Border vorbereiten..."
+  error: "FEHLER: %status%"
+
+commands:
+  levelblock:
+    load-first-settings: "<gold>Bitte zuerst LevelBlock laden."
+    load-first: "<red>LevelBlock muss zuerst geladen werden."
+    admin-start-only: "<red>❌ Nur ein Admin darf LevelBlock starten."
+    already-started: "<red>LevelBlock wurde bereits gestartet."
+    started: "<green>LevelBlock wurde gestartet."
+    admin-reset-only: "<red>❌ Nur ein Admin darf LevelBlock zurücksetzen."
+    unknown: "<red>Unbekannter Unterbefehl."
+    reset-complete: "<green>✔ LevelBlock wurde zurückgesetzt."
+
+    vote:
+      reset-worlds: "Welten komplett zurücksetzen"
+      reset-progress: "Spielstand zurücksetzen"
+
+    help:
+      title: "<gold>══════ LevelBlock Befehle ══════"
+      info: "<yellow>/levelblock info <gray>- Spielinfo anzeigen"
+      start: "<yellow>/levelblock start <gray>- Challenge starten"
+      settings: "<yellow>/levelblock gamesettings <gray>- Spieleinstellungen öffnen"
+      reset: "<yellow>/levelblock reset <gray>- Spielstand zurücksetzen"
+      reset-world: "<yellow>/levelblock reset world <gray>- Welten komplett zurücksetzen"
+
+    info:
+      title: "<gold>══════ LevelBlock ══════"
+      goal: "<gray>Ziel: Erweitert eure Welt Block für Block."
+      start-area: "<gray>Zu Beginn steht euch nur ein kleiner Bereich zur Verfügung."
+      progress-1: "<gray>Durch euren Level-Fortschritt werden weitere Blöcke freigeschaltet"
+      progress-2: "<gray>und die spielbare Welt wächst immer weiter."
+      commands-title: "<gold>Wichtige Befehle:"
+      start-command: "<yellow>/levelblock start <gray>- Challenge starten"
+      settings-command: "<yellow>/levelblock gamesettings <gray>- Einstellungen öffnen"
+      help-command: "<yellow>/levelblock <gray>- Alle Befehle anzeigen"
+
+move-listener:
+  need-level: "<red>Du benötigst 1 Level!"
+  block-unlocked: "<green>Neuer Block freigeschaltet! <gray>-1 Level"
+
+player-listener:
+  welcome:
+    name: "Run´s LevelBlock"
+    settings: "<gray>Einstellungen: <aqua>/gamesettings"
+    info: "<gray>Spielinfo: <aqua>/levelblock info"

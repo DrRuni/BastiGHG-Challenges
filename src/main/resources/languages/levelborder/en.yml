@@ -1,0 +1,106 @@
+file-version: 1
+
+commands:
+  levelborder:
+    player-only: "<red>Only players can use this command."
+
+    load-first-settings: "<gold>Please load LevelBorder first."
+
+    center:
+      admin-only: "<red>❌ Only an admin may set the border center!"
+      success: "<green>📍 Border center set exactly to the block center!"
+
+    start:
+      admin-only: "<red>❌ Only an admin may start LevelBorder!"
+      success: "<green>✅ Border activated!"
+
+    stop:
+      admin-only: "<red>❌ Only an admin may stop LevelBorder!"
+      success: "<red>🛑 Border deactivated!"
+
+    set:
+      admin-only: "<red>❌ Only an admin may change the border size!"
+      usage: "<red>⚠ Usage: /levelborder set [size]"
+      success: "<yellow>📏 Border size set to %size% blocks."
+      invalid-number: "<red>Please enter a valid number!"
+
+    reset:
+      load-first: "<red>❌ LevelBorder must be loaded first."
+      admin-only: "<red>❌ Only an admin may reset LevelBorder!"
+      vote-worlds: "Completely reset worlds"
+      vote-progress: "Reset game progress"
+      success: "<green>✔ LevelBorder has been reset."
+
+    unknown: "<red>Unknown subcommand. Use /levelborder for help."
+
+    help:
+      title: "<gold>══════ LevelBorder Commands ══════"
+      info: "<yellow>/levelborder info <gray>- Show game information"
+      status: "<yellow>/levelborder status <gray>- Show current game status"
+      start: "<yellow>/levelborder start <gray>- Start the challenge"
+      stop: "<yellow>/levelborder stop <gray>- Stop the challenge"
+      center: "<yellow>/levelborder center <gray>- Set border center"
+      set: "<yellow>/levelborder set <size> <gray>- Set border size"
+      score: "<yellow>/levelborder score <gray>- Manage scoreboard"
+      settings: "<yellow>/levelborder gamesettings <gray>- Open game settings"
+      reset: "<yellow>/levelborder reset <gray>- Reset game progress"
+      reset-world: "<yellow>/levelborder reset world <gray>- Completely reset worlds"
+
+    info:
+      title: "<gold>══════ LevelBorder ══════"
+      goal: "<gray>Goal: Expand the WorldBorder together."
+      description-1: "<gray>The border size is based on the combined"
+      description-2: "<gray>player levels of all participants."
+      description-3: "<gray>The more levels you collect, the larger"
+      description-4: "<gray>the area you can explore becomes."
+      commands-title: "<gold>Important commands:"
+      status: "<yellow>/levelborder status <gray>- Show current status"
+      score: "<yellow>/levelborder score <gray>- Manage scoreboard"
+      settings: "<yellow>/levelborder gamesettings <gray>- Open settings"
+      help: "<yellow>/levelborder <gray>- Show all commands"
+
+    status:
+      title: "<aqua>============= 📊 LevelBorder Info ============="
+      total-level: "<gray>Current total levels: <yellow>%value%"
+      record: "<gray>Previous record: <gold>%value%"
+      border-size: "<gray>Border size: <green>%value%"
+      active: "<gray>Active: <value>"
+      yes: "<green>Yes"
+      no: "<red>No"
+      footer: "<aqua>============================================"
+
+scoreboard-command:
+  player-only: "<red>Only players can use this command."
+  hidden: "<gray>📉 Scoreboard hidden."
+  shown: "<green>📈 Scoreboard shown again."
+  admin-reset-only: "<red>❌ Only an admin may reset the scoreboard!"
+  reset: "<gold>♻ Scoreboard data has been reset."
+
+  help:
+    title: "<gold>========== LevelBorder Scoreboard =========="
+    hide: "<gray>/lbscore hide <dark_gray>→ Hide scoreboard"
+    reload: "<gray>/lbscore reload <dark_gray>→ Show scoreboard again"
+    reset: "<gray>/lbscore reset <dark_gray>→ Admin"
+    footer: "<gold>==========================================="
+
+player-listener:
+  welcome:
+    name: "Run´s LevelBorder"
+    start: "<gray>Start with <aqua>/levelborder <gold>start"
+
+scoreboard:
+  title: "- LevelBorder -"
+  players: "<aqua>🧍 Players:"
+  player-line: "<gray>   - <green><player><gray>: <gold><level>"
+  border-size: "<aqua>🌐 Border size:"
+  border-size-value: "<gray>   - <gold><size> m"
+  objective-title: "<gold>🌍 LevelBorder"
+
+loading:
+  starting: "LevelBorder is loading..."
+  worlds: "Loading worlds..."
+  managers: "Initializing managers..."
+  listeners: "Registering listeners..."
+  commands: "Registering commands..."
+  prepare: "Preparing LevelBorder..."
+  error: "ERROR: %status%"

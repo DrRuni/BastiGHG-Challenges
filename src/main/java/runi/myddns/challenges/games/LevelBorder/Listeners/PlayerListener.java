@@ -42,9 +42,25 @@ public class PlayerListener implements Listener {
         scoreboardManager.addPlayer(player);
 
         player.sendMessage("");
-        player.sendMessage(ColorUtil.borderColor("Run´s LevelBorder"));
+
+        player.sendMessage(
+                ColorUtil.borderColor(
+                        game.getLanguageManager()
+                                .get(
+                                        "player-listener.welcome.name"
+                                )
+                )
+        );
+
         player.sendMessage("");
-        player.sendMessage(ChatColor.GRAY + "Starte mit " + ChatColor.AQUA + "/levelborder " + ChatColor.GOLD + "start");
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent(
+                                "player-listener.welcome.start"
+                        )
+        );
+
         player.sendMessage("");
 
         Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {

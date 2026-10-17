@@ -31,15 +31,11 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage(
-                    "Dieser Befehl kann nur von Spielern verwendet werden."
+                    plugin.getLanguageManager()
+                            .getComponent("commands.info.player-only")
             );
             return true;
         }
-
-        // =========================================================
-        // /info
-        // Info des aktuell geladenen Games
-        // =========================================================
 
         if (args.length == 0) {
 
@@ -48,7 +44,8 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
 
             if (game == null || !game.isLoaded()) {
                 player.sendMessage(
-                        "§cAktuell ist kein Game geladen."
+                        plugin.getLanguageManager()
+                                .getComponent("commands.info.no-game-loaded")
                 );
                 return true;
             }
@@ -57,11 +54,6 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // =========================================================
-        // /info <game>
-        // Funktioniert auch wenn das Game nicht geladen ist
-        // =========================================================
-
         if (args.length == 1) {
 
             ChallengeGame game =
@@ -69,7 +61,8 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
 
             if (game == null) {
                 player.sendMessage(
-                        "§cDieses Game wurde nicht gefunden."
+                        plugin.getLanguageManager()
+                                .getComponent("commands.info.game-not-found")
                 );
                 return true;
             }
@@ -79,7 +72,8 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
         }
 
         player.sendMessage(
-                "§7Verwendung: §b/info [game]"
+                plugin.getLanguageManager()
+                        .getComponent("commands.info.usage")
         );
 
         return true;

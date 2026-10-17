@@ -6,7 +6,7 @@
 
     <groupId>runi.myddns</groupId>
     <artifactId>bastighg-challenges</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.8</version>
     <packaging>jar</packaging>
 
     <name>bastighg-challenges</name>
@@ -91,7 +91,7 @@
                         <configuration>
                             <target>
                                 <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                      tofile="C:\Users\ronny\Desktop\Server 26.2\plugins\bastighg-challenges-v0.9.1.jar"
+                                      tofile="C:\Users\ronny\Desktop\Server 26.2\plugins\bastighg-challenges-v0.9.8.jar"
                                       overwrite="true"
                                       failonerror="false" />
                             </target>
@@ -138,7 +138,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>26.2.build.121-stable</version>
+            <version>26.2.build.134-stable</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

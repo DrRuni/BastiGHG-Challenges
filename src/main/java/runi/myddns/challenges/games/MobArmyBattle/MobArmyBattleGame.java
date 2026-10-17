@@ -30,6 +30,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     private final LobbyDisplayManager lobbyDisplayManager;
     private final List<Listener> registeredListeners = new ArrayList<>();
     private final List<BukkitTask> gameTasks = new ArrayList<>();
+    private final LanguageManager languageManager;
 
     private WorldManager worldManager;
     public TimerManager timerManager;
@@ -67,6 +68,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     private TeamEquipmentGUI teamEquipmentGUI;
     private PlayerListener playerListener;
     private ChestRandomizerManager chestRandomizerManager;
+    private ButtonManager buttonManager;
 
     private boolean loaded;
     private boolean loading;
@@ -77,6 +79,9 @@ public class MobArmyBattleGame implements ChallengeGame {
     ) {
         this.plugin = plugin;
         this.lobbyDisplayManager = lobbyDisplayManager;
+        this.languageManager =
+                plugin.getLanguageManager()
+                        .forGroup(getId());
 
         this.worldSettingsManager =
                 new GameWorldSettingsManager(plugin, getId(), List.of(
@@ -131,11 +136,21 @@ public class MobArmyBattleGame implements ChallengeGame {
         loading = true;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 0.35f, 0.7f);
+            player.playSound(
+                    player.getLocation(),
+                    Sound.BLOCK_STONE_BUTTON_CLICK_ON,
+                    0.35f,
+                    0.7f
+            );
         }
 
         lobbyDisplayManager.clearLoadConsole();
-        lobbyDisplayManager.setLoadStatus("MobArmyBattle wird geladen...", 0xC47A6B);
+
+        lobbyDisplayManager.setLoadStatus(
+                languageManager.get("loading.starting"),
+                0xC47A6B
+        );
+
         gameTasks.add(
                 plugin.getServer().getScheduler().runTaskLater(
                         plugin,
@@ -146,42 +161,59 @@ public class MobArmyBattleGame implements ChallengeGame {
     }
 
     private void runLoadSequence() {
+
         runStep(
-                "Welten prüfen...",
+                languageManager.get("loading.worlds"),
                 () -> {
+
                     worldSettingsManager.load();
                     worldSettings = new WorldSettings(this);
                     worldManager = new WorldManager(this);
-                    worldManager.checkWorldsOnStartup();
+
+                    plugin.getGameWorldManager()
+                            .loadGameWorlds(getId());
+
                     worldSettingsManager.applyAll();
+
                 },
                 () -> runStep(
-                        "Manager initialisieren...",
+                        languageManager.get("loading.managers"),
                         this::initializeMobArmyBattle,
+
                         () -> runStep(
-                                "Listener registrieren...",
+                                languageManager.get("loading.listeners"),
                                 this::registerListeners,
+
                                 () -> runStep(
-                                        "Befehle registrieren...",
+                                        languageManager.get("loading.commands"),
                                         this::registerCommands,
+
                                         () -> runStep(
-                                                "Waves laden...",
+                                                languageManager.get("loading.waves"),
                                                 () -> {
                                                     waveStorage.loadWaves();
                                                     scheduleArenaReload();
                                                 },
+
                                                 () -> runStep(
-                                                        "Teams laden...",
+                                                        languageManager.get("loading.teams"),
                                                         teamManager::loadTeams,
+
                                                         () -> runStep(
-                                                                "Scoreboard vorbereiten...",
+                                                                languageManager.get("loading.scoreboard"),
                                                                 teamScoreboardManager::rebuildBoard,
+
                                                                 () -> runStep(
-                                                                        "Timer vorbereiten...",
+                                                                        languageManager.get("loading.timer"),
                                                                         () -> {
-                                                                            timerManager.ensureBossBarExists();
-                                                                            timerManager.updatePauseState();
+
+                                                                            timerManager
+                                                                                    .ensureBossBarExists();
+
+                                                                            timerManager
+                                                                                    .updatePauseState();
                                                                         },
+
                                                                         this::finishLoading
                                                                 )
                                                         )
@@ -195,7 +227,7 @@ public class MobArmyBattleGame implements ChallengeGame {
 
     private void initializeMobArmyBattle() {
         blockRandomizerManager = new BlockRandomizerManager(this);
-        arenaConfig = new ArenaConfig(plugin);
+        arenaConfig = new ArenaConfig(this);
         arenaManager = new ArenaEventManager(this);
         teamManager = new TeamManager(this);
         arenaBuildProtectionManager = new ArenaBuildProtectionManager(this);
@@ -218,7 +250,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         arenaCompassManager = new ArenaCompassManager(this);
         teamEquipmentManager = new TeamEquipmentManager(this);
         chestRandomizerManager = new ChestRandomizerManager(this, blockRandomizerManager);
-        optionenGUI = new OptionsGUI(this, plugin.getLanguageManager());
+        optionenGUI = new OptionsGUI(this, getLanguageManager());
         timerGUI = new TimerGUI(this, timerManager);
         eventSettingsGUI = new SetupGUI(this);
         mobArmySettingsGUI = new TeleportGUI(this);
@@ -231,6 +263,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         teamSettingsGUI = new TeamSettingsGUI(this);
         teamEquipmentGUI = new TeamEquipmentGUI(this);
         playerListener = new PlayerListener(this);
+        buttonManager = new ButtonManager(this);
     }
 
     private void registerListener(Listener listener) {
@@ -254,7 +287,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         registerListener(mobArmySettingsGUI);
         registerListener(teamSelectionGUI);
         registerListener(spawnEggGUI);
-        registerListener(new ButtonManager(this));
+        registerListener(buttonManager);
         registerListener(new ArenaMobTargetListener(this));
         registerListener(new BundleListener(this, bundleGUI, teamManager, bundleManager));
         registerListener(arenaSettingsGUI);
@@ -347,41 +380,241 @@ public class MobArmyBattleGame implements ChallengeGame {
     @Override
     public void joinActiveGame(Player player) {
 
-        boolean restored = eventResume.restorePlayerPosition(player);
+        if (!eventResume.isEventStarted()) {
 
-        if (!restored) {
-            TeleportManager.teleport(this, player, "world_mobarmy_lobby");
+            TeleportManager.teleport(
+                    this,
+                    player,
+                    "world_mobarmy_lobby"
+            );
+
+            prepareJoinedPlayer(player);
+            return;
         }
 
-        worldSettingsManager.applyPlayerSettings(player);
-        playerListener.showWelcomeSequence(player);
+        if (!teamManager.isRegisteredParticipant(player)) {
+
+            TeleportManager.teleport(
+                    this,
+                    player,
+                    "world_mobarmy_lobby"
+            );
+
+            prepareJoinedPlayer(player);
+            sendResumeHint(player);
+            return;
+        }
+
+        int phase = eventResume.loadPhase();
+
+        switch (phase) {
+
+            case ResumeManager.PHASE_TEAMWELT -> {
+                joinTeamWorld(player);
+            }
+
+            case ResumeManager.PHASE_WAVEAUSWAHL -> {
+
+                TeleportManager.teleportToWaveSelection(
+                        this,
+                        player
+                );
+
+                player.setGameMode(
+                        org.bukkit.GameMode.SURVIVAL
+                );
+
+                player.setInvulnerable(false);
+            }
+
+            case ResumeManager.PHASE_ARENA -> {
+
+                TeleportManager.teleportToArena(
+                        this,
+                        player
+                );
+
+                player.setGameMode(
+                        org.bukkit.GameMode.SURVIVAL
+                );
+
+                player.setInvulnerable(false);
+            }
+
+            default -> {
+
+                TeleportManager.teleport(
+                        this,
+                        player,
+                        "world_mobarmy_lobby"
+                );
+            }
+        }
+
+        prepareJoinedPlayer(player);
+        sendResumeHint(player);
+    }
+
+    private void sendResumeHint(Player player) {
+
+        if (!eventResume.isEventStarted()
+                || !eventResume.isEventPaused()) {
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskLater(
+                plugin,
+                () -> {
+
+                    if (!player.isOnline()) {
+                        return;
+                    }
+
+                    player.sendMessage(
+                            languageManager.getComponent(
+                                    "resume.paused-hint"
+                            )
+                    );
+
+                },
+                60L
+        );
+    }
+
+    private void joinTeamWorld(Player player) {
+
+        String team =
+                teamManager.getPlayerTeam(player);
+
+        String worldName;
+
+        if ("Rot".equalsIgnoreCase(team)) {
+
+            worldName = "world_rot";
+
+        } else if ("Blau".equalsIgnoreCase(team)) {
+
+            worldName = "world_blau";
+
+        } else {
+
+            TeleportManager.teleport(
+                    this,
+                    player,
+                    "world_mobarmy_lobby"
+            );
+
+            return;
+        }
+
+        org.bukkit.World teamWorld =
+                Bukkit.getWorld(worldName);
+
+        if (teamWorld == null) {
+            return;
+        }
+
+        boolean restored =
+                eventResume.restorePlayerPosition(player);
+
+        if (!restored
+                || !player.getWorld()
+                .getName()
+                .toLowerCase()
+                .startsWith(
+                        team.equalsIgnoreCase("Rot")
+                                ? "world_rot"
+                                : "world_blau"
+                )) {
+
+            player.teleport(
+                    teamWorld.getSpawnLocation()
+            );
+        }
+
+        player.setGameMode(
+                org.bukkit.GameMode.SURVIVAL
+        );
+
+        player.setInvulnerable(false);
+    }
+
+    private void prepareJoinedPlayer(Player player) {
+
+        worldSettingsManager
+                .applyPlayerSettings(player);
+
+        playerListener
+                .showWelcomeSequence(player);
 
         gameTasks.add(
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (!player.isOnline()) return;
+                Bukkit.getScheduler()
+                        .runTaskLater(
+                                plugin,
+                                () -> {
 
-                    timerManager.ensureBossBarExists();
-                    timerManager.addPlayerToBossBar(player);
-                    timerManager.updatePauseState();
+                                    if (!player.isOnline()) {
+                                        return;
+                                    }
 
-                    teamScoreboardManager.updateBoard();
-                    scoreboardSwitcher.switchToTeam(player);
+                                    timerManager
+                                            .ensureBossBarExists();
 
-                }, 20L * 7)
+                                    timerManager
+                                            .addPlayerToBossBar(player);
+
+                                    timerManager
+                                            .updatePauseState();
+
+                                    teamScoreboardManager
+                                            .updateBoard();
+
+                                    scoreboardSwitcher
+                                            .switchToTeam(player);
+                                },
+                                20L * 7
+                        )
         );
+    }
+
+    public boolean isMobArmyPlayer(Player player) {
+
+        if (player == null || player.getWorld() == null) {
+            return false;
+        }
+
+        String world = player.getWorld().getName();
+
+        return world.equalsIgnoreCase("world_mobarmy_lobby")
+                || world.equalsIgnoreCase("world_mobarmy_arena")
+                || world.equalsIgnoreCase("world_rot")
+                || world.equalsIgnoreCase("world_rot_nether")
+                || world.equalsIgnoreCase("world_blau")
+                || world.equalsIgnoreCase("world_blau_nether");
     }
 
     @Override
     public boolean hasPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            String worldName = player.getWorld().getName();
 
-            if (worldName.equals("world_mobarmy_lobby")
-                    || worldName.equals("world_mobarmy_arena")
-                    || worldName.equals("world_rot")
-                    || worldName.equals("world_blau")
-                    || worldName.equals("world_rot_nether")
-                    || worldName.equals("world_blau_nether")) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (isMobArmyPlayer(player)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean hasOtherPlayers(Player ignoredPlayer) {
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            if (player.equals(ignoredPlayer)) {
+                continue;
+            }
+
+            if (isMobArmyPlayer(player)) {
                 return true;
             }
         }
@@ -409,7 +642,9 @@ public class MobArmyBattleGame implements ChallengeGame {
         var command = plugin.getCommand(name);
 
         if (command == null) {
-            plugin.getLogger().warning("Command nicht in plugin.yml gefunden: /" + name);
+            plugin.getLogger().warning(
+                    "Command not found in plugin.yml: /" + name
+            );
             return;
         }
 
@@ -430,8 +665,17 @@ public class MobArmyBattleGame implements ChallengeGame {
 
         } catch (Exception ex) {
             loading = false;
-            lobbyDisplayManager.setLoadStatus("FEHLER: " + status, 0xFF3333);
-            plugin.getLogger().severe("Fehler beim Laden von MobArmyBattle: " + status);
+            lobbyDisplayManager.setLoadStatus(
+                    languageManager.get(
+                            "loading.error",
+                            "status",
+                            status
+                    ),
+                    0xFF3333
+            );
+            plugin.getLogger().severe(
+                    "Error while loading MobArmyBattle: " + status
+            );
             ex.printStackTrace();
             return;
         }
@@ -459,74 +703,53 @@ public class MobArmyBattleGame implements ChallengeGame {
 
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  MobArmyBattle - V1.7 ═══════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                       geladen"                        + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                         loaded"                        + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
     }
 
-    @Override
-    public boolean hasOtherPlayers(Player ignoredPlayer) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-
-            if (player.equals(ignoredPlayer)) continue;
-
-            String worldName = player.getWorld().getName();
-
-            if (worldName.equals("world_mobarmy_lobby")
-                    || worldName.equals("world_mobarmy_arena")
-                    || worldName.equals("world_rot")
-                    || worldName.equals("world_blau")
-                    || worldName.equals("world_rot_nether")
-                    || worldName.equals("world_blau_nether")) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
     public void startPlayers(Collection<? extends Player> players) {
+
         if (!loaded) return;
 
         for (Player player : players) {
 
-            TeleportManager.teleport(this, player, "world_mobarmy_lobby");
-
-            worldSettingsManager.applyPlayerSettings(player);
-            playerListener.showWelcomeSequence(player);
-
-            gameTasks.add(
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        if (!player.isOnline()) return;
-
-                        timerManager.ensureBossBarExists();
-                        timerManager.addPlayerToBossBar(player);
-                        timerManager.updatePauseState();
-
-                        teamScoreboardManager.updateBoard();
-                        scoreboardSwitcher.switchToTeam(player);
-
-                    }, 20L * 7)
-            );
+            joinActiveGame(player);
         }
 
         gameTasks.add(
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (worldManager != null) {
-                        worldManager.preloadTeamWorlds();
-                    }
-                }, 80L)
+                Bukkit.getScheduler().runTaskLater(
+                        plugin,
+                        () -> {
+                            if (worldManager != null) {
+                                worldManager.preloadTeamWorlds();
+                            }
+                        },
+                        80L
+                )
         );
     }
 
     @Override
     public void leavePlayer(Player player) {
+
+        if (player != null
+                && player.getWorld() != null
+                && isMobArmyPlayer(player)
+                && eventResume != null) {
+
+            eventResume.savePlayerLastLocation(player);
+        }
+
         if (scoreboardSwitcher != null) {
             scoreboardSwitcher.removePlayer(player);
         }
 
         if (timerManager != null) {
             timerManager.removeBossBarFor(player);
+        }
+
+        if (arenaManager != null) {
+            arenaManager.removePlayer(player);
         }
     }
 
@@ -568,6 +791,6 @@ public class MobArmyBattleGame implements ChallengeGame {
     public TeamEquipmentManager getTeamEquipmentManager() { return teamEquipmentManager; }
     public TeamEquipmentGUI getTeamEquipmentGUI() { return teamEquipmentGUI; }
     public PlayerListener getPlayerJoinListener() { return playerListener; }
-    public LanguageManager getLanguageManager() { return plugin.getLanguageManager();
-    }
+    public LanguageManager getLanguageManager() {return languageManager;}
+    public ButtonManager getButtonManager() {return buttonManager;}
 }

@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class ArenaConfig {
 
     private final JavaPlugin plugin;
     private final File dataFolder;
+    private final MobArmyBattleGame game;
 
     private File eventFile;
 
@@ -33,8 +35,9 @@ public class ArenaConfig {
     private String activeArenaId;
     private ArenaData activeArena;
 
-    public ArenaConfig(JavaPlugin plugin) {
-        this.plugin = plugin;
+    public ArenaConfig(MobArmyBattleGame game) {
+        this.game = game;
+        this.plugin = game.getPlugin();
 
         this.dataFolder = new File(
                 plugin.getDataFolder(),
@@ -187,10 +190,8 @@ public class ArenaConfig {
                 );
 
         String language =
-                mobArmyConfig.getString(
-                        "language",
-                        "de"
-                );
+                game.getLanguageManager()
+                        .getCurrentLanguage();
 
         String name =
                 sec.getString(
@@ -285,10 +286,8 @@ public class ArenaConfig {
                 );
 
         String language =
-                mobArmyConfig.getString(
-                        "language",
-                        "de"
-                );
+                game.getLanguageManager()
+                        .getCurrentLanguage();
 
         for (String id : arenasSec.getKeys(false)) {
             ConfigurationSection sec =

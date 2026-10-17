@@ -505,7 +505,7 @@ public class LevelBlockDataManager {
             game.getPlugin()
                     .getLogger()
                     .severe(
-                            "gamedata.yml konnte nicht gespeichert werden: "
+                            "Could not save gamedata.yml: "
                                     + e.getMessage()
                     );
         }

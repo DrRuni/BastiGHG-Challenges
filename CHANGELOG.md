@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.9.8] - Beta
+
+### Added
+- Extended German and English language support across the central plugin and individual challenge games
+- Language-dependent arena names and descriptions for MobArmyBattle
+- Additional loading and status messages for LevelBorder and LevelBlock
+
+### Changed
+- Reworked and unified the language system for Core, MobArmyBattle, LevelBorder, and LevelBlock
+- Updated WorldSettings and game-specific settings to use the centralized language system
+- Improved language handling for MobArmyBattle arena settings
+- Internal loading messages and status displays standardized
+- Several hardcoded texts replaced with language entries
+
+### Fixed
+- Missing or incorrect language entries in the central WorldSettings menu
+- Arena names and descriptions remaining in German when English was selected
+- Incorrect language output in arena selection menus
+- Various smaller language and display inconsistencies
+
+### Notes
+- Beta release
+- Further multiplayer testing, cleanup, and bug fixes are planned before version 1.0.0
+
 ## [0.9.1] - Beta
 
 ### Added

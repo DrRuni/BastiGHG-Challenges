@@ -1,7 +1,7 @@
-package runi.myddns.challenges.core.protection;
+package runi.myddns.challenges.core.world;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,36 +51,32 @@ public class WorldProtectionManager implements Listener {
     private void applyWorldSettings(World world) {
 
         world.setGameRule(
-                GameRule.DO_MOB_SPAWNING,
+                GameRules.SPAWN_MOBS,
                 false
         );
 
         world.setGameRule(
-                GameRule.MOB_GRIEFING,
+                GameRules.MOB_GRIEFING,
                 false
         );
 
         world.setGameRule(
-                GameRule.DO_FIRE_TICK,
-                false
+                GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER,
+                0
         );
 
         world.setGameRule(
-                GameRule.DO_WEATHER_CYCLE,
+                GameRules.ADVANCE_WEATHER,
                 false
         );
 
         world.setStorm(false);
         world.setThundering(false);
 
-        /*
-         * Nur die zentrale Challenge-Lobby
-         * bleibt dauerhaft Nacht.
-         */
         if (world.getName().equalsIgnoreCase(CENTRAL_LOBBY)) {
 
             world.setGameRule(
-                    GameRule.DO_DAYLIGHT_CYCLE,
+                    GameRules.ADVANCE_TIME,
                     false
             );
 

@@ -41,11 +41,11 @@ public class GameWorldManager {
         World world = Bukkit.createWorld(creator);
 
         if (world == null) {
-            plugin.getLogger().warning("Welt konnte nicht geladen werden: " + definition.worldName());
+            plugin.getLogger().warning("Could not load world: " + definition.worldName());
             return null;
         }
 
-        plugin.getLogger().info("Welt geladen: " + definition.worldName());
+        plugin.getLogger().info("World loaded: " + definition.worldName());
         return world;
     }
 
@@ -99,7 +99,7 @@ public class GameWorldManager {
         boolean result = Bukkit.unloadWorld(world, save);
 
         if (result) {
-            plugin.getLogger().info("Welt entladen: " + definition.worldName());
+            plugin.getLogger().info("World unloaded: " + definition.worldName());
         }
 
         return result;

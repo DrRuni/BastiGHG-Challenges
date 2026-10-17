@@ -150,7 +150,7 @@ public class PlayerGameDataManager {
         } catch (IOException exception) {
 
             plugin.getLogger().severe(
-                    "PlayerGameData konnte nicht gespeichert werden: "
+                    "Could not save PlayerGameData: "
                             + player.getName()
                             + " / "
                             + gameId

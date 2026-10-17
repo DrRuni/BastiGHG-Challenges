@@ -1,4 +1,4 @@
-package runi.myddns.challenges.core.info;
+package runi.myddns.challenges.core.game.info;
 
 import runi.myddns.challenges.ChallengeMain;
 
@@ -154,7 +154,7 @@ public class GameInfoManager {
         if (inputStream == null) {
 
             plugin.getLogger().warning(
-                    "README nicht gefunden: "
+                    "README not found: "
                             + path
             );
 
@@ -183,7 +183,7 @@ public class GameInfoManager {
         } catch (Exception exception) {
 
             plugin.getLogger().warning(
-                    "README konnte nicht gelesen werden: "
+                    "Could not read README: "
                             + path
             );
         }

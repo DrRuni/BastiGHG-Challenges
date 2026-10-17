@@ -21,7 +21,9 @@ public class LobbyWorldManager {
         lobbyWorld = plugin.getGameWorldManager().loadWorld(GameWorldDefinition.LOBBY);
 
         if (lobbyWorld == null) {
-            plugin.getLogger().severe("Lobby-Welt konnte nicht geladen werden.");
+            plugin.getLogger().severe(
+                    "Lobby world could not be loaded."
+            );
             return;
         }
 
@@ -29,7 +31,9 @@ public class LobbyWorldManager {
         setSpawn();
         applyWarmOceanBiome();
 
-        plugin.getLogger().info("Lobby-Welt erfolgreich geladen: " + lobbyWorld.getKey());
+        plugin.getLogger().info(
+                "Lobby world loaded successfully: " + lobbyWorld.getKey()
+        );
     }
 
     private void applyWarmOceanBiome() {
@@ -75,7 +79,9 @@ public class LobbyWorldManager {
 
     public Location getSpawn() {
         if (lobbyWorld == null) {
-            throw new IllegalStateException("Lobby-Welt wurde noch nicht geladen.");
+            throw new IllegalStateException(
+                    "Lobby world has not been loaded yet."
+            );
         }
 
         return new Location(lobbyWorld, 0.5, 67.0, 4.5, 0.0f, 0.0f);

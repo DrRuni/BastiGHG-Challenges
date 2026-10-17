@@ -91,10 +91,13 @@ public class WorldManager {
     public void resetArenaWorld() {
 
         List<Player> players = getPlayersInWorld(WORLD_ARENA);
+        game.getArenaManager().resetArena();
 
         for (Player p : players) {
 
-            if (!p.isOnline()) continue;
+            if (!p.isOnline()) {
+                continue;
+            }
 
             TeleportManager.teleport(
                     game,
@@ -106,7 +109,9 @@ public class WorldManager {
                     game.getPlugin(),
                     () -> {
 
-                        if (!p.isOnline()) return;
+                        if (!p.isOnline()) {
+                            return;
+                        }
 
                         p.sendActionBar(
                                 lang("world-manager.arena-resetting")
@@ -123,6 +128,7 @@ public class WorldManager {
             );
         }
 
+        // Kurz warten, damit alle Spieler sicher aus der Arena raus sind
         Bukkit.getScheduler().runTaskLater(
                 game.getPlugin(),
                 () -> {
@@ -152,6 +158,7 @@ public class WorldManager {
                         return;
                     }
 
+                    // Arena wieder laden
                     Bukkit.getScheduler().runTaskLater(
                             game.getPlugin(),
                             () -> {
@@ -176,12 +183,12 @@ public class WorldManager {
                                 game.getArenaConfig()
                                         .reload();
 
+                                // Noch kurz warten, dann die vorherigen Arena-Spieler zurück
                                 Bukkit.getScheduler().runTaskLater(
                                         game.getPlugin(),
                                         () -> {
 
-                                            for (Player player
-                                                    : Bukkit.getOnlinePlayers()) {
+                                            for (Player player : Bukkit.getOnlinePlayers()) {
 
                                                 player.sendMessage(
                                                         Component.empty()

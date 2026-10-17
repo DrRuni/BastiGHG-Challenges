@@ -1,0 +1,166 @@
+file-version: 1
+
+commands:
+  language:
+    player-only: "<red>This command can only be used by players."
+  gamesettings:
+    player-only: "<red>Only players can use this command."
+    no-game-selected: "<red>No game selected."
+    load-first: "<gold>Please load the game first."
+  info:
+    player-only: "<red>Only players can use this command."
+    no-game-loaded: "<red>No game is currently loaded."
+    game-not-found: "<red>This game was not found."
+    usage: "<gray>Usage: <aqua>/info [game]"
+  lobby:
+    op-only: "<red>You must be OP to do this."
+    all-teleported: "<green>All players were teleported to the lobby."
+    player-only: "<red>Only players can use this command."
+
+lobby-buttons:
+  select: "SELECT"
+  load: "LOAD"
+  start: "START"
+  settings: "SETTINGS"
+
+  change-blocked-loading: "The game cannot be changed while loading."
+  loading: "%game% is loading..."
+  already-loaded: "%game% has already been loaded"
+  no-game-selected: "Please select a game first."
+
+language-selection:
+  title: "<blue>Language Selection"
+  german:
+    name: "<gold>Deutsch"
+    description: "<gray>Change language to German"
+  english:
+    name: "<gold>English"
+    description: "<gray>Change language to English"
+  back: "<dark_aqua>Back"
+  changed-de: "<green>✓ Language changed to German!"
+  changed-en: "<green>✓ Language changed to English!"
+
+lobby-display:
+  waiting-for-load: "WAITING FOR LOAD"
+  no-game-selected: "Please select a game first."
+  load-first: "Please press LOAD first."
+  settings-load-first: "Settings are available after LOAD."
+  lobby-world-missing: "Lobby world not found."
+  loading: "%game% is loading..."
+  loaded: "%game% is loaded"
+  unloaded: "%game% unloaded"
+  ready: "%game% READY"
+  game-label: "GAME //"
+  none: "NONE"
+  info:
+    button: "[INFO]"
+    hover: "Open game info"
+    loaded: " is loaded. "
+
+standard-settings:
+  name: "<gold>World Settings"
+  description: "<gray>Opens the general world settings"
+
+game-info:
+  title-suffix: " • INFO"
+  description: "Game Info"
+  features: "Features"
+  commands: "Commands"
+  close: "Close"
+  no-information: "No information available."
+
+reset-management:
+  load-first: "<red>Please load a game first."
+  unsupported-game: "<red>This game does not have reset management here."
+  title-prefix: "Reset » "
+  progress:
+    name: "Reset game progress"
+    line-1: "Resets the game's progress."
+    line-2: "The worlds are kept."
+  worlds:
+    name: "Reset worlds"
+    line-1: "Deletes and recreates the game worlds."
+    line-2: "Warning: All changes in the worlds will be lost!"
+  back:
+    name: "Back"
+    description: "Back to WorldSettings."
+
+world-settings:
+  load-first: "Please load a game first."
+  title-prefix: "Settings » "
+  mob-spawning: "Mob Spawning"
+  keep-inventory: "Keep Inventory"
+  night-vision: "Night Vision"
+  daylight-cycle: "Daylight Cycle"
+  reset:
+    name: "Reset / Management"
+    description: "Reset game progress or worlds"
+  state:
+    "on": "ON"
+    "off": "OFF"
+    status: "Status: %state%"
+  difficulty:
+    title: "Difficulty: %difficulty%"
+    click: "Click to change"
+    peaceful: "Peaceful"
+    easy: "Easy"
+    normal: "Normal"
+    hard: "Hard"
+    ultra-hardcore: "Ultra Hardcore"
+    ultra-ultra-hardcore: "Ultra Ultra Hardcore"
+  time:
+    title: "World Time: %phase%"
+    click: "Click to change"
+    morning: "Morning"
+    noon: "Noon"
+    evening: "Evening"
+    night: "Night"
+  back:
+    name: "Back"
+    description: "Back to lobby"
+
+vote:
+  already-running: "<red>A vote is already in progress."
+  accepted-self: "<green>✔ You agreed."
+  cancelled: "cancelled the vote."
+  rejected: "rejected the vote."
+  yes:
+    name: "YES"
+    description: "Accept"
+  no:
+    name: "NO"
+    description: "Reject"
+
+game-reset:
+  already-running: "<red>❌ A reset is already in progress."
+  game:
+    resetting: "Game progress is being reset..."
+    finished: "Reset complete!"
+    broadcast-finished: "<green>✔ %game% has been reset."
+  worlds:
+    resetting: "Worlds are being reset..."
+    broadcast-resetting: "<gold>⏳ %game% worlds are being reset..."
+    recreating: "Worlds are being recreated..."
+    failed: "Reset failed!"
+    broadcast-failed: "<red>❌ Error while resetting the %game% worlds."
+    finished: "Reset complete!"
+    broadcast-finished: "<green>✔ %game% worlds have been recreated."
+
+player-join:
+  welcome: |
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+    <bold><gradient:#FF5ACD:#8B5CFF:#20D5FF>       BastiGHG's Challenges</gradient></bold>
+    <#C38CFF>              Fan Project</#C38CFF>
+
+    <gray>Welcome to the </gray><bold><gradient:#FF4FD8:#8C63FF:#22D3FF>Challenge Network</gradient></bold><gray>!</gray>
+
+    <gray>Choose a challenge in the lobby,</gray>
+    <gray>load it and start your game.</gray>
+
+    <#22D3FF>Have fun!</#22D3FF>
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+
+  resource-pack:
+    title: "BastiGHG Challenges"
+    line-1: "Optional resource pack for"
+    line-2: "custom graphics and icons."

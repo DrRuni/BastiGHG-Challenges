@@ -4,8 +4,6 @@ commands:
   arena-summary:
     player-only: "<red>This command can only be used by players."
     manager-unavailable: "<red>ArenaManager is not available."
-  language:
-    player-only: "<red>This command can only be used by players."
   mob-status:
     player-only: "<red>Only players can use this command."
     invalid-team: "<red>❌ Invalid team. Use: red or blue"
@@ -116,17 +114,8 @@ bundle:
   red-inventory-title: "<gold>Red Inventory"
   inventory-not-found: "<red>No inventory found for this team!"
 
-language-selection:
-  title: "<blue>Language Selection"
-  german:
-    name: "<gold>Deutsch"
-    description: "<gray>Change language to German"
-  english:
-    name: "<gold>English"
-    description: "<gray>Change language to English"
-  back: "<dark_aqua>Back"
-  changed-de: "<green>✓ Language changed to German!"
-  changed-en: "<green>✓ Language changed to English!"
+  blue-name: "<blue>Blue Team Bundle"
+  red-name: "<red>Red Team Bundle"
 
 options-gui:
   title: "<blue>MobArmyBattle Options"
@@ -227,8 +216,8 @@ setup-gui:
     name: "<dark_red>Reset Team Worlds"
     description: "<red>Red and Blue worlds will be regenerated"
   reset-lobby:
-    name: "<dark_red>Reset Lobby World"
-    description: "<red>The lobby will be completely reset"
+    name: "<dark_red>Reset All Worlds"
+    description: "<red>All MobArmyBattle worlds will be completely recreated"
   reset-arena:
     name: "<dark_red>Reset Arena World"
     description: "<red>The arena will be completely reset"
@@ -471,10 +460,6 @@ world-settings-gui:
     name: "<dark_aqua>Back"
     description: "<gray>Back to the previous menu"
 
-standard-settings:
-  name: "<gold>World Settings"
-  description: "<gray>Opens the general world settings"
-
 bundle-listener:
   drop-denied: "<red>🚫 You cannot drop your team bundle!"
 
@@ -621,16 +606,10 @@ world-manager:
   progress-still-loaded-3: "<dark_red>!"
 
 player-join-listener:
-  notice:
-    line-1: "<gold><bold>Important notice:</bold> <yellow>Click <aqua><bold>HERE</bold></aqua> for more information."
-    details-1: "<gray>This version will be the final MobArmyBattle version for now."
-    details-2: "<gray>My next project will be called <gold>BastiGHG Challenges - Fan Project</gold>."
-    details-3: "<gray>MobArmyBattle will return there under its original name <aqua>MobArmyBattle</aqua>."
-    details-4: "<yellow>Please be patient – it is coming. :D"
-    hover: "<yellow>Click for more information"
   welcome:
-    title: "Welcome"
-    to: "to"
+    name: "Runi´s MobArmyBattle"
+    settings: "<gray>Settings: <aqua>/gamesettings"
+    info: "<gray>Game info: <aqua>/mobarmy info"
   help-hint: "<gold>Tip:</gold> <gray>Use </gray><aqua>/info</aqua><gray> for an overview of all functions.</gray>"
   help-hover: "<yellow>Click for help</yellow>"
 
@@ -662,12 +641,21 @@ mobarmy-command:
     settings-command: "<yellow>/mobarmy gamesettings <gray>- Open settings"
     help-command: "<yellow>/mobarmy <gray>- Show all commands"
 
-lobby-display:
-  waiting-for-load: "WAITING FOR LOAD"
-  no-game-selected: "Please select a game first."
-  load-first: "Please press LOAD first."
-  settings-load-first: "Settings are available after LOAD."
-  lobby-world-missing: "Lobby world not found."
-  loading: "%game% is loading..."
-  unloaded: "%game% unloaded"
-  ready: "%game% READY"
+loading:
+  starting: "MobArmyBattle is loading..."
+  worlds: "Checking worlds..."
+  managers: "Initializing managers..."
+  listeners: "Registering listeners..."
+  commands: "Registering commands..."
+  waves: "Loading waves..."
+  teams: "Loading teams..."
+  scoreboard: "Preparing scoreboard..."
+  timer: "Preparing timer..."
+  error: "ERROR: %status%"
+
+resume:
+  paused-hint: |
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+    <yellow>⚠ The event is currently paused.</yellow>
+    <gray>Resume with </gray><green><bold>/mobarmy resume</bold></green>
+    <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>

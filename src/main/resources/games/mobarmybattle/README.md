@@ -34,8 +34,6 @@ Each team creates attack waves for the opposing team before both teams enter the
 - Central world settings
 - Reset voting system
 - Arena, team-world and complete world reset support
-- German and English language support
-- In-game language selection using `/language`
 
 ## Commands
 
@@ -55,7 +53,6 @@ Each team creates attack waves for the opposing team before both teams enter the
 
 /mobstatus
 /arenasummary
-/language
 
 ## Changelog
 
@@ -65,8 +62,8 @@ Each team creates attack waves for the opposing team before both teams enter the
 
 - In **BastiGHG Challenges – Fan Project** integriert
 - MobArmyBattle kann nun über die zentrale Lobby ausgewählt und geladen werden
-- Sprachsystem für Deutsch und Englisch hinzugefügt
-- Sprachauswahl über `/language` hinzugefügt
+- Sprachsystem für Deutsch und Englisch hinzugefügt ##jetzt zentral##
+- Sprachauswahl über `/language` hinzugefügt ##jetzt zentral##
 
 #### Verbessert
 

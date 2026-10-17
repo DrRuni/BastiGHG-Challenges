@@ -34,38 +34,35 @@ public class ResetManagementGUI implements Listener {
 
     private final ChallengeMain plugin;
 
-    private Component getGameTitle(
-            ChallengeGame game
-    ) {
+    private Component getGameTitle(ChallengeGame game) {
 
-        String gameName =
-                game.getDisplayName();
+        String gameName = game.getDisplayName();
 
-        return switch (
-                game.getId()
-                        .toLowerCase(Locale.ROOT)
-                ) {
+        return switch (game.getId().toLowerCase(Locale.ROOT)) {
 
-            case "levelborder" ->
-                    gradientText(
-                            gameName,
-                            LIGHT_BLUE,
-                            DEEP_BLUE
-                    );
+            case "mobarmybattle" -> gradientText(
+                    gameName,
+                    BRIGHT_RED,
+                    BLUE
+            );
 
-            case "levelblock" ->
-                    gradientText(
-                            gameName,
-                            LIME,
-                            DARK_GREEN
-                    );
+            case "levelborder" -> gradientText(
+                    gameName,
+                    LIGHT_BLUE,
+                    DEEP_BLUE
+            );
 
-            default ->
-                    gradientText(
-                            gameName,
-                            WHITE,
-                            LIGHT_GREY
-                    );
+            case "levelblock" -> gradientText(
+                    gameName,
+                    LIME,
+                    DARK_GREEN
+            );
+
+            default -> gradientText(
+                    gameName,
+                    WHITE,
+                    LIGHT_GREY
+            );
         };
     }
 
@@ -95,10 +92,8 @@ public class ResetManagementGUI implements Listener {
             player.closeInventory();
 
             player.sendMessage(
-                    Component.text(
-                            "Bitte zuerst ein Game laden.",
-                            NamedTextColor.RED
-                    )
+                    plugin.getLanguageManager()
+                            .getComponent("reset-management.load-first")
             );
 
             return;
@@ -110,10 +105,8 @@ public class ResetManagementGUI implements Listener {
                 .equalsIgnoreCase("levelblock")) {
 
             player.sendMessage(
-                    Component.text(
-                            "Für dieses Spiel gibt es hier keine Reset-Verwaltung.",
-                            NamedTextColor.RED
-                    )
+                    plugin.getLanguageManager()
+                            .getComponent("reset-management.unsupported-game")
             );
 
             return;
@@ -124,7 +117,8 @@ public class ResetManagementGUI implements Listener {
                         new ResetManagementHolder(),
                         27,
                         Component.text(
-                                "Reset » ",
+                                plugin.getLanguageManager()
+                                        .get("reset-management.title-prefix"),
                                 NamedTextColor.BLACK
                         ).append(
                                 getGameTitle(game)
@@ -135,10 +129,13 @@ public class ResetManagementGUI implements Listener {
                 11,
                 createItem(
                         Material.REDSTONE,
-                        "Spielstand zurücksetzen",
+                        plugin.getLanguageManager()
+                                .get("reset-management.progress.name"),
                         NamedTextColor.GOLD,
-                        "Setzt den Fortschritt des Spiels zurück.",
-                        "Die Welten bleiben erhalten."
+                        plugin.getLanguageManager()
+                                .get("reset-management.progress.line-1"),
+                        plugin.getLanguageManager()
+                                .get("reset-management.progress.line-2")
                 )
         );
 
@@ -146,10 +143,13 @@ public class ResetManagementGUI implements Listener {
                 15,
                 createItem(
                         Material.TNT,
-                        "Welten zurücksetzen",
+                        plugin.getLanguageManager()
+                                .get("reset-management.worlds.name"),
                         NamedTextColor.RED,
-                        "Löscht und erstellt die Spielwelten neu.",
-                        "Achtung: Alle Änderungen in den Welten gehen verloren!"
+                        plugin.getLanguageManager()
+                                .get("reset-management.worlds.line-1"),
+                        plugin.getLanguageManager()
+                                .get("reset-management.worlds.line-2")
                 )
         );
 
@@ -157,9 +157,11 @@ public class ResetManagementGUI implements Listener {
                 22,
                 createItem(
                         Material.ARROW,
-                        "Zurück",
+                        plugin.getLanguageManager()
+                                .get("reset-management.back.name"),
                         NamedTextColor.YELLOW,
-                        "Zurück zu den WorldSettings."
+                        plugin.getLanguageManager()
+                                .get("reset-management.back.description")
                 )
         );
 

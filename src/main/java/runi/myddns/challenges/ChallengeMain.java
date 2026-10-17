@@ -13,14 +13,14 @@ import runi.myddns.challenges.core.game.*;
 import runi.myddns.challenges.core.gui.GameInfoGUI;
 import runi.myddns.challenges.core.gui.LanguageSelectionGUI;
 import runi.myddns.challenges.core.gui.WorldSettingsGUI;
-import runi.myddns.challenges.core.info.GameInfoManager;
+import runi.myddns.challenges.core.game.info.GameInfoManager;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.player.PlayerGameDataListener;
 import runi.myddns.challenges.core.player.PlayerGameDataManager;
-import runi.myddns.challenges.core.protection.WorldProtectionManager;
+import runi.myddns.challenges.core.world.WorldProtectionManager;
 import runi.myddns.challenges.core.reset.GameResetManager;
 import runi.myddns.challenges.core.reset.ResetVoteCommand;
-import runi.myddns.challenges.core.reset.ResetVoteManager;
+import runi.myddns.challenges.core.player.VoteManager;
 import runi.myddns.challenges.core.server.ServerIconManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.*;
@@ -30,6 +30,7 @@ import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.listener.LobbyRespawnListener;
 import runi.myddns.challenges.listener.PlayerJoinListener;
+import runi.myddns.challenges.listener.ProtectedEntityCommandListener;
 import runi.myddns.challenges.listener.UltraUltraHardcoreListener;
 
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
@@ -47,7 +48,7 @@ public final class ChallengeMain extends JavaPlugin {
     private PlayerGameDataManager playerGameDataManager;
     private WorldSettingsGUI worldSettingsGUI;
     private GameResetManager gameResetManager;
-    private ResetVoteManager resetVoteManager;
+    private VoteManager voteManager;
     private GameInfoGUI gameInfoGUI;
     private GameInfoManager gameInfoManager;
     private WorldProtectionManager worldProtectionManager;
@@ -86,7 +87,7 @@ public final class ChallengeMain extends JavaPlugin {
         LobbyButtonManager lobbyButtonManager = new LobbyButtonManager(this, lobbyDisplayManager, gameManager);
 
         playerGameDataManager = new PlayerGameDataManager(this);
-        resetVoteManager = new ResetVoteManager(this);
+        voteManager = new VoteManager(this);
 
         registerListeners(serverIconManager, lobbyButtonManager);
         createLobbyDisplay(lobbyButtonManager);
@@ -140,6 +141,7 @@ public final class ChallengeMain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerGameDataListener(this), this);
         getServer().getPluginManager().registerEvents(new UltraUltraHardcoreListener(this), this);
         getServer().getPluginManager().registerEvents(gameInfoGUI, this);
+        getServer().getPluginManager().registerEvents(new ProtectedEntityCommandListener(), this);
     }
 
     private void createLobbyDisplay(LobbyButtonManager lobbyButtonManager) {
@@ -155,9 +157,14 @@ public final class ChallengeMain extends JavaPlugin {
 
             lobbyDisplayManager.clearLoadConsole();
 
-            getServer().getScheduler().runTaskLater(this, () ->
-                    lobbyDisplayManager.setLoadStatus("Warte auf Laden...", GREY), 5L);
-
+            getServer().getScheduler().runTaskLater(
+                    this,
+                    () -> lobbyDisplayManager.setLoadStatus(
+                            languageManager.get("lobby-display.waiting-for-load"),
+                            GREY
+                    ),
+                    5L
+            );
         }, 2L);
     }
 
@@ -234,7 +241,7 @@ public final class ChallengeMain extends JavaPlugin {
     public GameWorldManager getGameWorldManager() { return gameWorldManager; }
     public WorldSettingsGUI getWorldSettingsGUI() { return worldSettingsGUI;}
     public GameResetManager getGameResetManager() {return gameResetManager;}
-    public ResetVoteManager getResetVoteManager() {return resetVoteManager;}
+    public VoteManager getVoteManager() {return voteManager;}
     public GameInfoGUI getGameInfoGUI() {return gameInfoGUI;}
     public GameInfoManager getGameInfoManager() {return gameInfoManager;}
 }

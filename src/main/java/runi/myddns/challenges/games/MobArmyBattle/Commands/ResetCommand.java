@@ -70,7 +70,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
         if (args.length == 0) {
 
             game.getPlugin()
-                    .getResetVoteManager()
+                    .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
                             "Spielstand zurücksetzen",
@@ -103,7 +103,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("world")) {
 
             game.getPlugin()
-                    .getResetVoteManager()
+                    .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
                             "Alle Welten zurücksetzen",
@@ -121,7 +121,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("arena")) {
 
             game.getPlugin()
-                    .getResetVoteManager()
+                    .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
                             "Arena zurücksetzen",
@@ -161,7 +161,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                 || args[0].equalsIgnoreCase("teamworld")) {
 
             game.getPlugin()
-                    .getResetVoteManager()
+                    .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
                             "Teamwelten neu generieren",

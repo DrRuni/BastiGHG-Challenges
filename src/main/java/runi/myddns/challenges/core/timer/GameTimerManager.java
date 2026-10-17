@@ -57,7 +57,7 @@ public class GameTimerManager {
         } catch (IOException e) {
             plugin.getLogger().log(
                     Level.SEVERE,
-                    "Timer konnte nicht gespeichert werden: " + gameId,
+                    "Could not save timer: " + gameId,
                     e
             );
         }

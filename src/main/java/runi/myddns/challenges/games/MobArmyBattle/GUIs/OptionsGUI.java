@@ -125,9 +125,8 @@ public class OptionsGUI implements Listener {
 
         switch (slot) {
             case 11 -> {
-                game.getEventManager().enableEventHandling();
-                game.getEventManager().startEvent();
-                Sounds.playClick(player);
+                game.getButtonManager()
+                        .handleStartButton(player);
             }
 
             case 13 -> {
@@ -141,7 +140,7 @@ public class OptionsGUI implements Listener {
             }
 
             case 15 -> {
-                boolean ok = game.getEventResume().resumeEvent();
+                boolean ok = game.getEventResume().resumeEvent(player);
 
                 if (ok) {
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {

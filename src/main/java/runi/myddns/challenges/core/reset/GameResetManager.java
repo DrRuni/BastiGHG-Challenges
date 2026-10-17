@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -30,10 +29,12 @@ public class GameResetManager {
         if (!game.isLoaded()) return;
 
         if (resetRunning) {
-            Bukkit.broadcastMessage(
-                    ChatColor.RED
-                            + "❌ Es läuft bereits ein Reset."
+
+            Bukkit.broadcast(
+                    plugin.getLanguageManager()
+                            .getComponent("game-reset.already-running")
             );
+
             return;
         }
 
@@ -41,12 +42,13 @@ public class GameResetManager {
 
         showTitleToAll(
                 game.getDisplayName(),
-                "Spielstand wird zurückgesetzt...",
+                plugin.getLanguageManager()
+                        .get("game-reset.game.resetting"),
                 NamedTextColor.GOLD
         );
 
         plugin.getLogger().info(
-                "Game-Reset gestartet: " + game.getId()
+                "Game reset started: " + game.getId()
         );
 
         resetPlayers(
@@ -60,15 +62,18 @@ public class GameResetManager {
 
         showTitleToAll(
                 game.getDisplayName(),
-                "Reset abgeschlossen!",
+                plugin.getLanguageManager()
+                        .get("game-reset.game.finished"),
                 NamedTextColor.GREEN
         );
 
-        Bukkit.broadcastMessage(
-                ChatColor.GREEN
-                        + "✔ "
-                        + game.getDisplayName()
-                        + " wurde zurückgesetzt."
+        Bukkit.broadcast(
+                plugin.getLanguageManager()
+                        .getComponent(
+                                "game-reset.game.broadcast-finished",
+                                "game",
+                                Component.text(game.getDisplayName())
+                        )
         );
 
         resetRunning = false;
@@ -80,10 +85,12 @@ public class GameResetManager {
         if (!game.isLoaded()) return;
 
         if (resetRunning) {
-            Bukkit.broadcastMessage(
-                    ChatColor.RED
-                            + "❌ Es läuft bereits ein Reset."
+
+            Bukkit.broadcast(
+                    plugin.getLanguageManager()
+                            .getComponent("game-reset.already-running")
             );
+
             return;
         }
 
@@ -91,7 +98,8 @@ public class GameResetManager {
 
         showTitleToAll(
                 game.getDisplayName(),
-                "Welten werden zurückgesetzt...",
+                plugin.getLanguageManager()
+                        .get("game-reset.worlds.resetting"),
                 NamedTextColor.GOLD
         );
 
@@ -106,8 +114,11 @@ public class GameResetManager {
                             player,
                             game.getId()
                     )) {
+
                 continue;
             }
+
+            game.leavePlayer(player);
 
             player.teleport(
                     plugin.getLobbyWorldManager()
@@ -115,11 +126,13 @@ public class GameResetManager {
             );
         }
 
-        Bukkit.broadcastMessage(
-                ChatColor.GOLD
-                        + "⏳ "
-                        + game.getDisplayName()
-                        + "-Welten werden zurückgesetzt..."
+        Bukkit.broadcast(
+                plugin.getLanguageManager()
+                        .getComponent(
+                                "game-reset.worlds.broadcast-resetting",
+                                "game",
+                                Component.text(game.getDisplayName())
+                        )
         );
 
         Bukkit.getScheduler()
@@ -135,7 +148,8 @@ public class GameResetManager {
 
                             showTitleToAll(
                                     game.getDisplayName(),
-                                    "Welten werden neu erstellt...",
+                                    plugin.getLanguageManager()
+                                            .get("game-reset.worlds.recreating"),
                                     NamedTextColor.YELLOW
                             );
 
@@ -148,6 +162,7 @@ public class GameResetManager {
                                         .equalsIgnoreCase(
                                                 game.getId()
                                         )) {
+
                                     continue;
                                 }
 
@@ -164,15 +179,20 @@ public class GameResetManager {
 
                                 showTitleToAll(
                                         game.getDisplayName(),
-                                        "Reset fehlgeschlagen!",
+                                        plugin.getLanguageManager()
+                                                .get("game-reset.worlds.failed"),
                                         NamedTextColor.RED
                                 );
 
-                                Bukkit.broadcastMessage(
-                                        ChatColor.RED
-                                                + "❌ Fehler beim Zurücksetzen der "
-                                                + game.getDisplayName()
-                                                + "-Welten."
+                                Bukkit.broadcast(
+                                        plugin.getLanguageManager()
+                                                .getComponent(
+                                                        "game-reset.worlds.broadcast-failed",
+                                                        "game",
+                                                        Component.text(
+                                                                game.getDisplayName()
+                                                        )
+                                                )
                                 );
 
                                 resetRunning = false;
@@ -184,7 +204,8 @@ public class GameResetManager {
                                             game.getId()
                                     );
 
-                            if (game.getId().equalsIgnoreCase("levelblock")) {
+                            if (game.getId()
+                                    .equalsIgnoreCase("levelblock")) {
 
                                 runi.myddns.challenges.games.LevelBlock.LevelBlockGame levelBlockGame =
                                         (runi.myddns.challenges.games.LevelBlock.LevelBlockGame) game;
@@ -197,7 +218,8 @@ public class GameResetManager {
                                             game.getId()
                                     );
 
-                            if (game.getId().equalsIgnoreCase("levelblock")) {
+                            if (game.getId()
+                                    .equalsIgnoreCase("levelblock")) {
 
                                 runi.myddns.challenges.games.LevelBlock.LevelBlockGame levelBlockGame =
                                         (runi.myddns.challenges.games.LevelBlock.LevelBlockGame) game;
@@ -213,15 +235,20 @@ public class GameResetManager {
 
                             showTitleToAll(
                                     game.getDisplayName(),
-                                    "Reset abgeschlossen!",
+                                    plugin.getLanguageManager()
+                                            .get("game-reset.worlds.finished"),
                                     NamedTextColor.GREEN
                             );
 
-                            Bukkit.broadcastMessage(
-                                    ChatColor.GREEN
-                                            + "✔ "
-                                            + game.getDisplayName()
-                                            + "-Welten wurden neu erstellt."
+                            Bukkit.broadcast(
+                                    plugin.getLanguageManager()
+                                            .getComponent(
+                                                    "game-reset.worlds.broadcast-finished",
+                                                    "game",
+                                                    Component.text(
+                                                            game.getDisplayName()
+                                                    )
+                                            )
                             );
 
                             resetRunning = false;

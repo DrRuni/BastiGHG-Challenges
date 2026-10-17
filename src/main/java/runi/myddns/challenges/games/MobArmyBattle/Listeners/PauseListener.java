@@ -100,6 +100,10 @@ public class PauseListener implements Listener {
 
         freezeLocations.remove(player);
 
+        if (!game.isMobArmyPlayer(player)) {
+            return;
+        }
+
         if (!game.getEventResume().isEventStarted()) {
             return;
         }

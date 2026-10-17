@@ -71,13 +71,6 @@ public class LobbyButtonManager implements Listener {
                     52
             );
 
-    private static final String[] BUTTON_NAMES = {
-            "SELECT",
-            "LOAD",
-            "START",
-            "SETTINGS"
-    };
-
     private record ButtonPosition(
             double x,
             double y,
@@ -92,6 +85,13 @@ public class LobbyButtonManager implements Listener {
             new HashMap<>();
 
     public void createButtons(World world) {
+
+        String[] buttonNames = {
+                plugin.getLanguageManager().get("lobby-buttons.select"),
+                plugin.getLanguageManager().get("lobby-buttons.load"),
+                plugin.getLanguageManager().get("lobby-buttons.start"),
+                plugin.getLanguageManager().get("lobby-buttons.settings")
+        };
 
         removeOldButtons(world);
 
@@ -136,7 +136,7 @@ public class LobbyButtonManager implements Listener {
                 ),
         };
 
-        for (int i = 0; i < BUTTON_NAMES.length; i++) {
+        for (int i = 0; i < buttonNames.length; i++) {
 
             ButtonPosition position =
                     positions[i];
@@ -144,7 +144,7 @@ public class LobbyButtonManager implements Listener {
             createButton(
                     world,
                     i,
-                    BUTTON_NAMES[i],
+                    buttonNames[i],
                     position.x(),
                     position.y(),
                     position.z()
@@ -337,14 +337,20 @@ public class LobbyButtonManager implements Listener {
 
             if (currentGame != null && currentGame.isLoading()) {
                 lobbyDisplayManager.setLoadStatus(
-                        "Während des Ladens kann das Game nicht gewechselt werden.",
+                        plugin.getLanguageManager()
+                                .get("lobby-buttons.change-blocked-loading"),
                         BLOOD_RED
                 );
 
                 plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                     if (currentGame.isLoading()) {
                         lobbyDisplayManager.setLoadStatus(
-                                currentGame.getDisplayName() + " wird geladen...",
+                                plugin.getLanguageManager()
+                                        .get(
+                                                "lobby-buttons.loading",
+                                                "game",
+                                                currentGame.getDisplayName()
+                                        ),
                                 LOAD_RED
                         );
                     } else if (currentGame.isLoaded()) {
@@ -381,7 +387,12 @@ public class LobbyButtonManager implements Listener {
 
             if (game.isLoaded()) {
                 lobbyDisplayManager.setLoadStatus(
-                        game.getDisplayName() + " wurde bereits geladen",
+                        plugin.getLanguageManager()
+                                .get(
+                                        "lobby-buttons.already-loaded",
+                                        "game",
+                                        game.getDisplayName()
+                                ),
                         0xA61B1B
                 );
 
@@ -411,7 +422,8 @@ public class LobbyButtonManager implements Listener {
 
             if (game == null) {
                 lobbyDisplayManager.setLoadStatus(
-                        "Bitte zuerst ein Game auswählen.",
+                        plugin.getLanguageManager()
+                                .get("lobby-buttons.no-game-selected"),
                         0xFF5555
                 );
                 return;

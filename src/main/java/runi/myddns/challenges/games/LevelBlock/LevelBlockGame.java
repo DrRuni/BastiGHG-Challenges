@@ -15,6 +15,7 @@ import runi.myddns.challenges.core.timer.GameTimerManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
+import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.games.LevelBlock.Listeners.BorderBlockListener;
 import runi.myddns.challenges.games.LevelBlock.Listeners.PlayerListener;
 import runi.myddns.challenges.games.LevelBlock.Listeners.PortalListener;
@@ -44,6 +45,7 @@ public class LevelBlockGame implements ChallengeGame {
     private final GameTimerManager gameTimerManager;
     private final TimerManager timerManager;
     private PortalListener portalListener;
+    private final LanguageManager languageManager;
 
     private boolean loaded;
     private boolean loading;
@@ -52,14 +54,22 @@ public class LevelBlockGame implements ChallengeGame {
     public LevelBlockGame(ChallengeMain plugin) {
         this.plugin = plugin;
         this.lobbyDisplayManager = plugin.getLobbyDisplayManager();
+        this.languageManager = plugin.getLanguageManager().forGroup(getId());
         this.borderManager = new BorderManager(this);
         this.gameManager = new LevelBlockGameManager(this, borderManager);
         this.gameTimerManager = new GameTimerManager(plugin, getId());
         this.timerManager = new TimerManager(this, gameTimerManager);
-        this.worldSettingsManager = new GameWorldSettingsManager(plugin, getId(), List.of(
+
+        this.worldSettingsManager =
+                new GameWorldSettingsManager(
+                        plugin,
+                        getId(),
+                        List.of(
                                 GameWorldDefinition.LEVEL_BLOCK_OVERWORLD.worldName(),
                                 GameWorldDefinition.LEVEL_BLOCK_NETHER.worldName(),
-                                GameWorldDefinition.LEVEL_BLOCK_END.worldName()));
+                                GameWorldDefinition.LEVEL_BLOCK_END.worldName()
+                        )
+                );
     }
 
     @Override
@@ -103,38 +113,42 @@ public class LevelBlockGame implements ChallengeGame {
         }
 
         lobbyDisplayManager.clearLoadConsole();
+
         lobbyDisplayManager.setLoadStatus(
-                "LevelBlock wird geladen...",
+                languageManager.get("loading.starting"),
                 LOAD_RED
         );
 
         gameTasks.add(
-                plugin.getServer().getScheduler().runTaskLater(
-                        plugin,
-                        this::runLoadSequence,
-                        2L
-                )
+                plugin.getServer()
+                        .getScheduler()
+                        .runTaskLater(
+                                plugin,
+                                this::runLoadSequence,
+                                2L
+                        )
         );
     }
 
     private void runLoadSequence() {
 
         runStep(
-                "Welten laden...",
+                languageManager.get("loading.worlds"),
                 () -> plugin
                         .getGameWorldManager()
                         .loadGameWorlds(getId()),
 
                 () -> runStep(
-                        "Welteneinstellungen laden...",
+                        languageManager.get("loading.world-settings"),
                         () -> {
                             worldSettingsManager.load();
                             worldSettingsManager.applyAll();
                         },
 
                         () -> runStep(
-                                "LevelBlock-Daten laden...",
+                                languageManager.get("loading.data"),
                                 () -> {
+
                                     borderManager
                                             .getDataManager()
                                             .load();
@@ -143,55 +157,92 @@ public class LevelBlockGame implements ChallengeGame {
                                 },
 
                                 () -> runStep(
-                                        "Overworld vorbereiten...",
+                                        languageManager.get("loading.overworld"),
                                         () -> preloadWorld(
                                                 GameWorldDefinition.LEVEL_BLOCK_OVERWORLD,
                                                 3
                                         ),
 
                                         () -> runStep(
-                                                "Nether vorbereiten...",
+                                                languageManager.get("loading.nether"),
                                                 () -> preloadWorld(
                                                         GameWorldDefinition.LEVEL_BLOCK_NETHER,
                                                         2
                                                 ),
 
                                                 () -> runStep(
-                                                        "End vorbereiten...",
+                                                        languageManager.get("loading.end"),
                                                         () -> preloadWorld(
                                                                 GameWorldDefinition.LEVEL_BLOCK_END,
                                                                 2
                                                         ),
 
                                                         () -> runStep(
-                                                                "Listener registrieren...",
+                                                                languageManager.get("loading.listeners"),
                                                                 () -> {
-                                                                    moveListener = new MoveListener(this);
-                                                                    portalListener = new PortalListener(this);
-                                                                    borderBlockListener = new BorderBlockListener(this);
-                                                                    playerListener = new PlayerListener(this);
 
-                                                                    Bukkit.getPluginManager().registerEvents(moveListener, plugin);
-                                                                    Bukkit.getPluginManager().registerEvents(portalListener, plugin);
-                                                                    Bukkit.getPluginManager().registerEvents(borderBlockListener, plugin);
-                                                                    Bukkit.getPluginManager().registerEvents(playerListener, plugin);
+                                                                    moveListener =
+                                                                            new MoveListener(this);
+
+                                                                    portalListener =
+                                                                            new PortalListener(this);
+
+                                                                    borderBlockListener =
+                                                                            new BorderBlockListener(this);
+
+                                                                    playerListener =
+                                                                            new PlayerListener(this);
+
+                                                                    Bukkit.getPluginManager()
+                                                                            .registerEvents(
+                                                                                    moveListener,
+                                                                                    plugin
+                                                                            );
+
+                                                                    Bukkit.getPluginManager()
+                                                                            .registerEvents(
+                                                                                    portalListener,
+                                                                                    plugin
+                                                                            );
+
+                                                                    Bukkit.getPluginManager()
+                                                                            .registerEvents(
+                                                                                    borderBlockListener,
+                                                                                    plugin
+                                                                            );
+
+                                                                    Bukkit.getPluginManager()
+                                                                            .registerEvents(
+                                                                                    playerListener,
+                                                                                    plugin
+                                                                            );
                                                                 },
 
                                                                 () -> runStep(
-                                                                        "Commands registrieren...",
+                                                                        languageManager.get("loading.commands"),
                                                                         () -> {
-                                                                            levelBlockCommand = new LevelBlockCommand(this);
 
-                                                                            PluginCommand command = plugin.getCommand("levelblock");
+                                                                            levelBlockCommand =
+                                                                                    new LevelBlockCommand(this);
+
+                                                                            PluginCommand command =
+                                                                                    plugin.getCommand(
+                                                                                            "levelblock"
+                                                                                    );
 
                                                                             if (command != null) {
-                                                                                command.setExecutor(levelBlockCommand);
-                                                                                command.setTabCompleter(levelBlockCommand);
+                                                                                command.setExecutor(
+                                                                                        levelBlockCommand
+                                                                                );
+
+                                                                                command.setTabCompleter(
+                                                                                        levelBlockCommand
+                                                                                );
                                                                             }
                                                                         },
 
                                                                         () -> runStep(
-                                                                                "Border vorbereiten...",
+                                                                                languageManager.get("loading.border"),
                                                                                 borderManager::startRenderer,
                                                                                 this::finishLoading
                                                                         )
@@ -217,24 +268,38 @@ public class LevelBlockGame implements ChallengeGame {
 
         borderManager.stopRenderer();
 
-        if (moveListener != null) HandlerList.unregisterAll(moveListener);
-        if (portalListener != null) HandlerList.unregisterAll(portalListener);
-        if (borderBlockListener != null) HandlerList.unregisterAll(borderBlockListener);
-        if (playerListener != null) HandlerList.unregisterAll(playerListener);
+        if (moveListener != null) {
+            HandlerList.unregisterAll(moveListener);
+        }
+
+        if (portalListener != null) {
+            HandlerList.unregisterAll(portalListener);
+        }
+
+        if (borderBlockListener != null) {
+            HandlerList.unregisterAll(borderBlockListener);
+        }
+
+        if (playerListener != null) {
+            HandlerList.unregisterAll(playerListener);
+        }
 
         for (BukkitTask task : gameTasks) {
             task.cancel();
         }
+
         gameTasks.clear();
 
         gameTimerManager.pause();
         timerManager.stop();
+
         moveListener = null;
         portalListener = null;
         borderBlockListener = null;
         playerListener = null;
 
-        PluginCommand command = plugin.getCommand("levelblock");
+        PluginCommand command =
+                plugin.getCommand("levelblock");
 
         if (command != null) {
             command.setExecutor(null);
@@ -246,10 +311,15 @@ public class LevelBlockGame implements ChallengeGame {
         loading = false;
         loaded = false;
 
-        plugin.getGameStateManager().setStarted(false);
-        plugin.getGameStateManager().setLoaded(false);
+        plugin.getGameStateManager()
+                .setStarted(false);
 
-        lobbyDisplayManager.setLoadUnloaded(getDisplayName());
+        plugin.getGameStateManager()
+                .setLoaded(false);
+
+        lobbyDisplayManager.setLoadUnloaded(
+                getDisplayName()
+        );
     }
 
     private void preloadWorld(
@@ -257,20 +327,24 @@ public class LevelBlockGame implements ChallengeGame {
             int radius
     ) {
 
-        World world = plugin.getGameWorldManager().loadWorld(definition);
+        World world =
+                plugin.getGameWorldManager()
+                        .loadWorld(definition);
 
         if (world == null) {
             throw new IllegalStateException(
-                    "Welt konnte nicht geladen werden: "
+                    "World could not be loaded: "
                             + definition.worldName()
             );
         }
 
         int centerX =
-                world.getSpawnLocation().getBlockX() >> 4;
+                world.getSpawnLocation()
+                        .getBlockX() >> 4;
 
         int centerZ =
-                world.getSpawnLocation().getBlockZ() >> 4;
+                world.getSpawnLocation()
+                        .getBlockZ() >> 4;
 
         for (int x = -radius; x <= radius; x++) {
 
@@ -290,13 +364,16 @@ public class LevelBlockGame implements ChallengeGame {
             Runnable next
     ) {
 
-        lobbyDisplayManager.addLoadConsoleLine(status);
+        lobbyDisplayManager.addLoadConsoleLine(
+                status
+        );
 
         try {
 
             action.run();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
+
                 player.playSound(
                         player.getLocation(),
                         Sound.BLOCK_STONE_BUTTON_CLICK_OFF,
@@ -310,12 +387,16 @@ public class LevelBlockGame implements ChallengeGame {
             loading = false;
 
             lobbyDisplayManager.setLoadStatus(
-                    "FEHLER: " + status,
+                    languageManager.get(
+                            "loading.error",
+                            "status",
+                            status
+                    ),
                     BRIGHT_RED
             );
 
             plugin.getLogger().severe(
-                    "Fehler beim Laden von LevelBlock: "
+                    "Error while loading LevelBlock: "
                             + status
             );
 
@@ -325,26 +406,36 @@ public class LevelBlockGame implements ChallengeGame {
         }
 
         gameTasks.add(
-                plugin.getServer().getScheduler().runTaskLater(
-                        plugin,
-                        next,
-                        15L
-                )
+                plugin.getServer()
+                        .getScheduler()
+                        .runTaskLater(
+                                plugin,
+                                next,
+                                15L
+                        )
         );
     }
-
 
     private void finishLoading() {
 
         loaded = true;
         loading = false;
 
-        plugin.getGameStateManager().setLoaded(true);
+        plugin.getGameStateManager()
+                .setLoaded(true);
+
         timerManager.start();
-        lobbyDisplayManager.setLoadReady(getDisplayName());
-        lobbyDisplayManager.sendGameInfoHint(this);
+
+        lobbyDisplayManager.setLoadReady(
+                getDisplayName()
+        );
+
+        lobbyDisplayManager.sendGameInfoHint(
+                this
+        );
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+
             player.playSound(
                     player.getLocation(),
                     Sound.BLOCK_NOTE_BLOCK_PLING,
@@ -353,18 +444,25 @@ public class LevelBlockGame implements ChallengeGame {
             );
         }
 
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.DARK_GOLDEN_LIME
-                        + "  ═══════════════  LevelBlock V0.9 BETA ═══════════════"
-                        + ConsoleColor.RESET
-        );
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.DARK_GOLDEN_LIME
-                        + "                      geladen"
-                        + ConsoleColor.RESET
-        );
-        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender()
+                .sendMessage("");
+
+        Bukkit.getConsoleSender()
+                .sendMessage(
+                        ConsoleColor.DARK_GOLDEN_LIME
+                                + "  ═══════════════  LevelBlock V0.9 BETA ═══════════════"
+                                + ConsoleColor.RESET
+                );
+
+        Bukkit.getConsoleSender()
+                .sendMessage(
+                        ConsoleColor.DARK_GOLDEN_LIME
+                                + "                      loaded"
+                                + ConsoleColor.RESET
+                );
+
+        Bukkit.getConsoleSender()
+                .sendMessage("");
     }
 
     @Override
@@ -383,14 +481,15 @@ public class LevelBlockGame implements ChallengeGame {
     public void joinActiveGame(Player player) {
 
         World world =
-                plugin.getGameWorldManager().loadWorld(
-                        GameWorldDefinition.LEVEL_BLOCK_OVERWORLD
-                );
+                plugin.getGameWorldManager()
+                        .loadWorld(
+                                GameWorldDefinition.LEVEL_BLOCK_OVERWORLD
+                        );
 
         if (world == null) {
 
             plugin.getLogger().warning(
-                    "LevelBlock-Welt konnte nicht geladen werden."
+                    "LevelBlock world could not be loaded."
             );
 
             return;
@@ -414,6 +513,7 @@ public class LevelBlockGame implements ChallengeGame {
         }
 
         if (targetLocation == null) {
+
             targetLocation =
                     world.getSpawnLocation();
         }
@@ -514,7 +614,9 @@ public class LevelBlockGame implements ChallengeGame {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
-            if (player.equals(ignoredPlayer)) continue;
+            if (player.equals(ignoredPlayer)) {
+                continue;
+            }
 
             if (isLevelBlockPlayer(player)) {
                 return true;
@@ -531,7 +633,8 @@ public class LevelBlockGame implements ChallengeGame {
         if (player == null) return false;
 
         String worldName =
-                player.getWorld().getName();
+                player.getWorld()
+                        .getName();
 
         return worldName.equalsIgnoreCase(
                 GameWorldDefinition.LEVEL_BLOCK_OVERWORLD.worldName()
@@ -562,11 +665,28 @@ public class LevelBlockGame implements ChallengeGame {
     public GameWorldSettingsManager getWorldSettingsManager() {
         return worldSettingsManager;
     }
+
     public ChallengeMain getPlugin() {
         return plugin;
     }
-    public BorderManager getBorderManager() { return borderManager;}
-    public LevelBlockGameManager getLevelBlockGameManager() { return gameManager;}
-    public GameTimerManager getTimerManager() {return gameTimerManager;}
-    public TimerManager getTimerDisplayManager() {return timerManager;}
+
+    public BorderManager getBorderManager() {
+        return borderManager;
+    }
+
+    public LevelBlockGameManager getLevelBlockGameManager() {
+        return gameManager;
+    }
+
+    public GameTimerManager getTimerManager() {
+        return gameTimerManager;
+    }
+
+    public TimerManager getTimerDisplayManager() {
+        return timerManager;
+    }
+
+    public LanguageManager getLanguageManager() {
+        return languageManager;
+    }
 }

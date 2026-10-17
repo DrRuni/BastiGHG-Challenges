@@ -54,7 +54,9 @@ public class GameInfoGUI implements Listener {
                         null,
                         27,
                         Component.text(
-                                game.getDisplayName() + " • INFO",
+                                game.getDisplayName()
+                                        + plugin.getLanguageManager()
+                                        .get("game-info.title-suffix"),
                                 TextColor.color(0xC38CFF)
                         )
                 );
@@ -62,7 +64,8 @@ public class GameInfoGUI implements Listener {
         addSectionButtons(
                 inventory,
                 game,
-                "Spielinfo",
+                plugin.getLanguageManager()
+                        .get("game-info.description"),
                 Material.BOOK,
                 0xFF5ACD,
                 wrapLines(
@@ -77,7 +80,8 @@ public class GameInfoGUI implements Listener {
         addSectionButtons(
                 inventory,
                 game,
-                "Features",
+                plugin.getLanguageManager()
+                        .get("game-info.features"),
                 Material.NETHER_STAR,
                 0x8B5CFF,
                 wrapLines(
@@ -92,7 +96,8 @@ public class GameInfoGUI implements Listener {
         addSectionButtons(
                 inventory,
                 game,
-                "Befehle",
+                plugin.getLanguageManager()
+                        .get("game-info.commands"),
                 Material.PAPER,
                 0x20D5FF,
                 plugin.getGameInfoManager()
@@ -105,7 +110,8 @@ public class GameInfoGUI implements Listener {
                 22,
                 createButton(
                         Material.BARRIER,
-                        "Schließen",
+                        plugin.getLanguageManager()
+                                .get("game-info.close"),
                         0xFF5555,
                         "close",
                         game.getId(),
@@ -136,7 +142,8 @@ public class GameInfoGUI implements Listener {
         if (pages.isEmpty()) {
             pages.add(
                     List.of(
-                            "Keine Informationen verfügbar."
+                            plugin.getLanguageManager()
+                                    .get("game-info.no-information")
                     )
             );
         }

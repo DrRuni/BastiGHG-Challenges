@@ -28,7 +28,10 @@ public class LobbyCommand implements CommandExecutor {
         if (args.length > 0 && args[0].equalsIgnoreCase("all")) {
 
             if (!(sender instanceof Player player) || !player.isOp()) {
-                sender.sendMessage("§cDafür musst du OP sein.");
+                sender.sendMessage(
+                        plugin.getLanguageManager()
+                                .getComponent("commands.lobby.op-only")
+                );
                 return true;
             }
 
@@ -43,12 +46,18 @@ public class LobbyCommand implements CommandExecutor {
                 online.teleport(plugin.getLobbyWorldManager().getSpawn());
             }
 
-            sender.sendMessage("§aAlle Spieler wurden in die Lobby teleportiert.");
+            sender.sendMessage(
+                    plugin.getLanguageManager()
+                            .getComponent("commands.lobby.all-teleported")
+            );
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Dieser Befehl kann nur von Spielern verwendet werden.");
+            sender.sendMessage(
+                    plugin.getLanguageManager()
+                            .getComponent("commands.lobby.player-only")
+            );
             return true;
         }
 

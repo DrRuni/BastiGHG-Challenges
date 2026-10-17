@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -60,12 +61,12 @@ public class BundleManager {
 
         if (team.equalsIgnoreCase("Blau")) {
             material = Material.BLUE_BUNDLE;
-            languagePath = "bundle-manager.blue-name";
+            languagePath = "bundle.blue-name";
             teamId = "blue";
             color = NamedTextColor.BLUE;
         } else if (team.equalsIgnoreCase("Rot")) {
             material = Material.RED_BUNDLE;
-            languagePath = "bundle-manager.red-name";
+            languagePath = "bundle.red-name";
             teamId = "red";
             color = NamedTextColor.RED;
         } else {
@@ -87,8 +88,9 @@ public class BundleManager {
                 teamId
         );
 
-        bundle.setItemMeta(meta);
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 
+        bundle.setItemMeta(meta);
         return bundle;
     }
 

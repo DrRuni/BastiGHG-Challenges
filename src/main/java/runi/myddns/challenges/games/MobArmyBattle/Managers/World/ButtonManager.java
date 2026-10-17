@@ -54,55 +54,25 @@ public class ButtonManager implements Listener {
         // Team Auswahl
         if (isButtonAt(clicked, 28, 65, 1)) {
 
-            if (game.getEventResume().loadPhase() != ResumeManager.PHASE_LOBBY) {
-                player.sendMessage(Component.empty());
-                player.sendMessage(lang("button-manager.team-selection-only-lobby"));
-                player.sendMessage(lang("button-manager.use-phase-lobby"));
-                player.sendMessage(Component.empty());
-                event.setCancelled(true);
-                return;
-            }
-
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     game.getTeamSelectionGUI().openGUI(player);
                     Sounds.playClick(player);
                 }
-            }.runTaskLater(game.getPlugin(), 1L);
+            }.runTaskLater(
+                    game.getPlugin(),
+                    1L
+            );
 
             event.setCancelled(true);
             return;
         }
 
-        // START EVENT
+        // START EVENT / INS LAUFENDE EVENT EINSTEIGEN
         if (isButtonAt(clicked, 28, 65, -5)) {
 
-            if (!player.isOp()) {
-                player.sendMessage(
-                        lang("button-manager.operators-only")
-                );
-                event.setCancelled(true);
-                return;
-            }
-
-            if (game.getEventResume().loadPhase() != ResumeManager.PHASE_LOBBY) {
-                player.sendMessage(Component.empty());
-                player.sendMessage(lang("button-manager.event-only-lobby"));
-                player.sendMessage(lang("button-manager.use-phase-lobby"));
-                player.sendMessage(Component.empty());
-                event.setCancelled(true);
-                return;
-            }
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    game.getEventManager().enableEventHandling();
-                    game.getEventManager().startEvent();
-                    Sounds.playClick(player);
-                }
-            }.runTaskLater(game.getPlugin(), 1L);
+            handleStartButton(player);
 
             event.setCancelled(true);
             return;
@@ -270,6 +240,143 @@ public class ButtonManager implements Listener {
         }
 
         return true;
+    }
+
+    public void handleStartButton(Player player) {
+
+        if (!game.getEventResume().isEventStarted()) {
+
+            game.getEventManager().enableEventHandling();
+            game.getEventManager().startEvent();
+
+            Sounds.playClick(player);
+            return;
+        }
+
+        if (!game.getTeamManager()
+                .isRegisteredParticipant(player)) {
+
+            player.sendMessage(Component.empty());
+            player.sendMessage(
+                    Component.text(
+                            "Du gehörst noch keinem Team des laufenden Events an.",
+                            NamedTextColor.RED
+                    )
+            );
+            player.sendMessage(
+                    Component.text(
+                            "Wähle zuerst ein Team.",
+                            NamedTextColor.YELLOW
+                    )
+            );
+            player.sendMessage(Component.empty());
+
+            game.getTeamSelectionGUI()
+                    .openGUI(player);
+
+            Sounds.playDanger(player);
+            return;
+        }
+
+        int phase =
+                game.getEventResume()
+                        .loadPhase();
+
+        switch (phase) {
+
+            case ResumeManager.PHASE_TEAMWELT ->
+                    teleportToCurrentTeamWorld(player);
+
+            case ResumeManager.PHASE_WAVEAUSWAHL -> {
+
+                TeleportManager.teleportToWaveSelection(
+                        game,
+                        player
+                );
+
+                player.setGameMode(GameMode.SURVIVAL);
+                player.setInvulnerable(false);
+            }
+
+            case ResumeManager.PHASE_ARENA -> {
+
+                TeleportManager.teleportToArena(
+                        game,
+                        player
+                );
+
+                player.setGameMode(GameMode.SURVIVAL);
+                player.setInvulnerable(false);
+            }
+
+            default -> {
+
+                player.sendMessage(
+                        Component.text(
+                                "Das Event befindet sich noch in der Lobby-Phase.",
+                                NamedTextColor.YELLOW
+                        )
+                );
+            }
+        }
+
+        Sounds.playClick(player);
+    }
+
+    private void teleportToCurrentTeamWorld(
+            Player player
+    ) {
+
+        String team =
+                game.getTeamManager()
+                        .getPlayerTeam(player);
+
+        String worldName;
+
+        if ("Rot".equalsIgnoreCase(team)) {
+
+            worldName = "world_rot";
+
+        } else if ("Blau".equalsIgnoreCase(team)) {
+
+            worldName = "world_blau";
+
+        } else {
+
+            player.sendMessage(
+                    Component.text(
+                            "Dein Team konnte nicht ermittelt werden.",
+                            NamedTextColor.RED
+                    )
+            );
+
+            return;
+        }
+
+        World world =
+                Bukkit.getWorld(worldName);
+
+        if (world == null) {
+
+            player.sendMessage(
+                    Component.text(
+                            "Deine Teamwelt ist nicht geladen.",
+                            NamedTextColor.RED
+                    )
+            );
+
+            return;
+        }
+
+        player.teleport(
+                world.getSpawnLocation()
+        );
+
+        player.setGameMode(
+                GameMode.SURVIVAL
+        );
+
+        player.setInvulnerable(false);
     }
 
     private boolean isButtonAt(Location loc, int x, int y, int z) {

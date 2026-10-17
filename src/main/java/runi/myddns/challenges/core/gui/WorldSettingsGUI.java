@@ -79,7 +79,8 @@ public class WorldSettingsGUI implements Listener {
 
         if (game == null || !game.isLoaded()) {
             plugin.getLobbyDisplayManager().setLoadStatus(
-                    "Bitte zuerst ein Game laden.",
+                    plugin.getLanguageManager()
+                            .get("world-settings.load-first"),
                     0xFFAA00
             );
             return;
@@ -92,7 +93,8 @@ public class WorldSettingsGUI implements Listener {
                 new WorldSettingsHolder(),
                 45,
                 Component.text(
-                        "Settings » ",
+                        plugin.getLanguageManager()
+                                .get("world-settings.title-prefix"),
                         TextColor.color(BLACK)
                 ).append(
                         getGameTitle(game)
@@ -112,7 +114,7 @@ public class WorldSettingsGUI implements Listener {
                         settings.isMobSpawningEnabled()
                                 ? Material.ZOMBIE_HEAD
                                 : Material.PLAYER_HEAD,
-                        "Mob Spawning",
+                        plugin.getLanguageManager().get("world-settings.mob-spawning"),
                         settings.isMobSpawningEnabled()
                 )
         );
@@ -123,7 +125,7 @@ public class WorldSettingsGUI implements Listener {
                         settings.isKeepInventoryEnabled()
                                 ? Material.LIME_WOOL
                                 : Material.RED_WOOL,
-                        "Keep Inventory",
+                        plugin.getLanguageManager().get("world-settings.keep-inventory"),
                         settings.isKeepInventoryEnabled()
                 )
         );
@@ -134,7 +136,7 @@ public class WorldSettingsGUI implements Listener {
                         settings.isNightVisionEnabled()
                                 ? Material.LIGHT
                                 : Material.GRAY_CANDLE,
-                        "Night Vision",
+                        plugin.getLanguageManager().get("world-settings.night-vision"),
                         settings.isNightVisionEnabled()
                 )
         );
@@ -152,7 +154,7 @@ public class WorldSettingsGUI implements Listener {
                         settings.isDaylightCycleEnabled()
                                 ? Material.CLOCK
                                 : Material.DAYLIGHT_DETECTOR,
-                        "Daylight Cycle",
+                        plugin.getLanguageManager().get("world-settings.daylight-cycle"),
                         settings.isDaylightCycleEnabled()
                 )
         );
@@ -163,14 +165,16 @@ public class WorldSettingsGUI implements Listener {
             inv.setItem(
                     4,
                     createItem(
-                            Material.COMMAND_BLOCK,
+                            Material.GRASS_BLOCK,
                             Component.text(
-                                    "Reset / Verwaltung",
+                                    plugin.getLanguageManager()
+                                            .get("world-settings.reset.name"),
                                     NamedTextColor.RED
                             ),
                             Component.empty(),
                             Component.text(
-                                    "Spielstand oder Welten zurücksetzen",
+                                    plugin.getLanguageManager()
+                                            .get("world-settings.reset.description"),
                                     NamedTextColor.GRAY
                             )
                     )
@@ -315,11 +319,16 @@ public class WorldSettingsGUI implements Listener {
             boolean state
     ) {
 
+        String stateText =
+                plugin.getLanguageManager().get(
+                        state
+                                ? "world-settings.state.on"
+                                : "world-settings.state.off"
+                );
+
         Component displayName =
                 Component.text(
-                        (state ? "AN" : "AUS") +
-                                " - " +
-                                name
+                        stateText + " - " + name
                 );
 
         return createItem(
@@ -327,8 +336,11 @@ public class WorldSettingsGUI implements Listener {
                 displayName,
                 Component.empty(),
                 Component.text(
-                        "Status: " +
-                                (state ? "AN" : "AUS")
+                        plugin.getLanguageManager().get(
+                                "world-settings.state.status",
+                                "state",
+                                stateText
+                        )
                 )
         );
     }
@@ -340,15 +352,22 @@ public class WorldSettingsGUI implements Listener {
         Material material =
                 getDifficultyMaterial(difficulty);
 
+        String difficultyName =
+                getDifficultyName(difficulty);
+
         return createItem(
                 material,
                 Component.text(
-                        "Difficulty: " +
-                                getDifficultyName(difficulty)
+                        plugin.getLanguageManager().get(
+                                "world-settings.difficulty.title",
+                                "difficulty",
+                                difficultyName
+                        )
                 ),
                 Component.empty(),
                 Component.text(
-                        "Klicken zum Ändern"
+                        plugin.getLanguageManager()
+                                .get("world-settings.difficulty.click")
                 )
         );
     }
@@ -361,31 +380,47 @@ public class WorldSettingsGUI implements Listener {
         Material material;
 
         if (currentTime < 6000) {
-            phase = "Morgen";
+
+            phase = plugin.getLanguageManager()
+                    .get("world-settings.time.morning");
+
             material = Material.ORANGE_WOOL;
 
         } else if (currentTime < 12000) {
-            phase = "Mittag";
+
+            phase = plugin.getLanguageManager()
+                    .get("world-settings.time.noon");
+
             material = Material.YELLOW_WOOL;
 
         } else if (currentTime < 18000) {
-            phase = "Abend";
+
+            phase = plugin.getLanguageManager()
+                    .get("world-settings.time.evening");
+
             material = Material.RED_WOOL;
 
         } else {
-            phase = "Nacht";
+
+            phase = plugin.getLanguageManager()
+                    .get("world-settings.time.night");
+
             material = Material.BLUE_WOOL;
         }
 
         return createItem(
                 material,
                 Component.text(
-                        "World Time: " +
+                        plugin.getLanguageManager().get(
+                                "world-settings.time.title",
+                                "phase",
                                 phase
+                        )
                 ),
                 Component.empty(),
                 Component.text(
-                        "Klicken zum Ändern"
+                        plugin.getLanguageManager()
+                                .get("world-settings.time.click")
                 )
         );
     }
@@ -394,10 +429,14 @@ public class WorldSettingsGUI implements Listener {
 
         return createItem(
                 Material.ARROW,
-                Component.text("Zurück"),
+                Component.text(
+                        plugin.getLanguageManager()
+                                .get("world-settings.back.name")
+                ),
                 Component.empty(),
                 Component.text(
-                        "Zurück zur Lobby"
+                        plugin.getLanguageManager()
+                                .get("world-settings.back.description")
                 )
         );
     }
@@ -530,7 +569,6 @@ public class WorldSettingsGUI implements Listener {
                 );
             }
 
-
             case 32 -> {
 
                 if (!(game instanceof MobArmyBattleGame mobArmyGame)) {
@@ -561,7 +599,17 @@ public class WorldSettingsGUI implements Listener {
             }
 
             case 40 -> {
-                player.closeInventory();
+
+                if (game instanceof MobArmyBattleGame mobArmyGame) {
+
+                    mobArmyGame.getEventSettingsGUI()
+                            .open(player);
+
+                } else {
+
+                    player.closeInventory();
+                }
+
                 reopen = false;
             }
 
@@ -647,26 +695,34 @@ public class WorldSettingsGUI implements Listener {
         return switch (
                 difficulty.toLowerCase(Locale.ROOT)
                 ) {
+
             case "peaceful" ->
-                    "Peaceful";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.peaceful");
 
             case "easy" ->
-                    "Easy";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.easy");
 
             case "normal" ->
-                    "Normal";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.normal");
 
             case "hard" ->
-                    "Hard";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.hard");
 
             case "ultra-hardcore" ->
-                    "Ultra Hardcore";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.ultra-hardcore");
 
             case "ultra-ultra-hardcore" ->
-                    "Ultra Ultra Hardcore";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.ultra-ultra-hardcore");
 
             default ->
-                    "Normal";
+                    plugin.getLanguageManager()
+                            .get("world-settings.difficulty.normal");
         };
     }
 
