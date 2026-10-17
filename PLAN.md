@@ -11,6 +11,8 @@
 - bei levenborder bei restart ist nur ein block
 - info gui eine zeile weiter hoch
 - in levelblock an borer ruckelt es noch zu viel
+- alle consolen logs auf eng
+- console säubern von unnützen sachen
 
 # Fragen
 - Wenn alle Welten in MAB zurück gesetzt werden, also neu erstellt, sollen dann alle player sachen au resettet werden?

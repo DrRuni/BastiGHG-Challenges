@@ -14,6 +14,7 @@ A Minecraft Paper plugin that combines multiple challenge game modes into one ce
 - Reset and vote system
 - Lobby displays and interactive buttons
 - German and English language support
+- Centralized language system for Core and all included games
 - Game progress can be saved
 - Multiplayer support
 
@@ -31,7 +32,7 @@ Current internal version: `v1.7`
 The world border grows based on the combined player levels.
 The more levels the players collect, the larger the playable area becomes.
 
-Current internal version: `v1.1`
+Current internal version: `v1.2`
 
 ### LevelBlock
 
@@ -78,9 +79,10 @@ The plugin is currently developed and tested on recent Paper 26.2 builds.
 
 Current project version:
 
-`V-0.9.0 Beta`
+`v0.9.8 Beta`
 
-The core systems are functional, but further tests and bug fixes are planned prior to version `1.0`.
+The core systems are functional, and the project is currently in late beta.
+Further multiplayer testing, cleanup and bug fixes are planned prior to version `1.0`.
 
 ## Feedback and Bug Reports
 
