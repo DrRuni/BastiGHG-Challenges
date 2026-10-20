@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.9.9] - Beta
+
+### Added
+- Centralized reset management for MobArmyBattle with four individual reset options
+- Separate reset options for game progress, team worlds, arena world, and all game worlds
+- Voting confirmation for all reset operations in the MobArmyBattle reset menu
+- Reset operation details displayed in the voting GUI
+
+### Changed
+- Reworked the central ResetManagementGUI to support game-specific reset options
+- Improved reset menu layout, button icons, and descriptions
+- Centralized reset menu translations in the Core language system
+- Improved player teleport handling during world resets
+- Team worlds now regenerate using a shared random seed
+- Improved coordination between Core and MobArmyBattle reset managers
+
+### Fixed
+- Improved world unloading and regeneration handling
+- Protection against overlapping world reset operations
+- Removed obsolete and redundant reset methods
+- Various smaller reset menu and display inconsistencies
+
+### Notes
+- Beta release
+
 ## [0.9.8] - Beta
 
 ### Added

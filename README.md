@@ -77,7 +77,7 @@ The plugin is currently developed and tested on recent Paper 26.2 builds.
 
 Current project version:
 
-`v0.9.8 Beta`
+`v0.9.9 Beta`
 
 The core systems are functional, and the project is currently in late beta.
 Further multiplayer testing, cleanup and bug fixes are planned prior to version `1.0`.
