@@ -10,8 +10,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.Sound;
-import org.bukkit.entity.Mob;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -1109,6 +1107,7 @@ public class ArenaEventManager implements Listener {
         );
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isArenaWorld(World world) {
         if (world == null) return false;
 

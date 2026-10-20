@@ -11,21 +11,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class PortalManager {
 
-    private final LevelBorderGame game;
     private final BorderDataManager data;
     private final File portalDir;
+    private final Logger logger;
     private final Map<World, List<Location>> portalCache = new HashMap<>();
 
     public PortalManager(LevelBorderGame game, BorderDataManager data) {
-        this.game = game;
         this.data = data;
+        this.logger = game.getPlugin().getLogger();
         this.portalDir = new File(game.getPlugin().getDataFolder(), "games/levelborder/portals");
 
-        if (!portalDir.exists()) {
-            portalDir.mkdirs();
+        if (!portalDir.exists() && !portalDir.mkdirs()) {
+            logger.severe(
+                    "LevelBorder: Portalordner konnte nicht erstellt werden: "
+                            + portalDir.getAbsolutePath()
+            );
         }
     }
 
@@ -87,7 +92,7 @@ public class PortalManager {
         );
 
         World w = center.getWorld();
-        List<Location> list = portalCache.computeIfAbsent(w, k -> new ArrayList<>());
+        List<Location> list = portalCache.computeIfAbsent(w, _ -> new ArrayList<>());
 
         for (Location l : list) {
             if (
@@ -115,7 +120,11 @@ public class PortalManager {
         try {
             cfg.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(
+                    Level.SEVERE,
+                    "LevelBorder: Fehler beim Speichern von " + file.getAbsolutePath(),
+                    e
+            );
         }
     }
 
@@ -165,8 +174,8 @@ public class PortalManager {
 
     public Location createOverworldPortal(World overworld, Location fromNether) {
 
-        int x = clampToBorder(fromNether.getBlockX() * 8);
-        int z = clampToBorder(fromNether.getBlockZ() * 8);
+        int x = clampToBorder(fromNether.getBlockX() * 8, true);
+        int z = clampToBorder(fromNether.getBlockZ() * 8, false);
 
         Chunk c = overworld.getChunkAt(x >> 4, z >> 4);
         if (!c.isLoaded()) c.load();
@@ -199,13 +208,17 @@ public class PortalManager {
         return center;
     }
 
-    private int clampToBorder(int value) {
-        Location c = data.getCenter();
-        double r = data.getSize() / 2 - 5;
+    private int clampToBorder(int value, boolean xAxis) {
+        Location center = data.getCenter();
+        if (center == null) return value;
 
-        return (int) Math.max(
-                c.getX() - r,
-                Math.min(c.getX() + r, value)
+        double radius = Math.max(0, data.getSize() / 2.0 - 5);
+        double coordinate = xAxis ? center.getX() : center.getZ();
+
+        return (int) Math.clamp(
+                value,
+                coordinate - radius,
+                coordinate + radius
         );
     }
 
@@ -345,7 +358,11 @@ public class PortalManager {
         try {
             cfg.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(
+                    Level.SEVERE,
+                    "LevelBorder: Fehler beim Speichern von " + file.getAbsolutePath(),
+                    e
+            );
         }
     }
 
@@ -354,10 +371,15 @@ public class PortalManager {
         portalCache.clear();
 
         if (portalDir.exists()) {
-            File[] files = portalDir.listFiles((dir, name) -> name.endsWith(".yml"));
+            File[] files = portalDir.listFiles((_, name) -> name.endsWith(".yml"));
             if (files != null) {
                 for (File file : files) {
-                    file.delete();
+                    if (!file.delete()) {
+                        logger.warning(
+                                "LevelBorder: Portaldatei konnte nicht gelöscht werden: "
+                                        + file.getAbsolutePath()
+                        );
+                    }
                 }
             }
         }

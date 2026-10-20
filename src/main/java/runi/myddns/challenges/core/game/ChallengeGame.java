@@ -9,7 +9,7 @@ public interface ChallengeGame {
 
     GameWorldSettingsManager getWorldSettingsManager();
 
-    boolean hasPlayers();
+    boolean hasNoPlayers();
     boolean hasOtherPlayers(Player ignoredPlayer);
     boolean isLoading();
     boolean canUnload();

@@ -1,6 +1,6 @@
+
 package runi.myddns.challenges.core.utils;
 
-import net.md_5.bungee.api.ChatColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -9,23 +9,24 @@ public class ColorUtil {
 
     public static String borderColor(String text) {
 
-        int startR = 0x7F, startG = 0xD8, startB = 0xFF;
-        int endR = 0x1E, endG = 0x3A, endB = 0x5A;
+        int startColor = DisplayColor.LIGHT_BLUE;
+        int endColor = 0x1E3A5A;
 
         StringBuilder sb = new StringBuilder();
         int len = Math.max(1, text.length() - 1);
 
         for (int i = 0; i < text.length(); i++) {
+
             float t = i / (float) len;
 
-            int r = (int) (startR + (endR - startR) * t);
-            int g = (int) (startG + (endG - startG) * t);
-            int b = (int) (startB + (endB - startB) * t);
+            int r = interpolate(startColor >> 16 & 0xFF, endColor >> 16 & 0xFF, t);
+            int g = interpolate(startColor >> 8 & 0xFF, endColor >> 8 & 0xFF, t);
+            int b = interpolate(startColor & 0xFF, endColor & 0xFF, t);
 
-            sb.append(ChatColor.of(
-                    String.format("#%02x%02x%02x", r, g, b)
-            )).append(text.charAt(i));
+            sb.append(hexColor(r, g, b))
+                    .append(text.charAt(i));
         }
+
         return sb.toString();
     }
 
@@ -36,48 +37,32 @@ public class ColorUtil {
     ) {
 
         Component result = Component.empty();
-
-        int length = Math.max(
-                1,
-                text.length() - 1
-        );
-
-        int startR = (startColor >> 16) & 0xFF;
-        int startG = (startColor >> 8) & 0xFF;
-        int startB = startColor & 0xFF;
-
-        int endR = (endColor >> 16) & 0xFF;
-        int endG = (endColor >> 8) & 0xFF;
-        int endB = endColor & 0xFF;
+        int length = Math.max(1, text.length() - 1);
 
         for (int i = 0; i < text.length(); i++) {
 
-            double factor =
-                    (double) i / length;
+            double factor = (double) i / length;
 
             int red = (int) Math.round(
-                    startR + (endR - startR) * factor
+                    ((startColor >> 16) & 0xFF)
+                            + (((endColor >> 16) & 0xFF) - ((startColor >> 16) & 0xFF)) * factor
             );
 
             int green = (int) Math.round(
-                    startG + (endG - startG) * factor
+                    ((startColor >> 8) & 0xFF)
+                            + (((endColor >> 8) & 0xFF) - ((startColor >> 8) & 0xFF)) * factor
             );
 
             int blue = (int) Math.round(
-                    startB + (endB - startB) * factor
+                    (startColor & 0xFF)
+                            + ((endColor & 0xFF) - (startColor & 0xFF)) * factor
             );
 
             result = result.append(
                     Component.text(
                             String.valueOf(text.charAt(i)),
-                            TextColor.color(
-                                    red,
-                                    green,
-                                    blue
-                            )
-                    ).decorate(
-                            TextDecoration.BOLD
-                    )
+                            TextColor.color(red, green, blue)
+                    ).decorate(TextDecoration.BOLD)
             );
         }
 
@@ -109,72 +94,40 @@ public class ColorUtil {
             int endColor
     ) {
 
-        int startR = (startColor >> 16) & 0xFF;
-        int startG = (startColor >> 8) & 0xFF;
-        int startB = startColor & 0xFF;
-
-        int endR = (endColor >> 16) & 0xFF;
-        int endG = (endColor >> 8) & 0xFF;
-        int endB = endColor & 0xFF;
-
         StringBuilder sb = new StringBuilder();
-
-        int length = Math.max(
-                1,
-                text.length() - 1
-        );
+        int length = Math.max(1, text.length() - 1);
 
         for (int i = 0; i < text.length(); i++) {
 
-            float offset =
-                    i / (float) length;
+            float offset = i / (float) length;
+            float wave = offset * 1.5f + tick * 0.025f;
+            float t = (float) (Math.sin(wave * Math.PI * 2) * 0.5f + 0.5f);
 
-            float wave =
-                    offset * 1.5f
-                            + tick * 0.025f;
+            int r = interpolate((startColor >> 16) & 0xFF, (endColor >> 16) & 0xFF, t);
+            int g = interpolate((startColor >> 8) & 0xFF, (endColor >> 8) & 0xFF, t);
+            int b = interpolate(startColor & 0xFF, endColor & 0xFF, t);
 
-            float t =
-                    (float) (
-                            Math.sin(
-                                    wave * Math.PI * 2
-                            ) * 0.5f + 0.5f
-                    );
-
-            int r =
-                    (int) (
-                            startR
-                                    + (endR - startR) * t
-                    );
-
-            int g =
-                    (int) (
-                            startG
-                                    + (endG - startG) * t
-                    );
-
-            int b =
-                    (int) (
-                            startB
-                                    + (endB - startB) * t
-                    );
-
-            sb.append(
-                    ChatColor.of(
-                            String.format(
-                                    "#%02x%02x%02x",
-                                    r,
-                                    g,
-                                    b
-                            )
-                    )
-            );
-
-            sb.append(ChatColor.BOLD);
-            sb.append(text.charAt(i));
+            sb.append(hexColor(r, g, b))
+                    .append("§l")
+                    .append(text.charAt(i));
         }
 
-        return sb.append(
-                ChatColor.RESET
-        ).toString();
+        return sb.append("§r").toString();
+    }
+
+    private static int interpolate(int start, int end, float factor) {
+        return (int) (start + (end - start) * factor);
+    }
+
+    private static String hexColor(int r, int g, int b) {
+
+        String hex = String.format("%02x%02x%02x", r, g, b);
+        StringBuilder result = new StringBuilder("§x");
+
+        for (char c : hex.toCharArray()) {
+            result.append('§').append(c);
+        }
+
+        return result.toString();
     }
 }

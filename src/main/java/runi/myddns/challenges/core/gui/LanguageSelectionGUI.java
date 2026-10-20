@@ -34,7 +34,6 @@ public class LanguageSelectionGUI implements Listener {
         Inventory inv = Bukkit.createInventory(null, 45, lang("language-selection.title"));
 
         inv.setItem(20, createLanguageItem(
-                Material.PAPER,
                 lang("language-selection.german.name"),
                 "de",
                 1001.0f,
@@ -42,7 +41,6 @@ public class LanguageSelectionGUI implements Listener {
         ));
 
         inv.setItem(24, createLanguageItem(
-                Material.PAPER,
                 lang("language-selection.english.name"),
                 "en",
                 1002.0f,
@@ -57,8 +55,13 @@ public class LanguageSelectionGUI implements Listener {
         player.openInventory(inv);
     }
 
-    private ItemStack createLanguageItem(Material material, Component name, String languageId, float customModelData, Component... loreLines) {
-        ItemStack item = createItem(material, name, loreLines);
+    private ItemStack createLanguageItem(
+            Component name,
+            String languageId,
+            float customModelData,
+            Component... loreLines
+    ) {
+        ItemStack item = createItem(name, loreLines);
 
         item.setData(
                 DataComponentTypes.CUSTOM_MODEL_DATA,
@@ -76,8 +79,12 @@ public class LanguageSelectionGUI implements Listener {
         return item;
     }
 
-    private ItemStack createItem(Material material, Component name, Component... loreLines) {
-        ItemStack item = new ItemStack(material);
+
+    private ItemStack createItem(
+            Component name,
+            Component... loreLines
+    ) {
+        ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
 
         if (meta == null) return item;
@@ -88,16 +95,25 @@ public class LanguageSelectionGUI implements Listener {
 
         if (loreLines != null) {
             for (Component line : loreLines) {
-                if (line != null) lore.add(line);
+                if (line != null) {
+                    lore.add(line);
+                }
             }
         }
 
         meta.lore(lore);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+
+        meta.addItemFlags(
+                ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_ENCHANTS,
+                ItemFlag.HIDE_UNBREAKABLE
+        );
+
         item.setItemMeta(meta);
 
         return item;
     }
+
 
     private ItemStack createBackButton() {
 

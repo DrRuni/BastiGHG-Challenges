@@ -24,10 +24,6 @@ public class WorldSourceManager {
         this.plugin = plugin;
     }
 
-    // ============================================================
-    // PREPARE
-    // ============================================================
-
     public void prepareAllWorlds() {
         for (GameWorldDefinition definition : GameWorldDefinition.ALL) {
             if (isMobArmyTeamWorld(definition)) continue;
@@ -81,10 +77,6 @@ public class WorldSourceManager {
         }
     }
 
-    // ============================================================
-    // WORLD EXISTS
-    // ============================================================
-
     public boolean worldExists(GameWorldDefinition definition) {
         if (Bukkit.getWorld(definition.worldName()) != null) return true;
 
@@ -114,17 +106,9 @@ public class WorldSourceManager {
         );
     }
 
-    // ============================================================
-    // GENERATED WORLD
-    // ============================================================
-
     private void generateWorld(GameWorldDefinition definition) {
         generateWorld(definition, new Random().nextLong());
     }
-
-    // ============================================================
-    // ZIP WORLD
-    // ============================================================
 
     private void extractWorld(GameWorldDefinition definition) {
         String resourcePath = definition.zipFile();
@@ -199,6 +183,7 @@ public class WorldSourceManager {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean deleteWorldFolders(GameWorldDefinition definition) {
         File legacyFolder = getLegacyWorldFolder(definition);
         File dimensionFolder = getDimensionWorldFolder(definition);
@@ -216,6 +201,7 @@ public class WorldSourceManager {
         return true;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public boolean resetGeneratedWorld(GameWorldDefinition definition, long seed) {
         World loadedWorld = Bukkit.getWorld(definition.worldName());
 
@@ -264,10 +250,6 @@ public class WorldSourceManager {
         }
     }
 
-    // ============================================================
-    // RESET
-    // ============================================================
-
     public boolean resetWorld(GameWorldDefinition definition) {
         World loadedWorld = Bukkit.getWorld(definition.worldName());
 
@@ -282,6 +264,7 @@ public class WorldSourceManager {
         return worldExists(definition);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean deleteFolder(File file) {
         File[] children = file.listFiles();
 
@@ -293,10 +276,6 @@ public class WorldSourceManager {
 
         return file.delete();
     }
-
-    // ============================================================
-    // FILE
-    // ============================================================
 
     public File getWorldFolder(GameWorldDefinition definition) {
         return definition.isZip()

@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.games.LevelBorder.Manager.BorderDataManager;
 import runi.myddns.challenges.games.LevelBorder.Manager.LevelBorderManager;
@@ -44,10 +45,10 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(
-            CommandSender sender,
-            Command cmd,
-            String label,
-            String[] args
+            @NotNull CommandSender sender,
+            @NotNull Command cmd,
+            @NotNull String label,
+            String @NotNull [] args
     ) {
 
         if (!(sender instanceof Player player)) {
@@ -668,11 +669,11 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(
-            CommandSender sender,
-            Command cmd,
-            String alias,
-            String[] args
+    public @NotNull List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command cmd,
+            @NotNull String alias,
+            String @NotNull [] args
     ) {
 
         List<String> list =

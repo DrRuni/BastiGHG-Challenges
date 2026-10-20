@@ -309,6 +309,7 @@ public class TeamEquipmentGUI implements Listener {
                 .runTask(game.getPlugin(), () -> open(player));
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
 

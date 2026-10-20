@@ -3,6 +3,10 @@ package runi.myddns.challenges.games.LevelBorder.Manager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.core.utils.ColorUtil;
 
@@ -65,7 +69,9 @@ public class TimerManager {
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (!game.isLevelBorderPlayer(player)) continue;
-                    player.sendActionBar(animated);
+                    player.sendActionBar(
+                            LegacyComponentSerializer.legacySection().deserialize(animated)
+                    );
                 }
             }
         };
@@ -86,7 +92,7 @@ public class TimerManager {
     private void clearActionBar() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!game.isLevelBorderPlayer(player)) continue;
-            player.sendActionBar(" ");
+            player.sendActionBar(Component.text(" "));
         }
     }
 

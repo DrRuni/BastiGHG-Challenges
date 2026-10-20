@@ -183,7 +183,7 @@ public class RandomizerExclusionGUI implements Listener {
                 List.of(
                         Component.empty(),
                         description,
-                        langPattern(COPPER_PATTERN),
+                        langPattern(),
                         Component.empty(),
                         blocked
                                 ? lang("randomizer-exclusion-gui.spawn-egg.disabled")
@@ -219,6 +219,7 @@ public class RandomizerExclusionGUI implements Listener {
         return item;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClick(
             InventoryClickEvent event
@@ -304,15 +305,12 @@ public class RandomizerExclusionGUI implements Listener {
                 .getComponent(path);
     }
 
-    private Component langPattern(
-            String pattern
-    ) {
-
+    private Component langPattern() {
         return game.getLanguageManager()
                 .getComponent(
                         "randomizer-exclusion-gui.copper.pattern",
                         "pattern",
-                        pattern
+                        COPPER_PATTERN
                 );
     }
 }

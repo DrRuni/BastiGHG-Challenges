@@ -20,6 +20,7 @@ public class LobbyRespawnListener
                 lobbyWorldManager;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onRespawn(
             PlayerRespawnEvent event

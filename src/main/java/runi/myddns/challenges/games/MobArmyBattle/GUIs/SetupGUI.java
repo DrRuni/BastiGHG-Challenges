@@ -11,7 +11,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import runi.myddns.challenges.games.MobArmyBattle.Managers.World.WorldManager;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.games.MobArmyBattle.Utils.Sounds;
 
@@ -69,32 +68,11 @@ public class SetupGUI implements Listener {
                 lang("setup-gui.arena.description")
         ));
 
-        inv.setItem(28, createItem(
-                Material.WITHER_SKELETON_SKULL,
-                lang("setup-gui.reset-game.name"),
+        inv.setItem(31, createItem(
+                Material.TNT,
+                lang("setup-gui.reset-management.name"),
                 Component.empty(),
-                lang("setup-gui.reset-game.description")
-        ));
-
-        inv.setItem(30, createItem(
-                Material.STRUCTURE_BLOCK,
-                lang("setup-gui.reset-teamworlds.name"),
-                Component.empty(),
-                lang("setup-gui.reset-teamworlds.description")
-        ));
-
-        inv.setItem(32, createItem(
-                Material.STRUCTURE_BLOCK,
-                lang("setup-gui.reset-arena.name"),
-                Component.empty(),
-                lang("setup-gui.reset-arena.description")
-        ));
-
-        inv.setItem(34, createItem(
-                Material.STRUCTURE_BLOCK,
-                lang("setup-gui.reset-lobby.name"),
-                Component.empty(),
-                lang("setup-gui.reset-lobby.description")
+                lang("setup-gui.reset-management.description")
         ));
 
         inv.setItem(
@@ -204,90 +182,18 @@ public class SetupGUI implements Listener {
                 game.getArenaSettingsGUI().open(player);
             }
 
-            case 28 -> {
-                player.closeInventory();
-                game.getEventManager().resetGame(player);
+            case 31 -> {
+                Sounds.playClick(player);
+                game.getPlugin()
+                        .getWorldSettingsGUI()
+                        .openResetManagement(player);
             }
-
-            case 30 -> resetTeamWorlds(player);
-
-            case 32 -> resetArenaWorld(player);
-
-            case 34 -> resetLobbyWorld(player);
 
             case 40 -> {
                 Sounds.playBack(player);
                 game.getOptionenGUI().open(player);
             }
         }
-    }
-
-    private void resetTeamWorlds(Player player) {
-
-        WorldManager wm = game.getWorldManager();
-
-        game.getPlugin()
-                .getVoteManager()
-                .startVote(
-                        game.getDisplayName(),
-                        "Teamwelten zurücksetzen",
-                        () -> {
-
-                            if (wm.isWorldResetBlocked()) {
-
-                                if (player.isOnline()) {
-                                    player.sendMessage(
-                                            lang("commands.reset.already-running")
-                                    );
-
-                                    Sounds.playDanger(player);
-                                }
-
-                                return;
-                            }
-
-                            wm.resetTeamWorlds();
-                        }
-                );
-    }
-
-    private void resetLobbyWorld(Player player) {
-
-        game.getPlugin()
-                .getVoteManager()
-                .startVote(
-                        game.getDisplayName(),
-                        "Alle Welten zurücksetzen",
-                        () -> game.getPlugin()
-                                .getGameResetManager()
-                                .resetWorlds(game)
-                );
-    }
-
-    private void resetArenaWorld(Player player) {
-
-        WorldManager wm = game.getWorldManager();
-
-        game.getPlugin()
-                .getVoteManager()
-                .startVote(
-                        game.getDisplayName(),
-                        "Arena zurücksetzen",
-                        () -> {
-
-                            if (wm.isWorldResetBlocked()) {
-
-                                player.sendMessage(
-                                        lang("commands.reset.already-running")
-                                );
-
-                                Sounds.playDanger(player);
-                                return;
-                            }
-
-                            wm.resetArenaWorld();
-                        }
-                );
     }
 
     private ItemStack createBackButton() {

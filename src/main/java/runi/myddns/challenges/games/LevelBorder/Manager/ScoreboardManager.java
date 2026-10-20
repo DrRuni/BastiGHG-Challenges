@@ -1,8 +1,8 @@
 package runi.myddns.challenges.games.LevelBorder.Manager;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
@@ -71,11 +71,12 @@ public class ScoreboardManager {
             return;
         }
 
-        objective.setDisplayName(
-                ColorUtil.animatedBlueGradient(
-                        game.getLanguageManager()
-                                .get("scoreboard.title"),
-                        titleTick
+        objective.displayName(
+                LegacyComponentSerializer.legacySection().deserialize(
+                        ColorUtil.animatedBlueGradient(
+                                game.getLanguageManager().get("scoreboard.title"),
+                                titleTick
+                        )
                 )
         );
 
@@ -173,9 +174,7 @@ public class ScoreboardManager {
         Scoreboard board = boards.get(player);
         Objective objective = objectives.get(player);
 
-        String entry =
-                ChatColor.values()[lineNumber]
-                        .toString();
+        String entry = "§" + "0123456789abcdefklmnor".charAt(lineNumber);
 
         Team team =
                 board.getTeam(
@@ -238,11 +237,9 @@ public class ScoreboardManager {
 
         Objective objective = board.registerNewObjective(
                 "lbinfo",
-                "dummy",
+                Criteria.DUMMY,
                 game.getLanguageManager()
-                        .getComponent(
-                                "scoreboard.objective-title"
-                        )
+                        .getComponent("scoreboard.objective-title")
         );
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -258,8 +255,8 @@ public class ScoreboardManager {
         boards.remove(player);
         objectives.remove(player);
 
-        if (Bukkit.getScoreboardManager() != null) {
-            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        }
+        player.setScoreboard(
+                Bukkit.getScoreboardManager().getMainScoreboard()
+        );
     }
 }

@@ -29,11 +29,18 @@ import java.util.Locale;
 
 public class WorldSettingsGUI implements Listener {
 
-    private static class WorldSettingsHolder implements InventoryHolder {
+    private static class WorldSettingsHolder
+            implements InventoryHolder {
+
+        private Inventory inventory;
+
+        public void setInventory(Inventory inventory) {
+            this.inventory = inventory;
+        }
 
         @Override
-        public Inventory getInventory() {
-            return null;
+        public @org.jetbrains.annotations.NotNull Inventory getInventory() {
+            return inventory;
         }
     }
 
@@ -46,16 +53,16 @@ public class WorldSettingsGUI implements Listener {
 
         return switch (game.getId().toLowerCase(Locale.ROOT)) {
             case "mobarmybattle" -> gradientText(gameName,
-                            BRIGHT_RED,
-                            BLUE);
+                    BRIGHT_RED,
+                    BLUE);
 
             case "levelborder" -> gradientText(gameName,
-                            LIGHT_BLUE,
-                            DEEP_BLUE);
+                    LIGHT_BLUE,
+                    DEEP_BLUE);
 
             case "levelblock" -> gradientText(gameName,
-                            LIME,
-                            DARK_GREEN);
+                    LIME,
+                    DARK_GREEN);
 
             default ->
                     gradientText(
@@ -71,6 +78,10 @@ public class WorldSettingsGUI implements Listener {
 
         this.resetManagementGUI =
                 new ResetManagementGUI(plugin);
+    }
+
+    public void openResetManagement(Player player) {
+        resetManagementGUI.open(player);
     }
 
     public void open(Player player) {
@@ -89,8 +100,10 @@ public class WorldSettingsGUI implements Listener {
         GameWorldSettingsManager settings =
                 game.getWorldSettingsManager();
 
+        WorldSettingsHolder holder = new WorldSettingsHolder();
+
         Inventory inv = Bukkit.createInventory(
-                new WorldSettingsHolder(),
+                holder,
                 45,
                 Component.text(
                         plugin.getLanguageManager()
@@ -100,6 +113,7 @@ public class WorldSettingsGUI implements Listener {
                         getGameTitle(game)
                 )
         );
+        holder.setInventory(inv);
 
         inv.setItem(
                 10,
@@ -638,6 +652,7 @@ public class WorldSettingsGUI implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
 
@@ -662,29 +677,19 @@ public class WorldSettingsGUI implements Listener {
             String difficulty
     ) {
 
-        return switch (
-                difficulty.toLowerCase(Locale.ROOT)
-                ) {
-            case "peaceful" ->
-                    Material.WHITE_WOOL;
+        return switch (difficulty.toLowerCase(Locale.ROOT)) {
 
-            case "easy" ->
-                    Material.LIME_WOOL;
+            case "peaceful" -> Material.WHITE_WOOL;
 
-            case "normal" ->
-                    Material.YELLOW_WOOL;
+            case "easy" -> Material.LIME_WOOL;
 
-            case "hard" ->
-                    Material.RED_WOOL;
+            case "hard" -> Material.RED_WOOL;
 
-            case "ultra-hardcore" ->
-                    Material.PURPLE_WOOL;
+            case "ultra-hardcore" -> Material.PURPLE_WOOL;
 
-            case "ultra-ultra-hardcore" ->
-                    Material.BLACK_WOOL;
+            case "ultra-ultra-hardcore" -> Material.BLACK_WOOL;
 
-            default ->
-                    Material.YELLOW_WOOL;
+            default -> Material.YELLOW_WOOL;
         };
     }
 
@@ -692,9 +697,7 @@ public class WorldSettingsGUI implements Listener {
             String difficulty
     ) {
 
-        return switch (
-                difficulty.toLowerCase(Locale.ROOT)
-                ) {
+        return switch (difficulty.toLowerCase(Locale.ROOT)) {
 
             case "peaceful" ->
                     plugin.getLanguageManager()
@@ -703,10 +706,6 @@ public class WorldSettingsGUI implements Listener {
             case "easy" ->
                     plugin.getLanguageManager()
                             .get("world-settings.difficulty.easy");
-
-            case "normal" ->
-                    plugin.getLanguageManager()
-                            .get("world-settings.difficulty.normal");
 
             case "hard" ->
                     plugin.getLanguageManager()

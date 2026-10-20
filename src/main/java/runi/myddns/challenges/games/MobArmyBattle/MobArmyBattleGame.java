@@ -9,7 +9,6 @@ import org.bukkit.scheduler.BukkitTask;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.game.ChallengeGame;
-import runi.myddns.challenges.games.MobArmyBattle.GUIs.OptionsGUI;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
@@ -255,7 +254,7 @@ public class MobArmyBattleGame implements ChallengeGame {
         eventSettingsGUI = new SetupGUI(this);
         mobArmySettingsGUI = new TeleportGUI(this);
         teamSelectionGUI = new TeamSelectionGUI(this, teamManager);
-        bundleGUI = new BundleGUI(this, teamManager);
+        bundleGUI = new BundleGUI(this);
         spawnEggGUI = new RandomizerExclusionGUI(blockRandomizerManager, this);
         arenaSettingsGUI = new ArenaSettingsGUI(this);
         playerGUI = new PlayerGUI(this);
@@ -321,7 +320,9 @@ public class MobArmyBattleGame implements ChallengeGame {
 
     @Override
     public boolean canUnload() {
-        return eventResume != null && eventResume.loadPhase() == ResumeManager.PHASE_LOBBY && !hasPlayers();
+        return eventResume != null
+                && eventResume.loadPhase() == ResumeManager.PHASE_LOBBY
+                && hasNoPlayers();
     }
 
     @Override
@@ -409,9 +410,7 @@ public class MobArmyBattleGame implements ChallengeGame {
 
         switch (phase) {
 
-            case ResumeManager.PHASE_TEAMWELT -> {
-                joinTeamWorld(player);
-            }
+            case ResumeManager.PHASE_TEAMWELT -> joinTeamWorld(player);
 
             case ResumeManager.PHASE_WAVEAUSWAHL -> {
 
@@ -441,14 +440,11 @@ public class MobArmyBattleGame implements ChallengeGame {
                 player.setInvulnerable(false);
             }
 
-            default -> {
-
-                TeleportManager.teleport(
-                        this,
-                        player,
-                        "world_mobarmy_lobby"
-                );
-            }
+            default -> TeleportManager.teleport(
+                    this,
+                    player,
+                    "world_mobarmy_lobby"
+            );
         }
 
         prepareJoinedPlayer(player);
@@ -579,7 +575,7 @@ public class MobArmyBattleGame implements ChallengeGame {
 
     public boolean isMobArmyPlayer(Player player) {
 
-        if (player == null || player.getWorld() == null) {
+        if (player == null) {
             return false;
         }
 
@@ -594,15 +590,15 @@ public class MobArmyBattleGame implements ChallengeGame {
     }
 
     @Override
-    public boolean hasPlayers() {
+    public boolean hasNoPlayers() {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (isMobArmyPlayer(player)) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     @Override
@@ -673,10 +669,11 @@ public class MobArmyBattleGame implements ChallengeGame {
                     ),
                     0xFF3333
             );
-            plugin.getLogger().severe(
-                    "Error while loading MobArmyBattle: " + status
+            plugin.getLogger().log(
+                    java.util.logging.Level.SEVERE,
+                    "Error while loading MobArmyBattle: " + status,
+                    ex
             );
-            ex.printStackTrace();
             return;
         }
 
@@ -733,7 +730,6 @@ public class MobArmyBattleGame implements ChallengeGame {
     public void leavePlayer(Player player) {
 
         if (player != null
-                && player.getWorld() != null
                 && isMobArmyPlayer(player)
                 && eventResume != null) {
 
@@ -790,6 +786,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     public TeamSettingsGUI getTeamSettingsGUI() { return teamSettingsGUI; }
     public TeamEquipmentManager getTeamEquipmentManager() { return teamEquipmentManager; }
     public TeamEquipmentGUI getTeamEquipmentGUI() { return teamEquipmentGUI; }
+    @SuppressWarnings("unused")
     public PlayerListener getPlayerJoinListener() { return playerListener; }
     public LanguageManager getLanguageManager() {return languageManager;}
     public ButtonManager getButtonManager() {return buttonManager;}

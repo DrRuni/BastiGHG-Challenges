@@ -1,6 +1,5 @@
 package runi.myddns.challenges.games.LevelBlock.Listeners;
 
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -20,9 +19,6 @@ public class BorderBlockListener implements Listener {
         if (!game.isLevelBlockPlayer(event.getPlayer())) {
             return;
         }
-
-        Location location =
-                event.getBlock().getLocation();
 
         game.getPlugin()
                 .getServer()

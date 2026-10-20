@@ -1,12 +1,13 @@
 package runi.myddns.challenges.games.MobArmyBattle.Managers.Event;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -88,11 +89,18 @@ public class BundleManager {
                 teamId
         );
 
-        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-
         bundle.setItemMeta(meta);
+
+        bundle.setData(
+                DataComponentTypes.TOOLTIP_DISPLAY,
+                TooltipDisplay.tooltipDisplay()
+                        .addHiddenComponents(DataComponentTypes.BUNDLE_CONTENTS)
+                        .build()
+        );
+
         return bundle;
     }
+
 
     public boolean isTeamBundle(ItemStack item) {
         if (item == null || !item.hasItemMeta()) {

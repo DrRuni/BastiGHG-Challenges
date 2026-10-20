@@ -14,7 +14,6 @@ public class TimerManager {
     private final GameTimerManager timerManager;
 
     private BukkitTask task;
-    private int gradientOffset;
     private float gradientTick = 0f;
 
     public TimerManager(
@@ -42,12 +41,14 @@ public class TimerManager {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (!game.isLevelBlockPlayer(player)) continue;
 
-                        if (!game.getLevelBlockGameManager().isStarted(player.getWorld())) {
+                        if (!game.getLevelBlockGameManager().isStarted()) {
                             clear(player);
                             continue;
                         }
 
-                        player.sendActionBar(animated);
+                        player.sendActionBar(
+                                Component.text(animated)
+                        );
                     }
                 },
                 0L,

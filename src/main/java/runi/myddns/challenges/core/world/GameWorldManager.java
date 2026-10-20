@@ -51,7 +51,11 @@ public class GameWorldManager {
 
     public void loadGameWorlds(String gameId) {
         for (GameWorldDefinition definition : getDefinitions(gameId)) {
-            loadWorld(definition);
+            if (loadWorld(definition) == null) {
+                plugin.getLogger().warning(
+                        "Game world could not be loaded: " + definition.worldName()
+                );
+            }
         }
     }
 
@@ -107,13 +111,13 @@ public class GameWorldManager {
 
     public void unloadGameWorlds(String gameId, boolean save) {
         for (GameWorldDefinition definition : getDefinitions(gameId)) {
-            unloadWorld(definition, save);
+            if (!unloadWorld(definition, save)) {
+                plugin.getLogger().warning(
+                        "Game world could not be unloaded: " + definition.worldName()
+                );
+            }
         }
     }
-
-    // ============================================================
-    // GET
-    // ============================================================
 
     public World getWorld(String gameId, String worldId) {
         GameWorldDefinition definition = getDefinition(gameId, worldId);

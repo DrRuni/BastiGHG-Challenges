@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import runi.myddns.challenges.games.MobArmyBattle.Managers.Event.ScoreboardSwitcher;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
+@SuppressWarnings("unused")
 public class ScoreboardSwitchListener implements Listener {
 
     private final MobArmyBattleGame game;

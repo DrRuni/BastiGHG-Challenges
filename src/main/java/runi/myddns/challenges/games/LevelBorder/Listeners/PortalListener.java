@@ -123,7 +123,7 @@ public class PortalListener implements Listener {
         double min = center.getX() - radius;
         double max = center.getX() + radius;
 
-        return (int) Math.max(min, Math.min(max, value));
+        return (int) Math.clamp(value, min, max);
     }
 
     @EventHandler

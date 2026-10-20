@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
-import runi.myddns.challenges.games.MobArmyBattle.Managers.Event.TeamManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,19 +18,13 @@ public class BundleGUI {
 
     private final Map<String, Inventory> teamInventories = new HashMap<>();
 
-    private final TeamManager teamManager;
     private final MobArmyBattleGame game;
     private final File dataFile;
 
     private FileConfiguration config;
 
-    public BundleGUI(
-            MobArmyBattleGame game,
-            TeamManager teamManager
-    ) {
+    public BundleGUI(MobArmyBattleGame game) {
         this.game = game;
-        this.teamManager = teamManager;
-
         this.dataFile = new File(game.getDataFolder(), "team_inventories.yml");
 
         loadInventories();
@@ -188,6 +181,7 @@ public class BundleGUI {
                 .getComponent(path);
     }
 
+    @SuppressWarnings("unused")
     public void reloadLanguage() {
 
         Inventory oldBlue = teamInventories.get("Blau");

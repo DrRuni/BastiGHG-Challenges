@@ -15,58 +15,11 @@ public class BorderManager {
     private final BorderDisplayManager displayManager;
     private final BorderLineManager lineManager;
     private final LevelBlockDataManager dataManager;
-    private final LevelBlockGame game;
-
 
     public BorderManager(LevelBlockGame game) {
-        this.game = game;
         this.dataManager = new LevelBlockDataManager(game);
         this.displayManager = new BorderDisplayManager(game, this);
         this.lineManager = new BorderLineManager(game, this);
-    }
-
-    public boolean startGame(Player starter) {
-        if (starter == null) return false;
-
-        World world = starter.getWorld();
-
-        if (!game.isLevelBlockPlayer(starter)) return false;
-
-        if (isInitialized(world)) {
-            return false;
-        }
-
-        Location start = starter.getLocation()
-                .getBlock()
-                .getLocation()
-                .add(0.5, 0.0, 0.5);
-
-        dataManager.saveStartLocation(world, start);
-
-        int centerX = start.getBlockX();
-        int centerZ = start.getBlockZ();
-
-        for (int x = centerX - 1; x <= centerX + 1; x++) {
-            for (int z = centerZ - 1; z <= centerZ + 1; z++) {
-                dataManager.saveUnlockedBlock(world, x, z);
-            }
-        }
-
-        lineManager.reset();
-
-        for (LevelBlockPos pos : dataManager.getUnlockedBlocks(world)) {
-            lineManager.rebuildColumn(world, pos.x(), pos.z());
-        }
-
-        for (Player player : world.getPlayers()) {
-            if (!game.isLevelBlockPlayer(player)) continue;
-            player.teleport(start);
-        }
-
-        displayManager.refreshAll();
-        lineManager.refreshAll();
-
-        return true;
     }
 
     public void initializePortalArea(
@@ -161,6 +114,7 @@ public class BorderManager {
         );
     }
 
+    @SuppressWarnings("unused")
     public Location getStartLocation(
             World world
     ) {
@@ -170,6 +124,7 @@ public class BorderManager {
         );
     }
 
+    @SuppressWarnings("unused")
     public Location prepareStartLocation(
             World world
     ) {
@@ -182,7 +137,6 @@ public class BorderManager {
         if (saved != null) {
             return saved;
         }
-
 
         Location worldSpawn =
                 world.getSpawnLocation();
@@ -377,7 +331,7 @@ public class BorderManager {
         );
     }
 
-
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isAdjacentToUnlocked(
             World world,
             int x,

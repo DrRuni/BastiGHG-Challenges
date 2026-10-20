@@ -1,3 +1,4 @@
+
 package runi.myddns.challenges.core.gui;
 
 import net.kyori.adventure.text.Component;
@@ -49,10 +50,14 @@ public class GameInfoGUI implements Listener {
             ChallengeGame game
     ) {
 
+        // =========================
+        // INVENTORY - 4 REIHEN
+        // =========================
+
         Inventory inventory =
                 Bukkit.createInventory(
                         null,
-                        27,
+                        36,
                         Component.text(
                                 game.getDisplayName()
                                         + plugin.getLanguageManager()
@@ -60,6 +65,33 @@ public class GameInfoGUI implements Listener {
                                 TextColor.color(0xC38CFF)
                         )
                 );
+
+        // =========================
+        // CURRENT VERSION
+        // SLOT 4 - OBEN MITTE
+        // =========================
+
+        String currentVersion =
+                plugin.getGameInfoManager()
+                        .getVersion(game.getId());
+
+        inventory.setItem(
+                4,
+                createButton(
+                        Material.NAME_TAG,
+                        "Current Version",
+                        0x55FFAA,
+                        "noop",
+                        game.getId(),
+                        List.of(
+                                currentVersion
+                        )
+                )
+        );
+
+        // =========================
+        // DESCRIPTION
+        // =========================
 
         addSectionButtons(
                 inventory,
@@ -77,6 +109,10 @@ public class GameInfoGUI implements Listener {
                 new int[]{10}
         );
 
+        // =========================
+        // FEATURES
+        // =========================
+
         addSectionButtons(
                 inventory,
                 game,
@@ -93,6 +129,10 @@ public class GameInfoGUI implements Listener {
                 new int[]{13, 14}
         );
 
+        // =========================
+        // COMMANDS
+        // =========================
+
         addSectionButtons(
                 inventory,
                 game,
@@ -106,8 +146,12 @@ public class GameInfoGUI implements Listener {
                 new int[]{16}
         );
 
+        // =========================
+        // CLOSE - LETZTE REIHE
+        // =========================
+
         inventory.setItem(
-                22,
+                31,
                 createButton(
                         Material.BARRIER,
                         plugin.getLanguageManager()
@@ -314,6 +358,7 @@ public class GameInfoGUI implements Listener {
         return item;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClick(
             InventoryClickEvent event

@@ -331,6 +331,7 @@ public class ArenaScoreboardManager {
         );
     }
 
+    @SuppressWarnings("unused")
     public void reloadLanguage() {
 
         var playersWithBoard =

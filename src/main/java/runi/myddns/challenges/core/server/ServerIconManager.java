@@ -103,6 +103,7 @@ public class ServerIconManager implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
 

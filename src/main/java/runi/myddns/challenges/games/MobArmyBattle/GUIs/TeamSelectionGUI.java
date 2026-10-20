@@ -14,8 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import runi.myddns.challenges.games.MobArmyBattle.Managers.Event.TeamManager;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
-import java.util.List;
-
 public class TeamSelectionGUI implements Listener {
 
     private final MobArmyBattleGame game;
@@ -82,6 +80,7 @@ public class TeamSelectionGUI implements Listener {
         return item;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClick(
             InventoryClickEvent event

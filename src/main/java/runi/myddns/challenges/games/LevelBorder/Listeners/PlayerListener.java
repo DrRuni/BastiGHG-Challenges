@@ -1,6 +1,5 @@
 package runi.myddns.challenges.games.LevelBorder.Listeners;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
@@ -10,12 +9,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.*;
 import runi.myddns.challenges.core.utils.ColorUtil;
+import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.games.LevelBorder.Manager.BorderDataManager;
 import runi.myddns.challenges.games.LevelBorder.Manager.LevelBorderManager;
 import runi.myddns.challenges.games.LevelBorder.Manager.ScoreboardManager;
-import runi.myddns.challenges.games.LevelBorder.Manager.TimerManager;
 
 import java.time.Duration;
 
@@ -24,13 +23,15 @@ public class PlayerListener implements Listener {
     private final LevelBorderGame game;
     private final LevelBorderManager borderManager;
     private final ScoreboardManager scoreboardManager;
-    private final TimerManager timerManager;
 
-    public PlayerListener(LevelBorderGame game, LevelBorderManager borderManager, ScoreboardManager scoreboardManager, TimerManager timerManager) {
+    public PlayerListener(
+            LevelBorderGame game,
+            LevelBorderManager borderManager,
+            ScoreboardManager scoreboardManager
+    ) {
         this.game = game;
         this.borderManager = borderManager;
         this.scoreboardManager = scoreboardManager;
-        this.timerManager = timerManager;
     }
 
     @EventHandler
@@ -115,7 +116,7 @@ public class PlayerListener implements Listener {
         if (totalNow > maxTotal) {
             int diff = totalNow - maxTotal;
             data.setMaxTotalLevel(totalNow);
-            borderManager.growByLevel(player, diff);
+            borderManager.growByLevel(diff);
         }
     }
 
@@ -178,12 +179,13 @@ public class PlayerListener implements Listener {
         Location loc = event.getLocation();
 
         Bukkit.getConsoleSender().sendMessage(
-                ChatColor.DARK_RED + "[VanillaSpawn] "
+                ConsoleColor.DARK_RED + "[VanillaSpawn] "
                         + event.getEntityType()
                         + " bei X:" + loc.getBlockX()
                         + " Y:" + loc.getBlockY()
                         + " Z:" + loc.getBlockZ()
                         + " Welt:" + loc.getWorld().getName()
+                        + ConsoleColor.RESET
         );
     }
 }

@@ -181,14 +181,6 @@ public class ArenaConfig {
             return null;
         }
 
-        YamlConfiguration mobArmyConfig =
-                YamlConfiguration.loadConfiguration(
-                        new File(
-                                dataFolder,
-                                "config.yml"
-                        )
-                );
-
         String language =
                 game.getLanguageManager()
                         .getCurrentLanguage();
@@ -276,14 +268,6 @@ public class ArenaConfig {
         }
 
         List<ArenaInfo> result = new ArrayList<>();
-
-        YamlConfiguration mobArmyConfig =
-                YamlConfiguration.loadConfiguration(
-                        new File(
-                                dataFolder,
-                                "config.yml"
-                        )
-                );
 
         String language =
                 game.getLanguageManager()

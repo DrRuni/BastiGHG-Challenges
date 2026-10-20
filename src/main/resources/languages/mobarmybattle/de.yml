@@ -1,3 +1,5 @@
+# Mobarmybattle DE Language
+
 file-version: 1
 
 commands:
@@ -34,6 +36,23 @@ commands:
     arena:
       title: "<dark_red>⚠ Arena-Reset!"
       subtitle: "<gold>%player% hat den Arena-Welt-Reset gestartet"
+  mobarmy-reset:
+    title: "<gold>MobArmyBattle</gold>"
+    progress:
+      game: "<gold>Spielstand wird zurückgesetzt...</gold>"
+      arena: "<gold>Arena wird zurückgesetzt...</gold>"
+      teamworlds: "<gold>Teamwelten werden neu erstellt...</gold>"
+    player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
+    no-permission: "<red>Du hast keine Berechtigung dafür."
+    game-not-loaded: "<red>MobArmyBattle muss zuerst geladen werden."
+    game-complete: "<green>✔ MobArmyBattle wurde zurückgesetzt."
+    world-reset-running: "<red>❌ Es läuft bereits ein Welt-Reset."
+    usage: "<red>Nutzung: /mobarmy reset [world|arena|teamwelt]"
+    vote:
+      game: "Spielstand zurücksetzen"
+      worlds: "Alle Welten zurücksetzen"
+      arena: "Arena zurücksetzen"
+      teamworlds: "Teamwelten neu generieren"
   resume:
     player-only: "<red>❌ Nur Spieler können diesen Befehl nutzen!"
     op-only: "<red>❌ Nur OPs dürfen diesen Befehl ausführen!"
@@ -75,6 +94,7 @@ commands:
       join-red: "<gray>/team join rot"
       join-blue: "<gray>/team join blau"
       leave: "<gray>/team leave"
+
 
 arena-settings:
   title: "<blue>Arena-Einstellungen"
@@ -209,19 +229,10 @@ setup-gui:
   arena:
     name: "<gold>Arena-Einstellungen"
     description: "<gray>Öffnet die Arena-Einstellungen"
-  reset-game:
-    name: "<dark_red>Reset Spielfortschritt"
-    description: "<red>Setzt Arena & Spielstatus zurück"
-  reset-teamworlds:
-    name: "<dark_red>Reset Team-Welten"
-    description: "<red>Welten Rot & Blau werden neu generiert"
-  reset-lobby:
-    name: "<dark_red>Alle Welten zurücksetzen"
-    description: "<red>Alle MobArmyBattle-Welten werden komplett neu erstellt"
-  reset-arena:
-    name: "<dark_red>Reset Arena-Welt"
-    description: "<red>Arena wird komplett zurückgesetzt"
   back: "<dark_aqua>Zurück"
+  reset-management:
+    name: "<red>Reset-Verwaltung"
+    description: "<gray>Spielstand und Welten zurücksetzen"
 
 team-equipment-gui:
   title: "<blue>Team Equipment Einstellungen"
@@ -576,6 +587,12 @@ button-manager:
   ready:
     title: "✔ Team <team> bereit!"
     subtitle: "<gray>%player% hat Ready gedrückt"
+  start:
+    not-participant: "<red>Du gehörst noch keinem Team des laufenden Events an.</red>"
+    select-team: "<yellow>Wähle zuerst ein Team.</yellow>"
+    lobby-phase: "<yellow>Das Event befindet sich noch in der Lobby-Phase.</yellow>"
+    team-unknown: "<red>Dein Team konnte nicht ermittelt werden.</red>"
+    team-world-missing: "<red>Deine Teamwelt ist nicht geladen.</red>"
 
 resume-manager:
   not-started: "<red>✖ Das Event wurde noch nicht gestartet."
@@ -605,6 +622,11 @@ world-manager:
   progress-still-loaded-1: "<dark_red>Die Spieler- und Eventdaten sind noch geladen,"
   progress-still-loaded-2: "<dark_red>diese können nur über <gold>Reset Spielfortschritt"
   progress-still-loaded-3: "<dark_red>zurückgesetzt werden!"
+  reset-title:
+    title: "MobArmyBattle"
+    arena-failed: "Arena-Reset fehlgeschlagen!"
+    arena-ready: "Arena bereit!"
+    teamworlds-ready: "Teamwelten bereit!"
 
 player-join-listener:
   welcome:

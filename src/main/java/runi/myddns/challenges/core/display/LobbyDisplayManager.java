@@ -3,7 +3,6 @@ package runi.myddns.challenges.core.display;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import runi.myddns.challenges.ChallengeMain;
@@ -42,6 +41,7 @@ public class LobbyDisplayManager {
     private static final float DEPTH = 0.10f;
 
     private static final float TEXT_Z_OFFSET = -0.08f;
+    private static final double TEXT_Z = START_Z + TEXT_Z_OFFSET;
 
     private static final Material FRAME_MATERIAL = Material.DARK_PRISMARINE;
     private static final Material INNER_FRAME_MATERIAL = Material.WARPED_PLANKS;
@@ -128,7 +128,7 @@ public class LobbyDisplayManager {
                             world,
                             LOGO_X,
                             START_Y + 4.20,
-                            START_Z + TEXT_Z_OFFSET,
+                            TEXT_Z,
                             180.0f,
                             0.0f
                     )
@@ -160,7 +160,7 @@ public class LobbyDisplayManager {
                 world,
                 TEXT_CENTER_X,
                 START_Y + 1.85,
-                START_Z + TEXT_Z_OFFSET,
+                TEXT_Z,
                 0.72f,
                 Component.empty(),
                 1000
@@ -175,7 +175,7 @@ public class LobbyDisplayManager {
                 world,
                 TEXT_CENTER_X,
                 START_Y + 3.55,
-                START_Z + TEXT_Z_OFFSET,
+                TEXT_Z,
                 0.55f,
                 Component.text(
                         plugin.getDisplayVersion(),
@@ -416,7 +416,7 @@ public class LobbyDisplayManager {
                 world,
                 LOGO_X,
                 START_Y + 4.20,
-                START_Z + TEXT_Z_OFFSET,
+                TEXT_Z,
                 2.00f,
                 title,
                 1000
@@ -433,7 +433,7 @@ public class LobbyDisplayManager {
                         world,
                         TEXT_CENTER_X + 1.55,
                         START_Y + 2.85,
-                        START_Z + TEXT_Z_OFFSET,
+                        TEXT_Z,
                         1.02f,
                         Component.text(
                                 plugin.getLanguageManager()
@@ -454,7 +454,7 @@ public class LobbyDisplayManager {
                         world,
                         TEXT_CENTER_X - 0.65,
                         START_Y + 2.85,
-                        START_Z + TEXT_Z_OFFSET,
+                        TEXT_Z,
                         1.20f,
                         Component.text(
                                 plugin.getLanguageManager()
@@ -476,7 +476,7 @@ public class LobbyDisplayManager {
                 world,
                 TEXT_CENTER_X,
                 START_Y + 1.15,
-                START_Z + TEXT_Z_OFFSET,
+                TEXT_Z,
                 0.58f,
                 Component.empty(),
                 1000
@@ -611,6 +611,7 @@ public class LobbyDisplayManager {
         plugin.getServer().getScheduler().runTaskLater(plugin, this::clearLoadConsole, 32L);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private TextDisplay createText(
             World world,
             double x,

@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.games.LevelBlock.LevelBlockGame;
 
 import java.util.List;
@@ -21,10 +22,10 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(
-            CommandSender sender,
-            Command command,
-            String label,
-            String[] args
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull [] args
     ) {
 
         if (!(sender instanceof Player player)) {
@@ -313,11 +314,11 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(
-            CommandSender sender,
-            Command command,
-            String alias,
-            String[] args
+    public @NotNull List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String alias,
+            String @NotNull [] args
     ) {
 
         if (args.length == 1) {

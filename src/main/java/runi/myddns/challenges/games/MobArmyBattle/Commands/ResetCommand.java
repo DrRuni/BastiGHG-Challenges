@@ -1,7 +1,5 @@
 package runi.myddns.challenges.games.MobArmyBattle.Commands;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -36,30 +34,21 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage(
-                    Component.text(
-                            "Dieser Befehl kann nur von Spielern verwendet werden.",
-                            NamedTextColor.RED
-                    )
+                    game.getLanguageManager().getComponent("commands.mobarmy-reset.player-only")
             );
             return true;
         }
 
         if (!player.isOp()) {
             player.sendMessage(
-                    Component.text(
-                            "Du hast keine Berechtigung dafür.",
-                            NamedTextColor.RED
-                    )
+                    game.getLanguageManager().getComponent("commands.mobarmy-reset.no-permission")
             );
             return true;
         }
 
         if (!game.isLoaded()) {
             player.sendMessage(
-                    Component.text(
-                            "MobArmyBattle muss zuerst geladen werden.",
-                            NamedTextColor.RED
-                    )
+                    game.getLanguageManager().getComponent("commands.mobarmy-reset.game-not-loaded")
             );
             return true;
         }
@@ -73,23 +62,15 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            "Spielstand zurücksetzen",
+                            game.getLanguageManager().get("commands.mobarmy-reset.vote.game"),
                             () -> {
 
-                                showTitleToAll(
-                                        "MobArmyBattle",
-                                        "Spielstand wird zurückgesetzt...",
-                                        NamedTextColor.GOLD
-                                );
+                                showTitleToAll("commands.mobarmy-reset.progress.game");
 
-                                game.getEventManager()
-                                        .resetGame(player);
+                                game.getEventManager().resetGame();
 
                                 Bukkit.broadcast(
-                                        Component.text(
-                                                "✔ MobArmyBattle wurde zurückgesetzt.",
-                                                NamedTextColor.GREEN
-                                        )
+                                        game.getLanguageManager().getComponent("commands.mobarmy-reset.game-complete")
                                 );
                             }
                     );
@@ -97,16 +78,13 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        /*
-         * /mobarmy reset world
-         */
         if (args[0].equalsIgnoreCase("world")) {
 
             game.getPlugin()
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            "Alle Welten zurücksetzen",
+                            game.getLanguageManager().get("commands.mobarmy-reset.vote.worlds"),
                             () -> game.getPlugin()
                                     .getGameResetManager()
                                     .resetWorlds(game)
@@ -115,36 +93,26 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        /**
-         * /mobarmy reset arena
-         */
         if (args[0].equalsIgnoreCase("arena")) {
 
             game.getPlugin()
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            "Arena zurücksetzen",
+                            game.getLanguageManager().get("commands.mobarmy-reset.vote.arena"),
                             () -> {
 
                                 if (game.getWorldManager()
                                         .isWorldResetBlocked()) {
 
                                     Bukkit.broadcast(
-                                            Component.text(
-                                                    "❌ Es läuft bereits ein Welt-Reset.",
-                                                    NamedTextColor.RED
-                                            )
+                                            game.getLanguageManager().getComponent("commands.mobarmy-reset.world-reset-running")
                                     );
 
                                     return;
                                 }
 
-                                showTitleToAll(
-                                        "MobArmyBattle",
-                                        "Arena wird zurückgesetzt...",
-                                        NamedTextColor.GOLD
-                                );
+                                showTitleToAll("commands.mobarmy-reset.progress.arena");
 
                                 game.getWorldManager()
                                         .resetArenaWorld();
@@ -154,9 +122,6 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-/**
- * /mobarmy reset teamwelt
- */
         if (args[0].equalsIgnoreCase("teamwelt")
                 || args[0].equalsIgnoreCase("teamworld")) {
 
@@ -164,27 +129,17 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            "Teamwelten neu generieren",
+                            game.getLanguageManager().get("commands.mobarmy-reset.vote.teamworlds"),
                             () -> {
 
-                                if (game.getWorldManager()
-                                        .isWorldResetBlocked()) {
-
+                                if (game.getPlugin().getGameResetManager().isResetRunning()) {
                                     Bukkit.broadcast(
-                                            Component.text(
-                                                    "❌ Es läuft bereits ein Welt-Reset.",
-                                                    NamedTextColor.RED
-                                            )
+                                            game.getLanguageManager().getComponent("commands.mobarmy-reset.world-reset-running")
                                     );
-
                                     return;
                                 }
 
-                                showTitleToAll(
-                                        "MobArmyBattle",
-                                        "Teamwelten werden neu erstellt...",
-                                        NamedTextColor.GOLD
-                                );
+                                showTitleToAll("commands.mobarmy-reset.progress.teamworlds");
 
                                 game.getWorldManager()
                                         .resetTeamWorlds();
@@ -195,40 +150,25 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
         }
 
         player.sendMessage(
-                Component.text(
-                        "Nutzung: /mobarmy reset [world|arena|teamwelt]",
-                        NamedTextColor.RED
-                )
+                game.getLanguageManager().getComponent("commands.mobarmy-reset.usage")
         );
 
         return true;
     }
 
-    private void showTitleToAll(
-            String title,
-            String subtitle,
-            NamedTextColor color
-    ) {
+    private void showTitleToAll(String subtitleKey) {
 
-        Title screenTitle =
-                Title.title(
-                        Component.text(
-                                title,
-                                color
-                        ),
-                        Component.text(
-                                subtitle,
-                                color
-                        ),
-                        Title.Times.times(
-                                Duration.ofMillis(500),
-                                Duration.ofSeconds(3),
-                                Duration.ofMillis(800)
-                        )
-                );
+        Title screenTitle = Title.title(
+                game.getLanguageManager().getComponent("commands.mobarmy-reset.title"),
+                game.getLanguageManager().getComponent(subtitleKey),
+                Title.Times.times(
+                        Duration.ofMillis(500),
+                        Duration.ofSeconds(3),
+                        Duration.ofMillis(800)
+                )
+        );
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-
             player.showTitle(screenTitle);
 
             player.playSound(
@@ -241,7 +181,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(
+    public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command cmd,
             @NotNull String alias,

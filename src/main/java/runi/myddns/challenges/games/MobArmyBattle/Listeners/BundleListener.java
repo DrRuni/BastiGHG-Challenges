@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class BundleListener implements Listener {
 
     private final MobArmyBattleGame game;

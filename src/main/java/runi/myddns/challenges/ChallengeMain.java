@@ -17,7 +17,6 @@ import runi.myddns.challenges.core.game.info.GameInfoManager;
 import runi.myddns.challenges.core.language.LanguageManager;
 import runi.myddns.challenges.core.player.PlayerGameDataListener;
 import runi.myddns.challenges.core.player.PlayerGameDataManager;
-import runi.myddns.challenges.core.world.WorldProtectionManager;
 import runi.myddns.challenges.core.reset.GameResetManager;
 import runi.myddns.challenges.core.reset.ResetVoteCommand;
 import runi.myddns.challenges.core.player.VoteManager;
@@ -51,7 +50,6 @@ public final class ChallengeMain extends JavaPlugin {
     private VoteManager voteManager;
     private GameInfoGUI gameInfoGUI;
     private GameInfoManager gameInfoManager;
-    private WorldProtectionManager worldProtectionManager;
 
     @Override
     public void onLoad() {
@@ -67,8 +65,7 @@ public final class ChallengeMain extends JavaPlugin {
         setupWorlds();
         setupLanguage();
         setupLobby();
-        worldProtectionManager =
-                new WorldProtectionManager(this);
+        WorldProtectionManager worldProtectionManager = new WorldProtectionManager();
 
         getServer().getPluginManager().registerEvents(
                 worldProtectionManager,
@@ -169,21 +166,32 @@ public final class ChallengeMain extends JavaPlugin {
     }
 
     private void registerCommands() {
-        if (getCommand("language") != null) getCommand("language").setExecutor(new LanguageCommand(this));
-        if (getCommand("lobby") != null) getCommand("lobby").setExecutor(new LobbyCommand(this));
-        if (getCommand("gamesettings") != null) getCommand("gamesettings").setExecutor(new GameSettingsCommand(this));
 
-        InfoCommand infoCommand = new InfoCommand(this);
-
-        if (getCommand("info") != null) {
-            getCommand("info").setExecutor(infoCommand);
-            getCommand("info").setTabCompleter(infoCommand);
+        var language = getCommand("language");
+        if (language != null) {
+            language.setExecutor(new LanguageCommand(this));
         }
 
-        if (getCommand("resetvote") != null) {
-            getCommand("resetvote").setExecutor(
-                    new ResetVoteCommand(this)
-            );
+        var lobby = getCommand("lobby");
+        if (lobby != null) {
+            lobby.setExecutor(new LobbyCommand(this));
+        }
+
+        var gameSettings = getCommand("gamesettings");
+        if (gameSettings != null) {
+            gameSettings.setExecutor(new GameSettingsCommand(this));
+        }
+
+        var info = getCommand("info");
+        if (info != null) {
+            InfoCommand infoCommand = new InfoCommand(this);
+            info.setExecutor(infoCommand);
+            info.setTabCompleter(infoCommand);
+        }
+
+        var resetVote = getCommand("resetvote");
+        if (resetVote != null) {
+            resetVote.setExecutor(new ResetVoteCommand(this));
         }
     }
 

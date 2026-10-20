@@ -3,6 +3,7 @@ package runi.myddns.challenges.core.player;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,15 +27,15 @@ public class PlayerGameDataListener implements Listener {
                 plugin.getPlayerGameDataManager();
     }
 
-    @EventHandler
+    @EventHandler(
+            priority = EventPriority.MONITOR,
+            ignoreCancelled = true
+    )
+
+    @SuppressWarnings("unused")
     public void onTeleport(
             PlayerTeleportEvent event
     ) {
-
-        if (event.getTo() == null) {
-            return;
-        }
-
         if (event.getFrom()
                 .getWorld()
                 .equals(
@@ -75,6 +76,7 @@ public class PlayerGameDataListener implements Listener {
                 );
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onWorldChange(
             PlayerChangedWorldEvent event
@@ -108,13 +110,7 @@ public class PlayerGameDataListener implements Listener {
 
         if (newGameId == null) {
 
-            if (oldGameId != null) {
-
-                playerGameDataManager
-                        .clearPotionEffects(
-                                player
-                        );
-            }
+            playerGameDataManager.clearPotionEffects(player);
 
             return;
         }
@@ -141,6 +137,7 @@ public class PlayerGameDataListener implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onQuit(
             PlayerQuitEvent event
@@ -165,6 +162,7 @@ public class PlayerGameDataListener implements Listener {
                 );
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onJoin(
             PlayerJoinEvent event

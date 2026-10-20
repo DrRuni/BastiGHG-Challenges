@@ -14,10 +14,10 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import runi.myddns.challenges.ChallengeMain;
 
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class WorldProtectionManager implements Listener {
 
     private static final String CENTRAL_LOBBY =
@@ -32,11 +32,7 @@ public class WorldProtectionManager implements Listener {
                     MOBARMY_LOBBY
             );
 
-    private final ChallengeMain plugin;
-
-    public WorldProtectionManager(ChallengeMain plugin) {
-        this.plugin = plugin;
-    }
+    public WorldProtectionManager() {}
 
     public void applyLoadedWorlds() {
 

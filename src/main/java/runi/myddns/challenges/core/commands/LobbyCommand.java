@@ -22,7 +22,7 @@ public class LobbyCommand implements CommandExecutor {
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (args.length > 0 && args[0].equalsIgnoreCase("all")) {

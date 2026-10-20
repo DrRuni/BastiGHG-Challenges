@@ -36,7 +36,7 @@ public class LevelBlockGame implements ChallengeGame {
     private final ChallengeMain plugin;
     private final GameWorldSettingsManager worldSettingsManager;
     private final LobbyDisplayManager lobbyDisplayManager;
-    private BorderManager borderManager;
+    private final BorderManager borderManager;
     private MoveListener moveListener;
     private BorderBlockListener borderBlockListener;
     private LevelBlockCommand levelBlockCommand;
@@ -395,12 +395,11 @@ public class LevelBlockGame implements ChallengeGame {
                     BRIGHT_RED
             );
 
-            plugin.getLogger().severe(
-                    "Error while loading LevelBlock: "
-                            + status
+            plugin.getLogger().log(
+                    java.util.logging.Level.SEVERE,
+                    "Error while loading LevelBlock: " + status,
+                    ex
             );
-
-            ex.printStackTrace();
 
             return;
         }
@@ -522,7 +521,7 @@ public class LevelBlockGame implements ChallengeGame {
                 targetLocation
         );
 
-        if (gameManager.isStarted(world)) {
+        if (gameManager.isStarted()) {
             gameTimerManager.resume();
         }
 
@@ -581,19 +580,20 @@ public class LevelBlockGame implements ChallengeGame {
     }
 
     @Override
-    public boolean hasPlayers() {
+    public boolean hasNoPlayers() {
 
-        return hasPlayersInWorld(
+        return !hasPlayersInWorld(
                 GameWorldDefinition.LEVEL_BLOCK_OVERWORLD
         )
-                || hasPlayersInWorld(
+                && !hasPlayersInWorld(
                 GameWorldDefinition.LEVEL_BLOCK_NETHER
         )
-                || hasPlayersInWorld(
+                && !hasPlayersInWorld(
                 GameWorldDefinition.LEVEL_BLOCK_END
         );
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean hasPlayersInWorld(
             GameWorldDefinition definition
     ) {
@@ -658,7 +658,7 @@ public class LevelBlockGame implements ChallengeGame {
 
     @Override
     public boolean canUnload() {
-        return !hasPlayers();
+        return hasNoPlayers();
     }
 
     @Override

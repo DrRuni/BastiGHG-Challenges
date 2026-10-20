@@ -3,6 +3,7 @@ package runi.myddns.challenges.games.LevelBorder.Manager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
@@ -26,8 +27,11 @@ public class BorderDataManager {
                 "games/levelborder"
         );
 
-        if (!gameFolder.exists()) {
-            gameFolder.mkdirs();
+        if (!gameFolder.exists() && !gameFolder.mkdirs()) {
+            game.getPlugin().getLogger().severe(
+                    "LevelBorder-Ordner konnte nicht erstellt werden: "
+                            + gameFolder.getAbsolutePath()
+            );
         }
 
         dataFile = new File(
@@ -162,11 +166,10 @@ public class BorderDataManager {
         Map<String, Integer> map =
                 new LinkedHashMap<>();
 
-        if (dataCfg.isConfigurationSection("players")) {
+        ConfigurationSection players = dataCfg.getConfigurationSection("players");
 
-            for (String name :
-                    dataCfg.getConfigurationSection("players")
-                            .getKeys(false)) {
+        if (players != null) {
+            for (String name : players.getKeys(false)) {
 
                 map.put(
                         name,
@@ -183,6 +186,7 @@ public class BorderDataManager {
         return map;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isScoreboardVisible() {
         return dataCfg.getBoolean(
                 "scoreboard.visible",
@@ -209,13 +213,6 @@ public class BorderDataManager {
         );
     }
 
-    public boolean isTimerPaused() {
-        return dataCfg.getBoolean(
-                "timer.paused",
-                true
-        );
-    }
-
     public void setTimer(long seconds) {
         dataCfg.set(
                 "timer.seconds",
@@ -229,11 +226,10 @@ public class BorderDataManager {
 
         int total = 0;
 
-        if (dataCfg.isConfigurationSection("players")) {
+        ConfigurationSection players = dataCfg.getConfigurationSection("players");
 
-            for (String name :
-                    dataCfg.getConfigurationSection("players")
-                            .getKeys(false)) {
+        if (players != null) {
+            for (String name : players.getKeys(false)) {
 
                 total += dataCfg.getInt(
                         "players."

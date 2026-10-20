@@ -6,16 +6,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class LevelBorderManager {
 
     private final LevelBorderGame game;
     private final BorderDataManager data;
-    private final ScoreboardManager scoreboard;
 
-    public LevelBorderManager(LevelBorderGame game, BorderDataManager data, ScoreboardManager scoreboard) {
+    public LevelBorderManager(
+            LevelBorderGame game,
+            BorderDataManager data
+    ) {
         this.game = game;
         this.data = data;
-        this.scoreboard = scoreboard;
 
         new BukkitRunnable() {
             @Override
@@ -61,7 +63,7 @@ public class LevelBorderManager {
         }
     }
 
-    public void growByLevel(Player trigger, int diff) {
+    public void growByLevel(int diff) {
         double newSize = data.getSize() + (diff * 2);
         data.setSize(newSize);
         applyBorderToAllWorlds(newSize, 3);
@@ -137,6 +139,7 @@ public class LevelBorderManager {
         return dx <= radius && dz <= radius;
     }
 
+    @SuppressWarnings("unused")
     public boolean isOutsideBorder(Location loc) {
         return !isInsideBorder(loc);
     }

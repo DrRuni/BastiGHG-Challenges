@@ -26,7 +26,7 @@ public class LevelBlockGameManager {
 
         World world = starter.getWorld();
 
-        if (isStarted(world)) return false;
+        if (isStarted()) return false;
 
         Location start = starter.getLocation()
                 .getBlock()
@@ -81,7 +81,7 @@ public class LevelBlockGameManager {
         borderManager.getLineManager().refreshAll();
     }
 
-    public boolean isStarted(World world) {
+    public boolean isStarted() {
         return dataManager.isEventStarted();
     }
 }

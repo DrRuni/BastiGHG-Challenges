@@ -124,10 +124,8 @@ public class OptionsGUI implements Listener {
         int slot = event.getRawSlot();
 
         switch (slot) {
-            case 11 -> {
-                game.getButtonManager()
-                        .handleStartButton(player);
-            }
+            case 11 -> game.getButtonManager()
+                    .handleStartButton(player);
 
             case 13 -> {
                 game.getTimerManager().pauseTimer();

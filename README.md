@@ -45,19 +45,17 @@ Current internal version: `v0.9`
 
 Each game has its own main command:
 
-```text
-/mobarmy
-/levelborder
-/levelblock
-```
+- `/mobarmy`
+- `/levelborder`
+- `/levelblock`
+
 
 For detailed game information:
 
-```text
-/mobarmy info
-/levelborder info
-/levelblock info
-```
+- `/mobarmy info`
+- `/levelborder info`
+- `/levelblock info`
+
 
 ## Requirements
 

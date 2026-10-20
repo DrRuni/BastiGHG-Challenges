@@ -183,12 +183,9 @@ public class ResumeManager {
             initiator.sendMessage(
                     net.kyori.adventure.text.minimessage.MiniMessage
                             .miniMessage()
-                            .deserialize(
-                                    "<yellow>⚠ Es befinden sich noch Spieler ohne Team in der Lobby.</yellow>\n"
-                                            + "<gray>Diese können ein Team auswählen, "
-                                            + "die Abstimmung abwarten und danach erneut "
-                                            + "auf START klicken.</gray>"
-                            )
+                            .deserialize("""
+                        <yellow>⚠ Es befinden sich noch Spieler ohne Team in der Lobby.</yellow>
+                        <gray>Diese können ein Team auswählen, die Abstimmung abwarten und danach erneut auf START klicken.</gray>""")
             );
         }
 
@@ -475,14 +472,12 @@ public class ResumeManager {
             player.sendMessage(
                     net.kyori.adventure.text.minimessage.MiniMessage
                             .miniMessage()
-                            .deserialize(
-                                    "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>\n"
-                                            + "<green><bold>MobArmyBattle wurde fortgesetzt.</bold></green>\n"
-                                            + "<gray>Wenn du teilnehmen möchtest, wähle bitte ein Team.</gray>\n"
-                                            + "<gray>Warte die Abstimmung ab und klicke danach erneut auf </gray>"
-                                            + "<aqua><bold>START</bold></aqua><gray>.</gray>\n"
-                                            + "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>"
-                            )
+                            .deserialize("""
+                        <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>
+                        <green><bold>MobArmyBattle wurde fortgesetzt.</bold></green>
+                        <gray>Wenn du teilnehmen möchtest, wähle bitte ein Team.</gray>
+                        <gray>Warte die Abstimmung ab und klicke danach erneut auf </gray><aqua><bold>START</bold></aqua><gray>.</gray>
+                        <dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</dark_gray>""")
             );
 
             game.getTeamSelectionGUI()

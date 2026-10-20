@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import runi.myddns.challenges.games.MobArmyBattle.Managers.Event.TimerManager;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.games.MobArmyBattle.Utils.GradientText;
@@ -21,6 +19,7 @@ public class PlayerListener implements Listener {
         this.game = game;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
 

@@ -50,13 +50,11 @@ public class ScoreboardSwitcher {
         activeBoards.remove(player);
         arenaBoardManager.removeBoard(player);
 
-        if (plugin.getServer().getScoreboardManager() != null) {
-            player.setScoreboard(
-                    plugin.getServer()
-                            .getScoreboardManager()
-                            .getMainScoreboard()
-            );
-        }
+        player.setScoreboard(
+                plugin.getServer()
+                        .getScoreboardManager()
+                        .getMainScoreboard()
+        );
     }
 
     public void forceTeamForAll() {

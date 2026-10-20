@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 import runi.myddns.challenges.games.LevelBorder.Manager.ScoreboardManager;
 
@@ -32,7 +31,7 @@ public class ScoreboardCommand implements CommandExecutor, TabCompleter {
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (!(sender instanceof Player player)) {
@@ -156,13 +155,12 @@ public class ScoreboardCommand implements CommandExecutor, TabCompleter {
         return player.isOp() ? 4 : 2;
     }
 
-    @Nullable
     @Override
-    public List<String> onTabComplete(
+    public @NotNull List<String> onTabComplete(
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String alias,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (args.length == 1) {

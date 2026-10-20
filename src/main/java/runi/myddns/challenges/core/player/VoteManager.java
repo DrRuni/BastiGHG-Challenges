@@ -34,7 +34,6 @@ public class VoteManager implements Listener {
     private Runnable onAccepted;
     private Runnable onRejected;
 
-    private String voteType;
     private String voteDescription;
 
     private boolean active;
@@ -69,7 +68,6 @@ public class VoteManager implements Listener {
             return false;
         }
 
-        this.voteType = voteType;
         this.voteDescription = voteDescription;
         this.onAccepted = onAccepted;
         this.onRejected = onRejected;
@@ -78,9 +76,6 @@ public class VoteManager implements Listener {
         accepted.clear();
         voteInventories.clear();
 
-        /*
-         * Nur die übergebenen Spieler dürfen abstimmen.
-         */
         for (Player player : votePlayers) {
 
             if (player == null || !player.isOnline()) {
@@ -92,10 +87,6 @@ public class VoteManager implements Listener {
             );
         }
 
-        /*
-         * Niemand vorhanden, der abstimmen muss.
-         * Dann gilt die Abstimmung automatisch als angenommen.
-         */
         if (voters.isEmpty()) {
 
             Runnable action = this.onAccepted;
@@ -114,9 +105,6 @@ public class VoteManager implements Listener {
 
         active = true;
 
-        /*
-         * GUI nur für die tatsächlichen Wähler öffnen.
-         */
         for (Player player : votePlayers) {
 
             if (player == null
@@ -140,12 +128,17 @@ public class VoteManager implements Listener {
             fillInventory(inventory);
 
             inventory.setItem(
-                    3,
+                    2,
                     createYesItem()
             );
 
             inventory.setItem(
-                    5,
+                    4,
+                    createVoteInfoItem()
+            );
+
+            inventory.setItem(
+                    6,
                     createNoItem()
             );
 
@@ -167,15 +160,7 @@ public class VoteManager implements Listener {
         return true;
     }
 
-    /*
-     * ==========================================================
-     * KOMPATIBILITÄT FÜR DIE BISHERIGEN RESET-AUFRUFE
-     * ==========================================================
-     *
-     * Dadurch müssen wir deine vorhandenen Reset-Stellen
-     * jetzt noch nicht sofort alle ändern.
-     */
-
+    @SuppressWarnings("UnusedReturnValue")
     public boolean startVote(
             String gameName,
             String resetName,
@@ -192,12 +177,7 @@ public class VoteManager implements Listener {
         );
     }
 
-    /*
-     * ==========================================================
-     * VOTE KLICK
-     * ==========================================================
-     */
-
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClick(
             InventoryClickEvent event
@@ -229,7 +209,7 @@ public class VoteManager implements Listener {
 
         event.setCancelled(true);
 
-        if (event.getRawSlot() == 3) {
+        if (event.getRawSlot() == 2) {
 
             vote(
                     player,
@@ -239,7 +219,7 @@ public class VoteManager implements Listener {
             return;
         }
 
-        if (event.getRawSlot() == 5) {
+        if (event.getRawSlot() == 6) {
 
             vote(
                     player,
@@ -248,12 +228,7 @@ public class VoteManager implements Listener {
         }
     }
 
-    /*
-     * ==========================================================
-     * GUI GESCHLOSSEN
-     * ==========================================================
-     */
-
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClose(
             InventoryCloseEvent event
@@ -290,12 +265,6 @@ public class VoteManager implements Listener {
         );
     }
 
-    /*
-     * ==========================================================
-     * STIMME
-     * ==========================================================
-     */
-
     public void vote(
             Player player,
             boolean yes
@@ -316,18 +285,10 @@ public class VoteManager implements Listener {
             return;
         }
 
-        /*
-         * Erst aus der Map nehmen.
-         * Dadurch löst das anschließende closeInventory()
-         * keinen Abbruch aus.
-         */
         voteInventories.remove(uuid);
 
         player.closeInventory();
 
-        /*
-         * NEIN
-         */
         if (!yes) {
 
             player.playSound(
@@ -346,9 +307,6 @@ public class VoteManager implements Listener {
             return;
         }
 
-        /*
-         * JA
-         */
         accepted.add(uuid);
 
         player.playSound(
@@ -363,9 +321,6 @@ public class VoteManager implements Listener {
                         .getComponent("vote.accepted-self")
         );
 
-        /*
-         * Alle haben JA gesagt.
-         */
         if (accepted.containsAll(voters)) {
 
             Runnable action =
@@ -388,12 +343,6 @@ public class VoteManager implements Listener {
             }
         }
     }
-
-    /*
-     * ==========================================================
-     * ABLEHNEN / ABBRECHEN
-     * ==========================================================
-     */
 
     private void cancelVote(
             Player player,
@@ -429,12 +378,6 @@ public class VoteManager implements Listener {
         }
     }
 
-    /*
-     * ==========================================================
-     * GUI SCHLIESSEN
-     * ==========================================================
-     */
-
     private void closeAllVoteInventories() {
 
         for (Player player :
@@ -460,12 +403,6 @@ public class VoteManager implements Listener {
         voteInventories.clear();
     }
 
-    /*
-     * ==========================================================
-     * INTERN ZURÜCKSETZEN
-     * ==========================================================
-     */
-
     private void clear() {
 
         active = false;
@@ -477,15 +414,8 @@ public class VoteManager implements Listener {
         onAccepted = null;
         onRejected = null;
 
-        voteType = null;
         voteDescription = null;
     }
-
-    /*
-     * ==========================================================
-     * GUI
-     * ==========================================================
-     */
 
     private void fillInventory(
             Inventory inventory
@@ -514,6 +444,30 @@ public class VoteManager implements Listener {
                     filler
             );
         }
+    }
+
+    private ItemStack createVoteInfoItem() {
+
+        ItemStack item = new ItemStack(Material.PAPER);
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta == null) return item;
+
+        String description = voteDescription == null || voteDescription.isBlank()
+                ? plugin.getLanguageManager().get("vote.yes.description")
+                : voteDescription;
+
+        meta.displayName(
+                Component.text(description, NamedTextColor.GOLD)
+                        .decorate(TextDecoration.BOLD)
+        );
+
+        meta.lore(List.of(
+                Component.text(description, NamedTextColor.GRAY)
+        ));
+
+        item.setItemMeta(meta);
+        return item;
     }
 
     private ItemStack createYesItem() {
@@ -603,12 +557,6 @@ public class VoteManager implements Listener {
 
         return item;
     }
-
-    /*
-     * ==========================================================
-     * GAME TITEL
-     * ==========================================================
-     */
 
     private Component getGameTitle(
             String gameName

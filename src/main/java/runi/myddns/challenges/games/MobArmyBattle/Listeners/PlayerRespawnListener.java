@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
+@SuppressWarnings("unused")
 public class PlayerRespawnListener implements Listener {
 
     private final MobArmyBattleGame game;
@@ -202,7 +203,7 @@ public class PlayerRespawnListener implements Listener {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        ConfigurationSection section = config.getConfigurationSection("lobbyspawn");
+        ConfigurationSection section = config.getConfigurationSection("lobby-spawn");
         if (section == null) {
             game.getPlugin().getLogger().warning("lobbyspawn wurde in spawns.yml nicht gefunden!");
             return null;

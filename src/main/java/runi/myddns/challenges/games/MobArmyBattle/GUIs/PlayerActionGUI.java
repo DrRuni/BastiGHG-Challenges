@@ -23,7 +23,6 @@ import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import runi.myddns.challenges.games.MobArmyBattle.Utils.Sounds;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class PlayerActionGUI implements Listener {
@@ -439,6 +438,7 @@ public class PlayerActionGUI implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
 

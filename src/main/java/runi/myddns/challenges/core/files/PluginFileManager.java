@@ -370,22 +370,7 @@ public class PluginFileManager {
     private void copyResource(String resourcePath, File targetFile) {
         overwriteResource(resourcePath, targetFile);
     }
-
-    private void copyResourceIfMissing(String resourcePath, File targetFile) {
-        if (targetFile.exists()) {
-            printFileStatus(targetFile.getName(), "I.O.");
-            return;
-        }
-
-        if (plugin.getResource(resourcePath) == null) {
-            plugin.getLogger().warning("Resource nicht gefunden: " + resourcePath);
-            return;
-        }
-
-        copyResource(resourcePath, targetFile);
-        printFileStatus(targetFile.getName(), "erstellt.");
-    }
-
+    
     private void backupFile(File targetFolder, File file, String fileName) {
         try {
             File backupFolder = new File(targetFolder, "backups");

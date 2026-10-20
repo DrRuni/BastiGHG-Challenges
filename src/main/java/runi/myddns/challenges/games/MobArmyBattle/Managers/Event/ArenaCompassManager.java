@@ -180,6 +180,7 @@ public class ArenaCompassManager implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onUseCompass(PlayerInteractEvent event) {
         Player player = event.getPlayer();

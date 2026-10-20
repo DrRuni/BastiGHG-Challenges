@@ -66,13 +66,6 @@ public class GameInfoManager {
         );
     }
 
-    public List<String> getChangelog(String gameId) {
-        return getSection(
-                gameId,
-                "Changelog"
-        );
-    }
-
     public String getVersion(String gameId) {
 
         List<String> lines =

@@ -128,6 +128,7 @@ public class BorderLineManager {
         refreshAll();
     }
 
+    @SuppressWarnings("unused")
     public void updateColumn(
             World world,
             int x,
@@ -384,7 +385,6 @@ public class BorderLineManager {
                     if (north) {
 
                         addLine(
-                                player,
                                 world,
                                 displays,
                                 wantedKeys,
@@ -399,7 +399,6 @@ public class BorderLineManager {
                     if (south) {
 
                         addLine(
-                                player,
                                 world,
                                 displays,
                                 wantedKeys,
@@ -414,7 +413,6 @@ public class BorderLineManager {
                     if (west) {
 
                         addLine(
-                                player,
                                 world,
                                 displays,
                                 wantedKeys,
@@ -429,7 +427,6 @@ public class BorderLineManager {
                     if (east) {
 
                         addLine(
-                                player,
                                 world,
                                 displays,
                                 wantedKeys,
@@ -508,7 +505,6 @@ public class BorderLineManager {
     }
 
     private void addLine(
-            Player player,
             World world,
             Map<String, ItemDisplay> displays,
             Set<String> wantedKeys,
@@ -630,6 +626,7 @@ public class BorderLineManager {
         );
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     private Transformation getLineTransformation(
             BorderSide side
     ) {

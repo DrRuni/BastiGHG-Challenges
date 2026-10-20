@@ -91,6 +91,7 @@ public class GameTimerManager {
         save();
     }
 
+    @SuppressWarnings("unused")
     public boolean isRunning() {
         return task != null;
     }

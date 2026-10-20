@@ -153,14 +153,14 @@ public class LevelBorderGame implements ChallengeGame {
         dataManager = new BorderDataManager(this);
         scoreboardManager = new ScoreboardManager(this, dataManager);
         timerManager = new TimerManager(this, dataManager);
-        borderManager = new LevelBorderManager(this, dataManager, scoreboardManager);
+        borderManager = new LevelBorderManager(this, dataManager);
         portalManager = new PortalManager(this, dataManager);
         mobSpawnManager = new MobSpawnManager(this, dataManager, borderManager);
     }
 
     private void registerListeners() {
         registerListener(new PortalListener(this, portalManager, dataManager));
-        registerListener(new PlayerListener(this, borderManager, scoreboardManager, timerManager));
+        registerListener(new PlayerListener(this, borderManager, scoreboardManager));
     }
 
     private void finishLoading() {
@@ -340,12 +340,15 @@ public class LevelBorderGame implements ChallengeGame {
     }
 
     @Override
-    public boolean hasPlayers() {
+    public boolean hasNoPlayers() {
+
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (isLevelBorderPlayer(player)) return true;
+            if (isLevelBorderPlayer(player)) {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     @Override
@@ -360,7 +363,7 @@ public class LevelBorderGame implements ChallengeGame {
 
     @Override
     public boolean canUnload() {
-        return !hasPlayers();
+        return hasNoPlayers();
     }
 
     @Override

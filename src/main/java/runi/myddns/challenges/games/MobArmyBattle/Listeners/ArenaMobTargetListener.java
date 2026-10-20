@@ -1,6 +1,8 @@
+
 package runi.myddns.challenges.games.MobArmyBattle.Listeners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -13,10 +15,12 @@ import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
 import java.util.Comparator;
 
+@SuppressWarnings("unused")
 public class ArenaMobTargetListener implements Listener {
 
-    private final MobArmyBattleGame game;
+    private static final String ARENA_WORLD = "world_mobarmy_arena";
 
+    private final MobArmyBattleGame game;
     private final NamespacedKey arenaMobKey;
     private final NamespacedKey enemyTeamKey;
 
@@ -26,18 +30,31 @@ public class ArenaMobTargetListener implements Listener {
         this.enemyTeamKey = new NamespacedKey(game.getPlugin(), "enemyTeam");
     }
 
-    @EventHandler
-    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
-        Entity entity = event.getEntity();
-        if (!(entity instanceof LivingEntity mob)) return;
+    private boolean isArenaMob(Entity entity) {
+        if (!entity.getWorld().getName().equals(ARENA_WORLD)) {
+            return false;
+        }
 
-        Byte isArenaMob = mob.getPersistentDataContainer().get(
+        Byte value = entity.getPersistentDataContainer().get(
                 arenaMobKey,
                 PersistentDataType.BYTE
         );
-        if (isArenaMob == null || isArenaMob != (byte) 1) return;
 
-        String enemyTeam = mob.getPersistentDataContainer().get(
+        return value != null && value == (byte) 1;
+    }
+
+    @EventHandler
+    public void onEntityTarget(EntityTargetLivingEntityEvent event) {
+
+        if (!(event.getEntity() instanceof Creature creature)) {
+            return;
+        }
+
+        if (!isArenaMob(creature)) {
+            return;
+        }
+
+        String enemyTeam = creature.getPersistentDataContainer().get(
                 enemyTeamKey,
                 PersistentDataType.STRING
         );
@@ -47,38 +64,19 @@ public class ArenaMobTargetListener implements Listener {
             return;
         }
 
-        if (!(event.getTarget() instanceof Player target)) {
-            event.setCancelled(true);
-            return;
-        }
-
-        String team = game.getTeamManager().getPlayerTeam(target);
-        if (team == null || !team.equalsIgnoreCase(enemyTeam)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onEntityTargetCheck(EntityTargetLivingEntityEvent event) {
-        Entity entity = event.getEntity();
-        if (!(entity instanceof Creature creature)) return;
-
-        Byte isArenaMob = creature.getPersistentDataContainer().get(
-                arenaMobKey,
-                PersistentDataType.BYTE
-        );
-        if (isArenaMob == null || isArenaMob != (byte) 1) return;
-
-        String enemyTeam = creature.getPersistentDataContainer().get(
-                enemyTeamKey,
-                PersistentDataType.STRING
-        );
-        if (enemyTeam == null) return;
-
         Player nearest = Bukkit.getOnlinePlayers()
                 .stream()
+                .filter(player ->
+                        player.getWorld().equals(creature.getWorld())
+                )
+                .filter(player ->
+                        !player.isDead()
+                                && player.getGameMode() != GameMode.SPECTATOR
+                )
                 .filter(player -> {
-                    String team = game.getTeamManager().getPlayerTeam(player);
+                    String team = game.getTeamManager()
+                            .getPlayerTeam(player);
+
                     return team != null
                             && team.equalsIgnoreCase(enemyTeam);
                 })
@@ -93,40 +91,41 @@ public class ArenaMobTargetListener implements Listener {
             return;
         }
 
-        creature.setTarget(nearest);
         event.setTarget(nearest);
     }
 
     @EventHandler
     public void onMobCombust(EntityCombustEvent event) {
-        Entity entity = event.getEntity();
-        if (!(entity instanceof LivingEntity living)) return;
 
-        Byte isArenaMob = living.getPersistentDataContainer().get(
-                arenaMobKey,
-                PersistentDataType.BYTE
-        );
+        if (event.getEntity() instanceof LivingEntity living
+                && isArenaMob(living)) {
 
-        if (isArenaMob != null && isArenaMob == (byte) 1) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
+
         LivingEntity entity = event.getEntity();
-        Byte isArenaMob = entity.getPersistentDataContainer().get(
-                arenaMobKey,
-                PersistentDataType.BYTE
-        );
-        if (isArenaMob == null || isArenaMob != (byte) 1) return;
 
-        Player killer = event.getEntity().getKiller();
-        if (killer == null) return;
+        if (!isArenaMob(entity)) {
+            return;
+        }
 
-        String team = game.getTeamManager().getPlayerTeam(killer);
+        Player killer = entity.getKiller();
+
+        if (killer == null) {
+            return;
+        }
+
+        String team = game.getTeamManager()
+                .getPlayerTeam(killer);
+
         if (team != null) {
-            game.getArenaManager().getScoreboardManager().addKill(team);
+            game.getArenaManager()
+                    .getScoreboardManager()
+                    .addKill(team);
         }
     }
 }

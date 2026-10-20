@@ -1,3 +1,5 @@
+# Core DE Langues
+
 file-version: 1
 
 commands:
@@ -80,6 +82,21 @@ reset-management:
     name: "Welten zurücksetzen"
     line-1: "Löscht und erstellt die Spielwelten neu."
     line-2: "Achtung: Alle Änderungen in den Welten gehen verloren!"
+  mobarmybattle:
+    progress:
+      name: "Spielfortschritt zurücksetzen"
+      description: "Spielstand und Spielerdaten löschen. Welten bleiben erhalten."
+    teamworlds:
+      name: "Teamwelten neu generieren"
+      description: "Rot und Blau inklusive Nether neu erstellen."
+    arena:
+      name: "Arena-Welt zurücksetzen"
+      line-1: "Arena wird vollständig neu erstellt."
+      line-2: "Arena-Fortschritt wird zurückgesetzt."
+      line-3: "ACHTUNG: Alle Bauänderungen gehen verloren!"
+    all:
+      name: "Komplett-Reset"
+      description: "Alle MAB-Welten und Spielstände zurücksetzen."
   back:
     name: "Zurück"
     description: "Zurück zu den WorldSettings."

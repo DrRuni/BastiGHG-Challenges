@@ -36,8 +36,6 @@ public class TeamManager implements Listener {
 
         UUID uuid = player.getUniqueId();
 
-        String oldTeam = getPlayerTeam(player);
-
         playerTeams.put(uuid, team);
         playerNames.put(uuid, player.getName());
 

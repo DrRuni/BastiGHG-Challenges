@@ -13,8 +13,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
+import runi.myddns.challenges.core.world.GameWorldDefinition;
+import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+
+import java.util.List;
 
 import java.util.Locale;
 
@@ -26,9 +31,15 @@ public class ResetManagementGUI implements Listener {
     private static class ResetManagementHolder
             implements InventoryHolder {
 
+        private Inventory inventory;
+
+        public void setInventory(Inventory inventory) {
+            this.inventory = inventory;
+        }
+
         @Override
-        public Inventory getInventory() {
-            return null;
+        public @NotNull Inventory getInventory() {
+            return inventory;
         }
     }
 
@@ -102,7 +113,9 @@ public class ResetManagementGUI implements Listener {
         if (!game.getId()
                 .equalsIgnoreCase("levelborder")
                 && !game.getId()
-                .equalsIgnoreCase("levelblock")) {
+                .equalsIgnoreCase("levelblock")
+                && !game.getId()
+                .equalsIgnoreCase("mobarmybattle")) {
 
             player.sendMessage(
                     plugin.getLanguageManager()
@@ -112,9 +125,11 @@ public class ResetManagementGUI implements Listener {
             return;
         }
 
+        ResetManagementHolder holder = new ResetManagementHolder();
+
         Inventory inventory =
                 Bukkit.createInventory(
-                        new ResetManagementHolder(),
+                        holder,
                         27,
                         Component.text(
                                 plugin.getLanguageManager()
@@ -125,33 +140,73 @@ public class ResetManagementGUI implements Listener {
                         )
                 );
 
-        inventory.setItem(
-                11,
-                createItem(
-                        Material.REDSTONE,
-                        plugin.getLanguageManager()
-                                .get("reset-management.progress.name"),
-                        NamedTextColor.GOLD,
-                        plugin.getLanguageManager()
-                                .get("reset-management.progress.line-1"),
-                        plugin.getLanguageManager()
-                                .get("reset-management.progress.line-2")
-                )
-        );
+        holder.setInventory(inventory);
 
-        inventory.setItem(
-                15,
-                createItem(
-                        Material.TNT,
-                        plugin.getLanguageManager()
-                                .get("reset-management.worlds.name"),
-                        NamedTextColor.RED,
-                        plugin.getLanguageManager()
-                                .get("reset-management.worlds.line-1"),
-                        plugin.getLanguageManager()
-                                .get("reset-management.worlds.line-2")
-                )
-        );
+        if (game instanceof MobArmyBattleGame) {
+            inventory.setItem(10, createItem(
+                    Material.EXPERIENCE_BOTTLE,
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.progress.name"),
+                    NamedTextColor.GOLD,
+                    "",
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.progress.description")
+            ));
+
+            inventory.setItem(12, createItem(
+                    Material.GRASS_BLOCK,
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.teamworlds.name"),
+                    NamedTextColor.YELLOW,
+                    "",
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.teamworlds.description")
+            ));
+
+            inventory.setItem(14, createItem(
+                    Material.IRON_SWORD,
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.arena.name"),
+                    NamedTextColor.RED,
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.arena.line-1"),
+                    "",
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.arena.line-2"),
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.arena.line-3")
+            ));
+
+            inventory.setItem(16, createItem(
+                    Material.TNT,
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.all.name"),
+                    NamedTextColor.DARK_RED,
+                    "",
+                    plugin.getLanguageManager().get("reset-management.mobarmybattle.all.description")
+            ));
+
+        } else {
+            inventory.setItem(
+                    11,
+                    createItem(
+                            Material.REDSTONE,
+                            plugin.getLanguageManager()
+                                    .get("reset-management.progress.name"),
+                            NamedTextColor.GOLD,
+                            plugin.getLanguageManager()
+                                    .get("reset-management.progress.line-1"),
+                            plugin.getLanguageManager()
+                                    .get("reset-management.progress.line-2")
+                    )
+            );
+
+            inventory.setItem(
+                    15,
+                    createItem(
+                            Material.TNT,
+                            plugin.getLanguageManager()
+                                    .get("reset-management.worlds.name"),
+                            NamedTextColor.RED,
+                            plugin.getLanguageManager()
+                                    .get("reset-management.worlds.line-1"),
+                            plugin.getLanguageManager()
+                                    .get("reset-management.worlds.line-2")
+                    )
+            );
+
+        }
 
         inventory.setItem(
                 22,
@@ -208,32 +263,64 @@ public class ResetManagementGUI implements Listener {
             return;
         }
 
+        if (game instanceof MobArmyBattleGame mab) {
+            if (slot == 22) {
+                mab.getEventSettingsGUI().open(player);
+                return;
+            }
+            if (slot != 10 && slot != 12 && slot != 14 && slot != 16) return;
+
+            player.closeInventory();
+            switch (slot) {
+                case 10 -> plugin.getVoteManager().startVote(
+                        game.getDisplayName(),
+                        plugin.getLanguageManager().get("reset-management.mobarmybattle.progress.name"),
+                        () -> mab.getEventManager().resetGame()
+                );
+                case 12 -> plugin.getVoteManager().startVote(
+                        game.getDisplayName(),
+                        plugin.getLanguageManager().get("reset-management.mobarmybattle.teamworlds.name"),
+                        () -> mab.getWorldManager().resetTeamWorlds()
+                );
+                case 14 -> plugin.getVoteManager().startVote(
+                        game.getDisplayName(),
+                        plugin.getLanguageManager().get("reset-management.mobarmybattle.arena.name"),
+                        () -> plugin.getGameResetManager().resetSelectedWorlds(
+                                mab,
+                                List.of(GameWorldDefinition.MOB_ARMY_ARENA),
+                                () -> mab.getArenaManager().resetArena(),
+                                () -> mab.getArenaConfig().reload()
+                        )
+                );
+                case 16 -> plugin.getVoteManager().startVote(
+                        game.getDisplayName(),
+                        plugin.getLanguageManager().get("reset-management.mobarmybattle.all.name"),
+                        () -> plugin.getGameResetManager().resetWorlds(mab)
+                );
+                default -> { }
+            }
+            return;
+        }
+
         switch (slot) {
 
             case 11 -> {
 
                 player.closeInventory();
 
-                if (game.getId()
-                        .equalsIgnoreCase("levelborder")) {
+                if (game.getId().equalsIgnoreCase("levelborder")) {
 
                     Bukkit.dispatchCommand(
                             player,
                             "levelborder reset"
                     );
 
-                    return;
-                }
-
-                if (game.getId()
-                        .equalsIgnoreCase("levelblock")) {
+                } else if (game.getId().equalsIgnoreCase("levelblock")) {
 
                     Bukkit.dispatchCommand(
                             player,
                             "levelblock reset"
                     );
-
-                    return;
                 }
             }
 
@@ -241,37 +328,27 @@ public class ResetManagementGUI implements Listener {
 
                 player.closeInventory();
 
-                if (game.getId()
-                        .equalsIgnoreCase("levelborder")) {
+                if (game.getId().equalsIgnoreCase("levelborder")) {
 
                     Bukkit.dispatchCommand(
                             player,
                             "levelborder reset world"
                     );
 
-                    return;
-                }
-
-                if (game.getId()
-                        .equalsIgnoreCase("levelblock")) {
+                } else if (game.getId().equalsIgnoreCase("levelblock")) {
 
                     Bukkit.dispatchCommand(
                             player,
                             "levelblock reset world"
                     );
-
-                    return;
                 }
             }
 
-            case 22 -> {
-
-                plugin.getWorldSettingsGUI()
-                        .open(player);
-            }
+            case 22 -> plugin.getWorldSettingsGUI().open(player);
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onDrag(
             InventoryDragEvent event
@@ -303,6 +380,10 @@ public class ResetManagementGUI implements Listener {
         if (meta == null) {
             return item;
         }
+
+        meta.addItemFlags(
+                org.bukkit.inventory.ItemFlag.HIDE_ATTRIBUTES
+        );
 
         meta.displayName(
                 Component.text(

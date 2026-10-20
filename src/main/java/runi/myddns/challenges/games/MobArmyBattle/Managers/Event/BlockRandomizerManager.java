@@ -47,6 +47,7 @@ public class BlockRandomizerManager implements Listener {
         initializeDroppableMaterials();
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();

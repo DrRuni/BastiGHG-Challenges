@@ -1,3 +1,5 @@
+# Core EN Langues
+
 file-version: 1
 
 commands:
@@ -81,6 +83,21 @@ reset-management:
     name: "Reset worlds"
     line-1: "Deletes and recreates the game worlds."
     line-2: "Warning: All changes in the worlds will be lost!"
+  mobarmybattle:
+    progress:
+      name: "Reset game progress"
+      description: "Clear game progress and player data. Keep all worlds."
+    teamworlds:
+      name: "Regenerate team worlds"
+      description: "Recreate Red and Blue worlds, including the Nether."
+    arena:
+      name: "Reset arena world"
+      line-1: "The arena world will be recreated."
+      line-2: "Arena progress will be reset."
+      line-3: "WARNING: All building changes will be lost!"
+    all:
+      name: "Full reset"
+      description: "Reset all MAB worlds and game progress."
   back:
     name: "Back"
     description: "Back to WorldSettings."

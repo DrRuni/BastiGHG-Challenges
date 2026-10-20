@@ -26,7 +26,7 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (!(sender instanceof Player player)) {
@@ -95,7 +95,7 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String alias,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (args.length != 1) {

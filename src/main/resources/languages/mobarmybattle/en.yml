@@ -1,3 +1,5 @@
+# Mobarmybattle EN Language
+
 file-version: 1
 
 commands:
@@ -34,6 +36,23 @@ commands:
     arena:
       title: "<dark_red>⚠ Arena Reset!"
       subtitle: "<gold>%player% started the arena world reset"
+  mobarmy-reset:
+    title: "<gold>MobArmyBattle</gold>"
+    progress:
+      game: "<gold>Resetting game progress...</gold>"
+      arena: "<gold>Resetting arena...</gold>"
+      teamworlds: "<gold>Regenerating team worlds...</gold>"
+    player-only: "<red>This command can only be used by players."
+    no-permission: "<red>You do not have permission."
+    game-not-loaded: "<red>MobArmyBattle must be loaded first."
+    game-complete: "<green>✔ MobArmyBattle has been reset."
+    world-reset-running: "<red>❌ A world reset is already in progress."
+    usage: "<red>Usage: /mobarmy reset [world|arena|teamwelt]"
+    vote:
+      game: "Reset game progress"
+      worlds: "Reset all worlds"
+      arena: "Reset arena"
+      teamworlds: "Regenerate team worlds"
   resume:
     player-only: "<red>❌ Only players can use this command!"
     op-only: "<red>❌ Only operators may use this command!"
@@ -209,19 +228,10 @@ setup-gui:
   arena:
     name: "<gold>Arena Settings"
     description: "<gray>Open arena settings"
-  reset-game:
-    name: "<dark_red>Reset Game Progress"
-    description: "<red>Resets arena and game progress"
-  reset-teamworlds:
-    name: "<dark_red>Reset Team Worlds"
-    description: "<red>Red and Blue worlds will be regenerated"
-  reset-lobby:
-    name: "<dark_red>Reset All Worlds"
-    description: "<red>All MobArmyBattle worlds will be completely recreated"
-  reset-arena:
-    name: "<dark_red>Reset Arena World"
-    description: "<red>The arena will be completely reset"
   back: "<dark_aqua>Back"
+  reset-management:
+    name: "<red>Reset Management"
+    description: "<gray>Reset game progress and worlds"
 
 team-equipment-gui:
   title: "<blue>Team Equipment Settings"
@@ -575,6 +585,12 @@ button-manager:
   ready:
     title: "✔ Team <team> ready!"
     subtitle: "<gray>%player% pressed Ready"
+  start:
+    not-participant: "<red>You are not part of a team in the current event.</red>"
+    select-team: "<yellow>Select a team first.</yellow>"
+    lobby-phase: "<yellow>The event is still in the lobby phase.</yellow>"
+    team-unknown: "<red>Your team could not be determined.</red>"
+    team-world-missing: "<red>Your team world is not loaded.</red>"
 
 resume-manager:
   not-started: "<red>✖ The event has not been started yet."
@@ -604,6 +620,11 @@ world-manager:
   progress-still-loaded-1: "<dark_red>Player and event data is still loaded,"
   progress-still-loaded-2: "<dark_red>it can only be cleared using <gold>Reset Progress"
   progress-still-loaded-3: "<dark_red>!"
+  reset-title:
+    title: "MobArmyBattle"
+    arena-failed: "Arena reset failed!"
+    arena-ready: "Arena ready!"
+    teamworlds-ready: "Team worlds ready!"
 
 player-join-listener:
   welcome:
@@ -622,8 +643,7 @@ mobarmy-command:
     resume: "<yellow>/mobarmy resume <gray>- Resume the event"
     gamesettings: "<yellow>/mobarmy gamesettings <gray>- Open game settings"
 
-    team: "<yellow>/team join <red | 
-    blue> <gray>- Join a team  |  <yellow>/team leave"
+    team: "<yellow>/team join red | blue <gray>- Join a team  |  <yellow>/team leave"
     mobstatus: "<yellow>/mobstatus <gray>- Show saved mobs for your team"
     arenasummary: "<yellow>/arenasummary <gray>- Show arena results"
     reset: "<yellow>/mobarmy reset [world | arena | teamwelt] <gray>- Reset functions"

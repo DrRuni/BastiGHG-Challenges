@@ -27,9 +27,6 @@ public class MoveListener implements Listener {
         Location from = event.getFrom();
         Location to = event.getTo();
 
-        if (to == null) return;
-
-
         BorderManager border =
                 game.getBorderManager();
 

@@ -2,29 +2,28 @@ package runi.myddns.challenges.games.LevelBorder.Manager;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.persistence.PersistentDataType;
 import runi.myddns.challenges.games.LevelBorder.LevelBorderGame;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MobSpawnManager {
 
-    private static final String META_KEY = "levelborder_mob";
+    private final NamespacedKey mobKey;
 
     private final LevelBorderGame game;
     private final BorderDataManager data;
     private final LevelBorderManager borderManager;
     private record MobOption(EntityType type, int weight, int maxPackSize) {}
-    private FileConfiguration config;
-    private File configFile;
 
     private BukkitTask task;
 
@@ -32,6 +31,7 @@ public class MobSpawnManager {
         this.game = game;
         this.data = data;
         this.borderManager = borderManager;
+        this.mobKey = new NamespacedKey(game.getPlugin(), "levelborder_mob");
     }
 
     public void start() {
@@ -129,7 +129,7 @@ public class MobSpawnManager {
         }
 
         int perPlayerCap = game.getPlugin().getConfig().getInt("mob-spawning.caps.per-player", 8);
-        int nearMobs = countLevelBorderMobsNear(player.getLocation(), 96);
+        int nearMobs = countLevelBorderMobsNear(player.getLocation());
 
         if (nearMobs >= perPlayerCap) {
             debug("Abbruch Spieler " + player.getName() + ": Spieler-Cap erreicht. Nähe=" + nearMobs + "/" + perPlayerCap);
@@ -304,6 +304,7 @@ public class MobSpawnManager {
         return null;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isAllowedByBorderMode(Location loc) {
         double borderSize = data.getSize();
         double assistInsideUntil = game.getPlugin().getConfig().getDouble(
@@ -311,15 +312,11 @@ public class MobSpawnManager {
                 31.0
         );
 
-        boolean inside = borderManager.isInsideBorder(loc);
-
-        if (borderSize >= assistInsideUntil && inside) {
-            return false;
-        }
-
-        return true;
+        return borderSize < assistInsideUntil
+                || !borderManager.isInsideBorder(loc);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isFarEnoughFromAllPlayers(Location loc) {
         int minDistance = game.getPlugin().getConfig().getInt("mob-spawning.distance.min-to-player", 28);
         double minSquared = minDistance * minDistance;
@@ -336,6 +333,7 @@ public class MobSpawnManager {
         return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isNearEnoughToAnyPlayer(Location loc) {
         int maxDistance = game.getPlugin().getConfig().getInt("mob-spawning.distance.max-to-player", 96);
         double maxSquared = maxDistance * maxDistance;
@@ -367,7 +365,7 @@ public class MobSpawnManager {
 
         for (Entity entity : loc.getWorld().getEntities()) {
             if (!(entity instanceof Monster)) continue;
-            if (!entity.hasMetadata(META_KEY)) continue;
+            if (!entity.getPersistentDataContainer().has(mobKey, PersistentDataType.BYTE)) continue;
 
             Location eLoc = entity.getLocation();
             if ((eLoc.getBlockX() >> 4) == chunkX && (eLoc.getBlockZ() >> 4) == chunkZ) {
@@ -388,7 +386,7 @@ public class MobSpawnManager {
         addMobOption(options, "spider", EntityType.SPIDER);
         addMobOption(options, "creeper", EntityType.CREEPER);
 
-        if (hasHeight(loc, 3)) {
+        if (hasHeight(loc)) {
             addMobOption(options, "enderman", EntityType.ENDERMAN);
         }
 
@@ -414,7 +412,7 @@ public class MobSpawnManager {
             }
         }
 
-        return options.get(0);
+        return options.getFirst();
     }
 
     private void addMobOption(List<MobOption> options, String pathName, EntityType type) {
@@ -430,6 +428,7 @@ public class MobSpawnManager {
         options.add(new MobOption(type, weight, maxPackSize));
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean canSpawnTypeAt(EntityType type, Location loc) {
         World world = loc.getWorld();
         if (world == null) return false;
@@ -499,7 +498,7 @@ public class MobSpawnManager {
         return true;
     }
 
-    private boolean hasHeight(Location loc, int height) {
+    private boolean hasHeight(Location loc) {
         World world = loc.getWorld();
         if (world == null) return false;
 
@@ -507,7 +506,7 @@ public class MobSpawnManager {
         int y = loc.getBlockY();
         int z = loc.getBlockZ();
 
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < 3; i++) {
             if (!world.getBlockAt(x, y + i, z).isPassable()) {
                 return false;
             }
@@ -571,7 +570,11 @@ public class MobSpawnManager {
             }
 
             Entity entity = loc.getWorld().spawnEntity(loc, type);
-            entity.setMetadata(META_KEY, new org.bukkit.metadata.FixedMetadataValue(game.getPlugin(), true));
+            entity.getPersistentDataContainer().set(
+                    mobKey,
+                    PersistentDataType.BYTE,
+                    (byte) 1
+            );
 
             sendPluginSpawnDebug(type, loc);
 
@@ -591,7 +594,8 @@ public class MobSpawnManager {
 
         for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntities()) {
-                if (entity instanceof Monster && entity.hasMetadata(META_KEY)) {
+                if (entity instanceof Monster
+                        && entity.getPersistentDataContainer().has(mobKey, PersistentDataType.BYTE)) {
                     count++;
                 }
             }
@@ -600,14 +604,13 @@ public class MobSpawnManager {
         return count;
     }
 
-    private int countLevelBorderMobsNear(Location center, double radius) {
-        double radiusSquared = radius * radius;
+    private int countLevelBorderMobsNear(Location center) {
+        double radiusSquared = 96.0 * 96.0;
         int count = 0;
 
         for (Entity entity : center.getWorld().getEntities()) {
             if (!(entity instanceof Monster)) continue;
-            if (!entity.hasMetadata(META_KEY)) continue;
-
+            if (!entity.getPersistentDataContainer().has(mobKey, PersistentDataType.BYTE)) continue;
             if (entity.getLocation().distanceSquared(center) <= radiusSquared) {
                 count++;
             }
@@ -630,16 +633,22 @@ public class MobSpawnManager {
 
         boolean inside = borderManager.isInsideBorder(loc);
 
-        ChatColor color = inside ? ChatColor.GREEN : ChatColor.LIGHT_PURPLE;
+        NamedTextColor color = inside
+                ? NamedTextColor.GREEN
+                : NamedTextColor.LIGHT_PURPLE;
+
         String zone = inside ? "INNEN" : "AUSSEN";
 
         Bukkit.getConsoleSender().sendMessage(
-                color + "[PluginSpawn/" + zone + "] "
-                        + type
-                        + " bei X:" + loc.getBlockX()
-                        + " Y:" + loc.getBlockY()
-                        + " Z:" + loc.getBlockZ()
-                        + " Welt:" + loc.getWorld().getName()
+                Component.text(
+                        "[PluginSpawn/" + zone + "] "
+                                + type
+                                + " bei X:" + loc.getBlockX()
+                                + " Y:" + loc.getBlockY()
+                                + " Z:" + loc.getBlockZ()
+                                + " Welt:" + loc.getWorld().getName(),
+                        color
+                )
         );
     }
 

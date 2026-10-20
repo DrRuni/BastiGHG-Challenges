@@ -28,62 +28,13 @@ The challenge starts with a very small WorldBorder. The border grows based on th
 
 ## Commands
 
-```text
-/levelborder
-/levelborder info
-/levelborder status
-/levelborder start
-/levelborder stop
-/levelborder set <size>
-/levelborder center
-/levelborder gamesettings
-/levelborder reset
-/levelborder reset world
-
-## Changelog
-
-### v1.2
-
-#### Added
-
-- Added an options GUI
-- Added the new `/optionen` command
-- Added `/levelborder optionen` as an additional way to access the options menu
-- Restricted the options menu to OP players
-- KeepInventory can now be toggled through the options menu
-- LevelBorder can now be started, stopped, reset and centered through the options menu
-- Border size can be decreased with left-click and increased with right-click in the options menu
-
-#### Improved
-
-- Updated Paper API to **26.2 Alpha**
-- Significantly improved portal logic
-- Improved reset and start flow
-- Fixed the scoreboard player list
-- Border center is now updated immediately after being set
-- Minor code cleanup and API adjustments
-
----
-
-### v1.1.1
-
-#### Improved
-
-- Cleaned up the code
-- Reduced API warnings
-
-### v1.1
-
-#### Added
-
-- Updated to Paper 26.1.2
-- Improved mob spawning outside the border
-- Adjusted vanilla spawning behavior so mobs can spawn reliably even in small border areas
-- Added an additional spawn fix for the area where Minecraft normally prevents mobs from spawning too close to players
-
-### v1.0
-
-#### Added
-
-- Initial release of LevelBorder
-- Support for Minecraft 1.21.10
+- `/levelborder`
+- `/levelborder info`
+- `/levelborder status`
+- `/levelborder start`
+- `/levelborder stop`
+- `/levelborder set <size>`
+- `/levelborder center`
+- `/levelborder gamesettings`
+- `/levelborder reset`
+- `/levelborder reset world`

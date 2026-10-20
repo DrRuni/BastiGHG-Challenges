@@ -118,9 +118,8 @@ public class GameWorldSettingsManager {
 
         world.setGameRule(
                 GameRules.SPAWN_MOBS,
-                mobSpawningForcedOffWorlds.contains(world.getName())
-                        ? false
-                        : mobSpawning
+                !mobSpawningForcedOffWorlds.contains(world.getName())
+                        && mobSpawning
         );
 
         world.setGameRule(
@@ -207,6 +206,7 @@ public class GameWorldSettingsManager {
         return difficulty;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public String cycleDifficulty() {
 
         String current =
@@ -251,6 +251,7 @@ public class GameWorldSettingsManager {
         this.daylightCycle = daylightCycle;
     }
 
+    @SuppressWarnings("unused")
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
     }

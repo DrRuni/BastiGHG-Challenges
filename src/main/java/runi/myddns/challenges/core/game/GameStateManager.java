@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class GameStateManager {
 
@@ -70,11 +71,16 @@ public class GameStateManager {
     }
 
     private void save() {
+
         try {
             config.save(file);
-        } catch (IOException e) {
-            plugin.getLogger().severe(
-                    "Could not save game-state.yml: " + e.getMessage()
+
+        } catch (IOException exception) {
+
+            plugin.getLogger().log(
+                    Level.SEVERE,
+                    "Fehler beim Speichern der Datei game-state.yml",
+                    exception
             );
         }
     }

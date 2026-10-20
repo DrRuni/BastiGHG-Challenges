@@ -61,14 +61,17 @@ public class GameManager {
         }
     }
 
+    @SuppressWarnings("unused")
     public int getSelectedGameNumber() {
         return selectedGameIndex + 1;
     }
 
+    @SuppressWarnings("unused")
     public int getSelectedGameIndex() {
         return selectedGameIndex;
     }
 
+    @SuppressWarnings("unused")
     public void setSelectedGameIndex(
             int index
     ) {

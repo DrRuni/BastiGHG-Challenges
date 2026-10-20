@@ -22,9 +22,6 @@ import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.game.GameManager;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
 
 public class LobbyButtonManager implements Listener {
@@ -42,9 +39,6 @@ public class LobbyButtonManager implements Listener {
     private static final double START_X = -7.0;
     private static final double START_Y = 67.0;
     private static final double START_Z = 32.0;
-
-    private static final double BUTTON_Y = START_Y + 0.42;
-    private static final double BUTTON_Z = START_Z - 0.20;
 
     private static final float BUTTON_YAW = 180.0f;
     private static final float BUTTON_WIDTH = 0.70f;
@@ -74,15 +68,11 @@ public class LobbyButtonManager implements Listener {
     private record ButtonPosition(
             double x,
             double y,
-            double z,
-            float yaw,
-            float pitch
-    ) {}
+            double z
+    ) {
+    }
 
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
-
-    private final Map<Integer, TextDisplay> buttonDisplays =
-            new HashMap<>();
 
     public void createButtons(World world) {
 
@@ -95,44 +85,34 @@ public class LobbyButtonManager implements Listener {
 
         removeOldButtons(world);
 
-        buttonDisplays.clear();
-
         ButtonPosition[] positions = {
 
                 // SELECT
                 new ButtonPosition(
                         START_X + 8.50,
                         START_Y + 0.00,
-                        START_Z - 0.80,
-                        180.0f,
-                        0.0f
+                        START_Z - 0.80
                 ),
 
                 // LOAD
                 new ButtonPosition(
                         START_X + 7.50,
                         START_Y + 0.00,
-                        START_Z - 0.80,
-                        180.0f,
-                        0.0f
+                        START_Z - 0.80
                 ),
 
                 // START
                 new ButtonPosition(
                         START_X + 6.50,
                         START_Y + 0.00,
-                        START_Z - 0.80,
-                        180.0f,
-                        0.0f
+                        START_Z - 0.80
                 ),
 
                 // SETTINGS
                 new ButtonPosition(
                         START_X + 4.50,
                         START_Y + 0.00,
-                        START_Z - 0.80,
-                        180.0f,
-                        0.0f
+                        START_Z - 0.80
                 ),
         };
 
@@ -171,72 +151,66 @@ public class LobbyButtonManager implements Listener {
                         0.0f
                 );
 
-        TextDisplay textDisplay =
-                world.spawn(
-                        textLocation,
-                        TextDisplay.class,
-                        display -> {
+        world.spawn(
+                textLocation,
+                TextDisplay.class,
+                display -> {
 
-                            display.text(
-                                    createNormalText(name)
-                            );
+                    display.text(
+                            createNormalText(name)
+                    );
 
 
-                            display.setAlignment(
-                                    TextDisplay.TextAlignment.CENTER
-                            );
+                    display.setAlignment(
+                            TextDisplay.TextAlignment.CENTER
+                    );
 
-                            display.setBillboard(
-                                    Display.Billboard.FIXED
-                            );
+                    display.setBillboard(
+                            Display.Billboard.FIXED
+                    );
 
-                            display.setBackgroundColor(
-                                    NORMAL_BACKGROUND
-                            );
+                    display.setBackgroundColor(
+                            NORMAL_BACKGROUND
+                    );
 
-                            display.setShadowed(true);
+                    display.setShadowed(true);
 
-                            display.setSeeThrough(false);
+                    display.setSeeThrough(false);
 
-                            display.setLineWidth(300);
+                    display.setLineWidth(300);
 
-                            display.setBrightness(
-                                    new Display.Brightness(
-                                            15,
-                                            15
-                                    )
-                            );
+                    display.setBrightness(
+                            new Display.Brightness(
+                                    15,
+                                    15
+                            )
+                    );
 
-                            display.setTransformation(
-                                    new Transformation(
-                                            new Vector3f(),
-                                            new AxisAngle4f(),
-                                            new Vector3f(
-                                                    BUTTON_SCALE,
-                                                    BUTTON_SCALE,
-                                                    BUTTON_SCALE
-                                            ),
-                                            new AxisAngle4f()
-                                    )
-                            );
+                    display.setTransformation(
+                            new Transformation(
+                                    new Vector3f(),
+                                    new AxisAngle4f(),
+                                    new Vector3f(
+                                            BUTTON_SCALE,
+                                            BUTTON_SCALE,
+                                            BUTTON_SCALE
+                                    ),
+                                    new AxisAngle4f()
+                            )
+                    );
 
-                            display.addScoreboardTag(
-                                    PROTECTED_TAG
-                            );
+                    display.addScoreboardTag(
+                            PROTECTED_TAG
+                    );
 
-                            display.addScoreboardTag(
-                                    VISUAL_TAG
-                            );
+                    display.addScoreboardTag(
+                            VISUAL_TAG
+                    );
 
-                            display.addScoreboardTag(
-                                    BUTTON_TAG_PREFIX + index
-                            );
-                        }
-                );
-
-        buttonDisplays.put(
-                index,
-                textDisplay
+                    display.addScoreboardTag(
+                            BUTTON_TAG_PREFIX + index
+                    );
+                }
         );
 
         Location interactionLocation =
@@ -602,26 +576,38 @@ public class LobbyButtonManager implements Listener {
         }
     }
 
+
     private TextDisplay findButtonDisplay(int index) {
 
-        String tag =
-                BUTTON_TAG_PREFIX + index;
+        World lobbyWorld =
+                plugin.getLobbyWorldManager().getLobbyWorld();
 
-        for (World world :
-                plugin.getServer().getWorlds()) {
+        if (lobbyWorld == null) {
+            return null;
+        }
 
-            for (Entity entity :
-                    world.getEntities()) {
+        String tag = BUTTON_TAG_PREFIX + index;
 
-                if (!(entity instanceof TextDisplay display)) {
-                    continue;
-                }
+        Location center = new Location(
+                lobbyWorld,
+                START_X + 5.75,
+                START_Y,
+                START_Z
+        );
 
-                if (display.getScoreboardTags()
-                        .contains(tag)) {
+        for (Entity entity : lobbyWorld.getNearbyEntities(
+                center,
+                15,
+                5,
+                5
+        )) {
 
-                    return display;
-                }
+            if (!(entity instanceof TextDisplay display)) {
+                continue;
+            }
+
+            if (display.getScoreboardTags().contains(tag)) {
+                return display;
             }
         }
 

@@ -10,6 +10,7 @@ public class ProtectedEntityCommandListener
         implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    @SuppressWarnings("unused")
     public void onPlayerCommand(
             PlayerCommandPreprocessEvent event
     ) {
@@ -40,6 +41,7 @@ public class ProtectedEntityCommandListener
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    @SuppressWarnings("unused")
     public void onServerCommand(
             ServerCommandEvent event
     ) {

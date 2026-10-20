@@ -16,6 +16,7 @@ public class UltraUltraHardcoreListener implements Listener {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onRegainHealth(EntityRegainHealthEvent event) {
 

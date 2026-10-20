@@ -6,7 +6,7 @@
 
     <groupId>runi.myddns</groupId>
     <artifactId>bastighg-challenges</artifactId>
-    <version>0.9.8</version>
+    <version>0.9.9</version>
     <packaging>jar</packaging>
 
     <name>bastighg-challenges</name>
@@ -34,6 +34,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.20.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.26.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -91,7 +97,7 @@
                         <configuration>
                             <target>
                                 <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                      tofile="C:\Users\ronny\Desktop\Server 26.2\plugins\bastighg-challenges-v0.9.8.jar"
+                                      tofile="C:\Users\ronny\Desktop\Server 26.2\plugins\bastighg-challenges-v0.9.9.jar"
                                       overwrite="true"
                                       failonerror="false" />
                             </target>

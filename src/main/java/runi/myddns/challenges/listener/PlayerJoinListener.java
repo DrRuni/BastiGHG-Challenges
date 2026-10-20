@@ -32,6 +32,7 @@ public class PlayerJoinListener implements Listener {
         );
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
@@ -135,6 +136,7 @@ public class PlayerJoinListener implements Listener {
         );
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onResourcePackStatus(
             PlayerResourcePackStatusEvent event

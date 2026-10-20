@@ -1,7 +1,6 @@
 package runi.myddns.challenges.games.MobArmyBattle.Managers.Event;
 
 import org.bukkit.*;
-import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,11 +9,17 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public class ArenaBuildProtectionManager implements Listener {
 
     private final MobArmyBattleGame game;
@@ -246,6 +251,57 @@ public class ArenaBuildProtectionManager implements Listener {
         }
     }
 
+    private boolean isArenaWorld(World world) {
+        return world != null
+                && world.getName().equalsIgnoreCase("world_mobarmy_arena");
+    }
+
+    @SuppressWarnings("unused")
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPortalCreate(PortalCreateEvent event) {
+        if (isArenaWorld(event.getWorld())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEndPortalActivate(PlayerInteractEvent event) {
+        if (!isArenaWorld(event.getPlayer().getWorld())) {
+            return;
+        }
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        if (event.getClickedBlock() == null
+                || event.getClickedBlock().getType() != Material.END_PORTAL_FRAME) {
+            return;
+        }
+
+        if (event.getItem() != null
+                && event.getItem().getType() == Material.ENDER_EYE) {
+            event.setCancelled(true);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerPortal(PlayerPortalEvent event) {
+        if (isArenaWorld(event.getFrom().getWorld())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEntityPortal(EntityPortalEvent event) {
+        if (isArenaWorld(event.getEntity().getWorld())) {
+            event.setCancelled(true);
+        }
+    }
+
     private boolean isProtectedMobArmyWorld(World world) {
         if (world == null) return false;
 
@@ -258,6 +314,7 @@ public class ArenaBuildProtectionManager implements Listener {
         );
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isInsideTeamArea(Location loc, String team, ArenaConfig.ArenaData arena) {
         if (!loc.getWorld().getName().equalsIgnoreCase(arena.world())) return false;
         Location c1, c2;
@@ -278,6 +335,7 @@ public class ArenaBuildProtectionManager implements Listener {
                 z >= Math.min(c1.getZ(), c2.getZ()) && z <= Math.max(c1.getZ(), c2.getZ());
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isInsideAnyTeamArea(Location loc, ArenaConfig.ArenaData arena) {
         return isInside(loc, arena.rotCorner1(), arena.rotCorner2())
                 || isInside(loc, arena.blauCorner1(), arena.blauCorner2());

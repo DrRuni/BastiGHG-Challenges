@@ -27,6 +27,7 @@ public class ButtonManager implements Listener {
         this.game = game;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
 
@@ -258,16 +259,10 @@ public class ButtonManager implements Listener {
 
             player.sendMessage(Component.empty());
             player.sendMessage(
-                    Component.text(
-                            "Du gehörst noch keinem Team des laufenden Events an.",
-                            NamedTextColor.RED
-                    )
+                    lang("button-manager.start.not-participant")
             );
             player.sendMessage(
-                    Component.text(
-                            "Wähle zuerst ein Team.",
-                            NamedTextColor.YELLOW
-                    )
+                    lang("button-manager.start.select-team")
             );
             player.sendMessage(Component.empty());
 
@@ -309,15 +304,9 @@ public class ButtonManager implements Listener {
                 player.setInvulnerable(false);
             }
 
-            default -> {
-
-                player.sendMessage(
-                        Component.text(
-                                "Das Event befindet sich noch in der Lobby-Phase.",
-                                NamedTextColor.YELLOW
-                        )
-                );
-            }
+            default -> player.sendMessage(
+                    lang("button-manager.start.lobby-phase")
+            );
         }
 
         Sounds.playClick(player);
@@ -344,10 +333,7 @@ public class ButtonManager implements Listener {
         } else {
 
             player.sendMessage(
-                    Component.text(
-                            "Dein Team konnte nicht ermittelt werden.",
-                            NamedTextColor.RED
-                    )
+                    lang("button-manager.start.team-unknown")
             );
 
             return;
@@ -359,10 +345,7 @@ public class ButtonManager implements Listener {
         if (world == null) {
 
             player.sendMessage(
-                    Component.text(
-                            "Deine Teamwelt ist nicht geladen.",
-                            NamedTextColor.RED
-                    )
+                    lang("button-manager.start.team-world-missing")
             );
 
             return;

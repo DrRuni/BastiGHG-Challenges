@@ -24,6 +24,7 @@ public class MobSaveListener implements Listener {
         this.mobSaveManager = mobSaveManager;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
 

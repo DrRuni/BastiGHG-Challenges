@@ -18,6 +18,7 @@ import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class PauseListener implements Listener {
 
     private final MobArmyBattleGame game;

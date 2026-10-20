@@ -506,6 +506,7 @@ public class UnifiedWaveGUI implements Listener {
                 + value.substring(1);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClick(
             InventoryClickEvent event
@@ -699,10 +700,7 @@ public class UnifiedWaveGUI implements Listener {
         );
     }
 
-    private void openMobSelectionGUI(
-            int waveIndex
-    ) {
-
+    private void openMobSelectionGUI(int waveIndex) {
         new UnifiedWaveGUI(
                 game,
                 waveManager,
@@ -710,7 +708,7 @@ public class UnifiedWaveGUI implements Listener {
                 player,
                 team,
                 Mode.MOB_SELECTION,
-                currentWaveIndex
+                waveIndex
         );
     }
 
@@ -749,6 +747,7 @@ public class UnifiedWaveGUI implements Listener {
         );
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClose(
             InventoryCloseEvent event
@@ -775,6 +774,7 @@ public class UnifiedWaveGUI implements Listener {
                 .unregister(this);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryDrag(
             InventoryDragEvent event

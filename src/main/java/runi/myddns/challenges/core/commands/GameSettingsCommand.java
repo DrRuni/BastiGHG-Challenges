@@ -21,7 +21,7 @@ public class GameSettingsCommand implements CommandExecutor {
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
-            @NotNull String[] args
+            String @NotNull [] args
     ) {
 
         if (!(sender instanceof Player player)) {

@@ -48,7 +48,7 @@ public class EventManager {
 
         if (game.getTimerManager().getTimeInSeconds() <= 0) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(player)) continue;
+                if (!game.isMobArmyPlayer(player)) continue;
                 player.sendMessage(
                         game.getLanguageManager().getComponent(
                                 "event-manager.timer-not-set"
@@ -129,7 +129,7 @@ public class EventManager {
                         cancel();
 
                         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(player)) continue;
+                            if (!game.isMobArmyPlayer(player)) continue;
                             String team = game.getTeamManager().getPlayerTeam(player);
                             if (team == null || team.equalsIgnoreCase("Kein Team")) continue;
 
@@ -185,7 +185,7 @@ public class EventManager {
                     }
 
                     for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(player)) continue;
+                        if (!game.isMobArmyPlayer(player)) continue;
                         String team = game.getTeamManager().getPlayerTeam(player);
                         if (team == null || team.equalsIgnoreCase("Kein Team")) continue;
 
@@ -212,7 +212,7 @@ public class EventManager {
                 } else {
 
                     for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(player)) continue;
+                        if (!game.isMobArmyPlayer(player)) continue;
                         String team = game.getTeamManager().getPlayerTeam(player);
                         if (team == null || team.equalsIgnoreCase("Kein Team")) continue;
 
@@ -392,8 +392,8 @@ public class EventManager {
                     "rot".equalsIgnoreCase(team)
                             ? NamedTextColor.RED
                             : "blau".equalsIgnoreCase(team)
-                              ? NamedTextColor.BLUE
-                              : NamedTextColor.GRAY;
+                            ? NamedTextColor.BLUE
+                            : NamedTextColor.GRAY;
 
             player.showTitle(
                     Title.title(
@@ -423,7 +423,7 @@ public class EventManager {
             public void run() {
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(player)) continue;
+                    if (!game.isMobArmyPlayer(player)) continue;
                     String team = game.getTeamManager().getPlayerTeam(player);
                     if (team == null) {
                         player.sendMessage(
@@ -434,7 +434,7 @@ public class EventManager {
                         continue;
                     }
 
-                    TeleportManager.teleportToWaveSelection(game,player);
+                    TeleportManager.teleportToWaveSelection(game, player);
 
                     game.getArenaCompassManager().giveMonsterCompass(player);
 
@@ -459,7 +459,7 @@ public class EventManager {
                 }
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(p)) continue;
+                    if (!game.isMobArmyPlayer(p)) continue;
                     String team = game.getTeamManager().getPlayerTeam(p);
                     if (team == null || team.equalsIgnoreCase("Kein Team")) continue;
 
@@ -473,7 +473,7 @@ public class EventManager {
                 }
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(player)) continue;
+                    if (!game.isMobArmyPlayer(player)) continue;
                     String team = game.getTeamManager().getPlayerTeam(player);
                     if (team == null || team.equalsIgnoreCase("Kein Team")) continue;
 
@@ -481,8 +481,8 @@ public class EventManager {
                             "rot".equalsIgnoreCase(team)
                                     ? NamedTextColor.RED
                                     : "blau".equalsIgnoreCase(team)
-                                      ? NamedTextColor.BLUE
-                                      : NamedTextColor.GRAY;
+                                    ? NamedTextColor.BLUE
+                                    : NamedTextColor.GRAY;
 
                     player.showTitle(
                             Title.title(
@@ -529,13 +529,20 @@ public class EventManager {
         }
     }
 
-    public void resetGame(Player player) {
+    public void resetGame() {
+        resetGame(true);
+    }
+
+    public void resetGame(boolean teleportToMobArmyLobby) {
 
         ResumeManager resume = game.getEventResume();
 
         resume.beginBatch();
 
         game.getArenaManager().resetArena();
+        if (!teleportToMobArmyLobby) {
+            game.getPortalManager().clearPortalWorldData();
+        }
         Bukkit.getBossBars().forEachRemaining(BossBar::removeAll);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -544,7 +551,9 @@ public class EventManager {
             p.setRespawnLocation(null, true);
             p.setGameMode(GameMode.SURVIVAL);
 
-            TeleportManager.teleport(game, p, "world_mobarmy_lobby");
+            if (teleportToMobArmyLobby) {
+                TeleportManager.teleport(game, p, "world_mobarmy_lobby");
+            }
 
             Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
                 if (!p.isOnline()) return;

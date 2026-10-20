@@ -122,6 +122,7 @@ public class PlayerGUI implements Listener {
         return item;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClick(
             InventoryClickEvent event
@@ -234,6 +235,7 @@ public class PlayerGUI implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryDrag(
             InventoryDragEvent event

@@ -63,6 +63,7 @@ public class TimerManager implements Listener {
         updateBossBar();
     }
 
+    @SuppressWarnings("unused")
     public void removeBossBar() {
         if (bossBar != null) {
             bossBar.removeAll();

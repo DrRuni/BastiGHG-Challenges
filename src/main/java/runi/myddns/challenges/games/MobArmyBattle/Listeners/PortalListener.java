@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class PortalListener implements Listener {
 
     private final MobArmyBattleGame game;
@@ -134,6 +135,11 @@ public class PortalListener implements Listener {
 
         Block block = e.getBlock();
         World w = block.getWorld();
+
+        if (w.getName().equalsIgnoreCase("world_mobarmy_arena")) {
+            return;
+        }
+
         if (!w.getName().startsWith("world_")) return;
 
         Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {

@@ -33,6 +33,7 @@ public class ChestRandomizerManager implements Listener {
         this.blockRandomizerManager = blockRandomizerManager;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (!(event.getPlayer() instanceof Player player)) return;
@@ -117,6 +118,7 @@ public class ChestRandomizerManager implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getPlayer() instanceof Player player)) return;

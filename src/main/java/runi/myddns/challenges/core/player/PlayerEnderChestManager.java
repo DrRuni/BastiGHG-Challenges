@@ -29,37 +29,39 @@ public class PlayerEnderChestManager {
         );
     }
 
+
     public void load(
             Player player,
             FileConfiguration config
     ) {
 
-        if (player == null
-                || config == null) {
-
+        if (player == null || config == null) {
             return;
         }
 
-        List<?> contents =
-                config.getList(
-                        "enderchest"
-                );
-
-        clear(
-                player
-        );
+        List<?> contents = config.getList("enderchest");
 
         if (contents == null) {
+            clear(player);
             return;
         }
 
-        player.getEnderChest()
-                .setContents(
-                        contents.toArray(
-                                new ItemStack[0]
-                        )
-                );
+        ItemStack[] items = new ItemStack[
+                player.getEnderChest().getSize()
+                ];
+
+        for (int i = 0; i < Math.min(contents.size(), items.length); i++) {
+
+            Object object = contents.get(i);
+
+            if (object instanceof ItemStack item) {
+                items[i] = item;
+            }
+        }
+
+        player.getEnderChest().setContents(items);
     }
+
 
     public void clear(
             Player player

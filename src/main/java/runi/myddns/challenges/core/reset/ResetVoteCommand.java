@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.ChallengeMain;
 
 public class ResetVoteCommand implements CommandExecutor {
@@ -16,10 +17,10 @@ public class ResetVoteCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(
-            CommandSender sender,
-            Command command,
-            String label,
-            String[] args
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            String @NotNull [] args
     ) {
 
         if (!(sender instanceof Player player)) return true;
