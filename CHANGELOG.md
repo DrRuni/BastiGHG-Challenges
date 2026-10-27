@@ -1,5 +1,36 @@
 # Changelog
 
+## Challenge Changelogs
+
+- ⚔️ [MobArmyBattle](CHANGELOG-MobArmyBattle.md)
+- 🌍 [LevelBorder](CHANGELOG-LevelBorder.md)
+- 🧩 [LevelBlock](CHANGELOG-LevelBlock.md)
+
+---
+
+## [1.0.0] - Stable Release
+
+### Added
+- Unified version display for all challenges using `plugin.yml`
+
+### Changed
+- Integrated WorldSettings into the central Settings menu
+- Improved game world management and unloading
+- Improved menu navigation and game integration
+- Updated MobArmyBattle to version 1.7.1
+- Cleaned up internal code and removed obsolete methods
+
+### Fixed
+- Fixed world unloading issues (`canUnload()`)
+- Fixed arena build protection after switching challenges
+- Fixed lobby logo positioning and display issues
+- **MobArmyBattle:** Fixed incorrect Cube kill counting and scoreboard display
+- Fixed various bugs when switching between games and the lobby
+
+### Notes
+- First stable release of BastiGHG Challenges
+- Includes MobArmyBattle V1.7.1, LevelBorder V1.2, and LevelBlock V0.9
+
 ## [0.9.9] - Beta
 
 ### Added
