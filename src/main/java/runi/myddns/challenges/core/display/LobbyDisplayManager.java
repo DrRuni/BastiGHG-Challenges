@@ -105,10 +105,6 @@ public class LobbyDisplayManager {
                 && gameLabelDisplay != null
                 && gameNameDisplay != null) {
 
-            plugin.getLogger().info(
-                    "Vorhandenes Lobby-Display übernommen."
-            );
-
             if (loadTitleDisplay == null) {
                 createLoadTitle(world);
             }
@@ -752,8 +748,6 @@ public class LobbyDisplayManager {
 
     public void setSelectedGame(String gameName) {
 
-        plugin.getLogger().info("Display Game setzen auf: " + gameName);
-
         if (gameNameDisplay == null || !gameNameDisplay.isValid()) {
             World world = plugin.getLobbyWorldManager().getLobbyWorld();
             if (world == null) return;
@@ -829,24 +823,41 @@ public class LobbyDisplayManager {
 
     public void refreshLogo() {
 
-        if (titleDisplay == null || !titleDisplay.isValid()) {
-            return;
-        }
-
-        titleDisplay.text(Component.empty());
-
         plugin.getServer().getScheduler().runTaskLater(
                 plugin,
                 () -> {
+
                     if (titleDisplay == null || !titleDisplay.isValid()) {
-                        return;
+
+                        World world = plugin.getLobbyWorldManager().getLobbyWorld();
+
+                        if (world == null) {
+                            return;
+                        }
+
+                        titleDisplay = findTextDisplay(world, TITLE_TAG);
+
+                        if (titleDisplay == null || !titleDisplay.isValid()) {
+                            return;
+                        }
                     }
 
-                    titleDisplay.text(
-                            Component.text("\uE030")
+                    titleDisplay.text(Component.empty());
+
+                    plugin.getServer().getScheduler().runTaskLater(
+                            plugin,
+                            () -> {
+
+                                if (titleDisplay == null || !titleDisplay.isValid()) {
+                                    return;
+                                }
+
+                                titleDisplay.text(Component.text("\uE030"));
+                            },
+                            10L
                     );
                 },
-                2L
+                10L
         );
     }
 

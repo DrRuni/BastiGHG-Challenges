@@ -1,4 +1,4 @@
-# Core DE Langues
+# Core DE Languages
 
 file-version: 1
 
@@ -28,6 +28,7 @@ lobby-buttons:
   loading: "%game% wird geladen..."
   already-loaded: "%game% wurde bereits geladen"
   no-game-selected: "Bitte zuerst ein Game auswählen."
+  change-blocked-players: "<#8A0303>Challenge-Wechsel nicht möglich! Es befinden sich noch Spieler in den Spielwelten."
 
 language-selection:
   title: "<blue>Sprachauswahl"

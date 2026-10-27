@@ -1,4 +1,4 @@
-# Core EN Langues
+# Core EN Languages
 
 file-version: 1
 
@@ -24,11 +24,11 @@ lobby-buttons:
   load: "LOAD"
   start: "START"
   settings: "SETTINGS"
-
   change-blocked-loading: "The game cannot be changed while loading."
   loading: "%game% is loading..."
   already-loaded: "%game% has already been loaded"
   no-game-selected: "Please select a game first."
+  change-blocked-players: "<#8A0303>Cannot switch challenges! Players are still in the game worlds."
 
 language-selection:
   title: "<blue>Language Selection"

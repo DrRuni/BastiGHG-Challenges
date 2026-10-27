@@ -89,10 +89,6 @@ public class ServerIconManager implements Listener {
                             scaled
                     );
 
-            plugin.getLogger().info(
-                    "Server-Icon erfolgreich geladen."
-            );
-
         } catch (Exception exception) {
 
             plugin.getLogger().log(

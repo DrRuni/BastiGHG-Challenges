@@ -1,19 +1,10 @@
-# Hier werden alle benötigten Daten für das Resume-Event gespeichert
-#
-# event.started = Gibt an, ob das Event bereits gestartet wurde
-# event.paused  = Gibt an, ob das Event aktuell pausiert ist
-#
-# phase = Aktuelle Event-Phase
-# 0 = Lobby
-# 1 = Teamwelt
-# 2 = Wave-Auswahl
-# 3 = Arena
-#
-# timer.time    = Gespeicherte Zeit des Event-Timers
-# timer.forward = true = hochzählen, false = runterzählen
-#
-# players = Hier werden Spielerdaten gespeichert
-# z.B. letzter Standort, Spawnpunkt oder weitere Resume-Daten
+# Resume data for MobArmyBattle
+# event: Started and paused state
+# phase: 0=Lobby, 1=Team World, 2=Wave Selection, 3=Arena
+# arena: Currently selected arena
+# timer: Saved time and counting direction
+# players: Saved player positions and resume data
+
 file-version: 1
 
 event:

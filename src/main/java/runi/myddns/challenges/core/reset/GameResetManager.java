@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import org.bukkit.World;
-import runi.myddns.challenges.games.LevelBlock.LevelBlockGame;
-import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+import runi.myddns.challenges.games.levelblock.LevelBlockGame;
+import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 public class GameResetManager {
 
@@ -127,7 +127,6 @@ public class GameResetManager {
                     List<GameWorldDefinition> definitions = plugin.getGameWorldManager()
                             .getDefinitions(game.getId());
 
-                    // Jeder einzelne Unload muss erfolgreich sein.
                     for (GameWorldDefinition definition : definitions) {
                         if (!plugin.getGameWorldManager().unloadWorld(definition, true)) {
                             throw new IllegalStateException("Could not unload " + definition.worldName());
@@ -214,7 +213,6 @@ public class GameResetManager {
             return;
         }
 
-        // Fremde, doppelte oder nicht zum Spiel gehörende Weltdefinitionen ablehnen.
         Set<GameWorldDefinition> unique = new HashSet<>(worlds);
         if (unique.size() != worlds.size()
                 || worlds.stream().anyMatch(w -> w == null || !w.gameId().equalsIgnoreCase(game.getId()))) {
@@ -227,8 +225,6 @@ public class GameResetManager {
         try {
             if (beforeReset != null) beforeReset.run();
 
-            // Alle Spieler, die NACH den Spiel-Callbacks noch in betroffenen
-            // Welten stehen, in die zentrale Lobby bringen. Kein Inventar-Reset.
             for (GameWorldDefinition definition : selectedWorlds) {
                 World world = Bukkit.getWorld(definition.worldName());
                 if (world == null) continue;
@@ -242,15 +238,12 @@ public class GameResetManager {
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 try {
-                    // Prüfen, ob alle ausgewählten Welten entladen werden können.
-                    // Bei Fehler keinen Ordner löschen.
                     for (GameWorldDefinition definition : selectedWorlds) {
                         if (!plugin.getGameWorldManager().unloadWorld(definition, true)) {
                             throw new IllegalStateException("Could not unload " + definition.worldName());
                         }
                     }
 
-                    // Teamwelten eines Resets nutzen denselben Seed.
                     long sharedSeed = new Random().nextLong();
                     for (GameWorldDefinition definition : selectedWorlds) {
                         boolean success = definition.isGenerated()

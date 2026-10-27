@@ -31,7 +31,6 @@ public class LanguageManager {
     private final LanguageManager root;
     private final String defaultGroup;
 
-    // Haupt-LanguageManager -> CORE
     public LanguageManager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.languageFolder = new File(
@@ -48,7 +47,6 @@ public class LanguageManager {
         reload();
     }
 
-    // Sprachbereich für ein Game
     private LanguageManager(
             LanguageManager root,
             String defaultGroup
@@ -79,7 +77,6 @@ public class LanguageManager {
 
     public void reload() {
 
-        // Nur der Hauptmanager lädt die Dateien
         if (this != root) {
             root.reload();
             return;
@@ -119,10 +116,6 @@ public class LanguageManager {
             );
         }
     }
-
-    // ---------------------------------------------------------
-    // STRING
-    // ---------------------------------------------------------
 
     public String get(String path) {
         return get(
@@ -176,10 +169,6 @@ public class LanguageManager {
                         String.valueOf(value)
                 );
     }
-
-    // ---------------------------------------------------------
-    // COMPONENT
-    // ---------------------------------------------------------
 
     public Component getComponent(String path) {
         return getComponent(
@@ -298,10 +287,6 @@ public class LanguageManager {
         return miniMessage.deserialize(text);
     }
 
-    // ---------------------------------------------------------
-    // LANGUAGE
-    // ---------------------------------------------------------
-
     public void setLanguage(String language) {
 
         if (language == null
@@ -341,10 +326,6 @@ public class LanguageManager {
         return language != null
                 && !language.isBlank();
     }
-
-    // ---------------------------------------------------------
-    // INTERN
-    // ---------------------------------------------------------
 
     private YamlConfiguration getConfig(String group) {
 

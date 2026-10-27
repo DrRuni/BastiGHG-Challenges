@@ -1,4 +1,5 @@
 # Lobby Spawn
+
 file-version: 1
 lobbyspawn:
   world: world_mobarmy_lobby
@@ -14,6 +15,7 @@ lobbyspawn:
   pitch: 0.0
 
 # Waveauswahl Spawn
+
 wave-auswahl:
   name: "Wave Auswahl"
   description: "MobWellen Konfiguration"

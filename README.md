@@ -40,7 +40,6 @@ The playable world expands block by block as the players progress.
 
 Current internal version: `v0.9`
 
-
 ## Commands
 
 Each game has its own main command:

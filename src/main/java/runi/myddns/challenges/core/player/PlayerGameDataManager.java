@@ -312,7 +312,6 @@ public class PlayerGameDataManager {
         YamlConfiguration config =
                 YamlConfiguration.loadConfiguration(file);
 
-        // Zuerst alle wichtigen Daten prüfen
         ItemStack[] inventory = readItems(
                 config,
                 "inventory.contents",
@@ -384,7 +383,6 @@ public class PlayerGameDataManager {
             return false;
         }
 
-        // Erst jetzt den bisherigen Zustand ersetzen
         clearPlayerState(player);
 
         if (effects != null) {

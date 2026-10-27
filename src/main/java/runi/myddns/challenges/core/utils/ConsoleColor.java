@@ -16,7 +16,7 @@ public class ConsoleColor {
     public static final String PLUGIN  = "\u001B[38;2;255;95;31m";    // Neon Orange
     public static final String WORLD   = "\u001B[38;5;29m";           // Petrol
 
-    // 🎨 ANSI Standardfarben (8)
+    // 🎨 ANSI Standardfarben
     public static final String RED     = "\u001B[31m";
     public static final String GREEN   = "\u001B[32m";
     public static final String YELLOW  = "\u001B[33m";
@@ -38,9 +38,9 @@ public class ConsoleColor {
 
     // ⚪ Dunkle Farben
     public static final String DARK_PETROL = "\u001B[38;5;23m";
-    public static final String DARK_PURPLE = "\u001B[38;2;75;0;130m";// Indigo / Dark Purple
-    public static final String DARK_AQUA = "\u001B[38;5;31m"; // Dark Aqua / Türkis
-    public static final String DARK_RED = "\u001B[38;2;139;0;0m"; // Dark Red
+    public static final String DARK_PURPLE = "\u001B[38;2;75;0;130m";
+    public static final String DARK_AQUA = "\u001B[38;5;31m";
+    public static final String DARK_RED = "\u001B[38;2;139;0;0m";
     public static final String DARK_LIME = "\u001B[38;2;111;191;58m";
     public static final String DEEP_YELLOW_GREEN = "\u001B[38;2;94;159;52m";
     public static final String DARK_GOLDEN_LIME = "\u001B[38;2;122;154;51m";

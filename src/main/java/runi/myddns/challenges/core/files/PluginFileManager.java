@@ -22,8 +22,7 @@ public class PluginFileManager {
             String targetFolder,
             String resourcePrefix,
             List<String> yamlFiles,
-            List<String> emptyFiles,
-            boolean worldSettings
+            List<String> emptyFiles
     ) {}
 
     private static final List<String> ROOT_RESOURCE_FILES = List.of("config.yml");
@@ -39,14 +38,14 @@ public class PluginFileManager {
                     "gamedata.yml",
                     "spawns.yml",
                     "team-equipment.yml",
-                    "waves.yml"
+                    "waves.yml",
+                    "gamesettings.yml"
             ),
             List.of(
                     "mobData.yml",
                     "scoreboard.yml",
                     "teams.yml"
-            ),
-            true
+            )
     );
 
     private static final GameFiles LEVEL_BORDER = new GameFiles(
@@ -57,8 +56,7 @@ public class PluginFileManager {
                     "gamedata.yml",
                     "config.yml"
             ),
-            List.of(),
-            true
+            List.of()
     );
 
     private static final GameFiles LEVEL_BLOCK = new GameFiles(
@@ -68,8 +66,7 @@ public class PluginFileManager {
             List.of(
                     "gamedata.yml"
             ),
-            List.of(),
-            true
+            List.of()
     );
 
     private static final List<GameFiles> GAMES = List.of(
@@ -190,7 +187,7 @@ public class PluginFileManager {
             checkYamlFile(targetFolder, resourcePrefix, file);
         }
 
-        if (game.worldSettings()) {
+        if (!game.gameName().equals("MobArmyBattle")) {
             checkWorldSettings(targetFolder);
         }
 

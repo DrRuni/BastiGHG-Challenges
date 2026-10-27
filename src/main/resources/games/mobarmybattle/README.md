@@ -9,7 +9,7 @@ Each team creates attack waves for the opposing team before both teams enter the
 
 ## Current Version
 
-`v1.7 Stable`
+`v1.7.1 Stable`
 
 ## Features
 

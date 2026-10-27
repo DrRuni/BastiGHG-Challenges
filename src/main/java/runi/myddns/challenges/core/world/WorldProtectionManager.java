@@ -26,6 +26,9 @@ public class WorldProtectionManager implements Listener {
     private static final String MOBARMY_LOBBY =
             "world_mobarmy_lobby";
 
+    private static final String MOBARMY_ARENA =
+            "world_mobarmy_arena";
+
     private static final Set<String> PROTECTED_WORLDS =
             Set.of(
                     CENTRAL_LOBBY,
@@ -35,13 +38,20 @@ public class WorldProtectionManager implements Listener {
     public WorldProtectionManager() {}
 
     public void applyLoadedWorlds() {
-
         for (World world : Bukkit.getWorlds()) {
-
             if (isProtectedLobby(world)) {
                 applyWorldSettings(world);
+            } else if (world.getName().equalsIgnoreCase(MOBARMY_ARENA)) {
+                applyArenaSettings(world);
             }
         }
+    }
+
+    private void applyArenaSettings(World world) {
+        world.setGameRule(
+                GameRules.MOB_GRIEFING,
+                false
+        );
     }
 
     private void applyWorldSettings(World world) {
@@ -93,9 +103,12 @@ public class WorldProtectionManager implements Listener {
 
     @EventHandler
     public void onWorldLoad(WorldLoadEvent event) {
+        World world = event.getWorld();
 
-        if (isProtectedLobby(event.getWorld())) {
-            applyWorldSettings(event.getWorld());
+        if (isProtectedLobby(world)) {
+            applyWorldSettings(world);
+        } else if (world.getName().equalsIgnoreCase(MOBARMY_ARENA)) {
+            applyArenaSettings(world);
         }
     }
 

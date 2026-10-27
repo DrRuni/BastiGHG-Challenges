@@ -30,10 +30,6 @@ public class LobbyWorldManager {
         configureWorld();
         setSpawn();
         applyWarmOceanBiome();
-
-        plugin.getLogger().info(
-                "Lobby world loaded successfully: " + lobbyWorld.getKey()
-        );
     }
 
     private void applyWarmOceanBiome() {

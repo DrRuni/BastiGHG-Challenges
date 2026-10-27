@@ -23,10 +23,6 @@ public record GameWorldDefinition(
         ZIP
     }
 
-    // ============================================================
-    // CHALLENGES LOBBY
-    // ============================================================
-
     public static final GameWorldDefinition LOBBY = new GameWorldDefinition(
             "core",
             "lobby",

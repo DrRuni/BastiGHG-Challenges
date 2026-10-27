@@ -1,0 +1,28 @@
+# Gamesettings
+
+file-version: 1
+
+world-settings:
+  keep-inventory: true
+  night-vision-enabled: false
+  mob-spawning: true
+  daylight-cycle: true
+  difficulty: normal
+  world-time: 6000
+game-settings:
+  randomizer-enabled: true
+  chest-randomizer-enabled: true
+  arena-compass-enabled: false
+
+
+# Blocked Items
+randomizer:
+  blocked_spawn_eggs:
+    - ENDER_DRAGON_SPAWN_EGG
+    - WITHER_SPAWN_EGG
+    - WARDEN_SPAWN_EGG
+    - ELDER_GUARDIAN_SPAWN_EGG
+
+  blocked_blocks:
+
+

@@ -127,10 +127,6 @@ public class LobbyWorldGenerator extends ChunkGenerator {
                     );
                 }
 
-                // =================================================
-                // SEEGRAS / SEEGURKEN
-                // =================================================
-
                 double plantNoise = noise.noise(
                         worldX * 0.09 + 500,
                         worldZ * 0.09 + 500
@@ -158,10 +154,6 @@ public class LobbyWorldGenerator extends ChunkGenerator {
                         );
                     }
                 }
-
-                // =================================================
-                // KORALLEN
-                // =================================================
 
                 double coralNoise = noise.noise(
                         worldX * 0.045 + 1200,

@@ -1,5 +1,11 @@
 name: BastiGHG-Challenges
-version: '0.9.9 BETA'
+version: '1.0.0 Stable'
+
+game-versions:
+  mobarmybattle: '1.7.1 Stable'
+  levelborder: '1.2 Stable'
+  levelblock: '0.9 Beta'
+
 
 main: runi.myddns.challenges.ChallengeMain
 api-version: '26.2'

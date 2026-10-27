@@ -1,119 +1,120 @@
-# Levelborder Config
+# LevelBorder Config
+
 file-version: 1
 
 mob-spawning:
   enabled: true
-  # Aktiviert oder deaktiviert das zusätzliche Monster-Spawning vom Plugin.
+  # Enables or disables additional monster spawning by the plugin.
 
   debug:
     vanilla-spawns: false
-    # Zeigt natürliche Vanilla-Spawns in dunkelrot in der Konsole.
+    # Shows natural vanilla spawns in dark red in the console.
 
     plugin-spawns: false
-    # Zeigt Plugin-Spawns in der Konsole.
-    # Grün = innerhalb der Border
-    # Pink = außerhalb der Border
+    # Shows plugin spawns in the console.
+    # Green = inside the border
+    # Pink = outside the border
 
     failed-attempts: false
-    # Zeigt fehlgeschlagene Spawn-Versuche.
-    # Nur zum Debuggen aktivieren, sonst spammt die Konsole.
+    # Shows failed spawn attempts.
+    # Enable only for debugging, otherwise the console will be spammed.
 
   assist-inside-until-border-size: 31.0
-  # Bis zu dieser Bordergröße darf das Plugin innerhalb der Border helfen.
+  # The plugin may assist with spawning inside the border up to this border size.
 
   interval-ticks: 40
-  # Wie oft das Plugin einen Spawn-Versuch startet.
+  # How often the plugin attempts to spawn monsters.
 
   distance:
     min-to-player: 28
-    # Mindestabstand zum Spieler.
+    # Minimum distance from the player.
 
     max-to-player: 96
-    # Maximaler Abstand zum Spieler.
+    # Maximum distance from the player.
 
   vertical-search:
     surface-chance: 0.70
-    # Chance für Oberflächen-Spawns innerhalb der Border.
-    # 0.70 = 70% Oberfläche, 30% Untergrund.
+    # Chance of surface spawns inside the border.
+    # 0.70 = 70% surface, 30% underground.
 
     underground-search-down: 12
-    # Wie viele Blöcke nach unten gesucht wird,
+    # How many blocks downward are searched.
 
     pack-search-down: 4
-    # Wie weit bei Gruppen-Spawns nach einem passenden Boden gesucht wird.
+    # How far downward the plugin searches for suitable ground for group spawns.
 
   small-border:
     inside-candidate-chance: 0.70
-    # Bei kleiner Border: Wie stark das Plugin innerhalb der Border sucht.
-    # 0.70 = 70% der Kandidaten werden innen gesucht.
+    # For small borders: how strongly the plugin searches inside the border.
+    # 0.70 = 70% of candidate positions are searched inside the border.
 
   amount:
     global-multiplier: 1.0
-    # Allgemeiner Mengen-Faktor.
-    # 1.0 = normal, 0.5 = weniger, 2.0 = mehr.
+    # General spawn amount multiplier.
+    # 1.0 = normal, 0.5 = fewer, 2.0 = more.
 
     inside-border-multiplier: 1.0
-    # Mengen-Faktor für Spawns innerhalb der Border.
+    # Spawn amount multiplier inside the border.
 
     outside-border-multiplier: 1.0
-    # Mengen-Faktor für Spawns außerhalb der Border.
+    # Spawn amount multiplier outside the border.
 
   caps:
     per-player: 24
-    # Maximal so viele Plugin-Monster im Spielerbereich.
+    # Maximum number of plugin-spawned monsters near a player.
 
     per-world: 80
-    # Maximal so viele Plugin-Monster in der ganzen Welt.
+    # Maximum number of plugin-spawned monsters in the entire world.
 
     per-chunk: 6
-    # Maximal so viele Plugin-Monster pro Chunk.
+    # Maximum number of plugin-spawned monsters per chunk.
 
   attempts:
     rounds-per-check: 1
-    # Wie viele Spawn-Runden pro Intervall laufen.
+    # Number of spawn rounds per interval.
 
     candidate-positions: 8
-    # Wie viele mögliche Positionen pro Runde geprüft werden.
+    # Number of possible positions checked per round.
 
   mobs:
     zombie:
       enabled: true
       weight: 100
       max-pack-size: 3
-      # Normale Zombies. Häufig, können in kleinen Gruppen spawnen.
+      # Regular zombies. Common and may spawn in small groups.
 
     zombie-villager:
       enabled: true
       weight: 4
       max-pack-size: 1
-      # Zombie-Dorfbewohner. Selten und immer einzeln.
+      # Zombie villagers. Rare and always spawn individually.
 
     skeleton:
       enabled: true
       weight: 100
       max-pack-size: 2
-      # Skelette. Häufig, aber hier maximal zu zweit.
+      # Skeletons. Common, but limited to groups of two.
 
     spider:
       enabled: true
       weight: 100
       max-pack-size: 2
-      # Spinnen. Häufig, brauchen genug Platz.
+      # Spiders. Common, but require enough space.
 
     creeper:
       enabled: true
       weight: 75
       max-pack-size: 1
-      # Creeper. Etwas seltener und nur einzeln.
+      # Creepers. Slightly less common and spawn individually.
 
     enderman:
       enabled: true
       weight: 10
       max-pack-size: 1
-      # Endermen. Sehr selten und nur einzeln.
+      # Endermen. Very rare and spawn individually.
 
     witch:
       enabled: true
       weight: 4
       max-pack-size: 1
-      # Hexen. Sehr selten und nur einzeln.
+      # Witches. Very rare and spawn individually.

@@ -20,7 +20,7 @@ import org.joml.Vector3f;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.game.GameManager;
-import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 import static runi.myddns.challenges.core.utils.DisplayColor.*;
 
@@ -336,6 +336,16 @@ public class LobbyButtonManager implements Listener {
             }
 
             if (currentGame != null && currentGame.isLoaded()) {
+
+                if (!currentGame.canUnload()) {
+                    player.sendMessage(
+                            plugin.getLanguageManager().getComponent(
+                                    "lobby-buttons.change-blocked-players"
+                            )
+                    );
+                    return;
+                }
+
                 currentGame.unload();
             }
 

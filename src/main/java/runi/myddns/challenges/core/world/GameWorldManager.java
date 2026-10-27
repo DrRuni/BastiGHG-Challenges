@@ -21,10 +21,6 @@ public class GameWorldManager {
         this.worldSourceManager = worldSourceManager;
     }
 
-    // ============================================================
-    // LOAD
-    // ============================================================
-
     public World loadWorld(GameWorldDefinition definition) {
         World existing = Bukkit.getWorld(definition.worldName());
         if (existing != null) return existing;
@@ -44,8 +40,6 @@ public class GameWorldManager {
             plugin.getLogger().warning("Could not load world: " + definition.worldName());
             return null;
         }
-
-        plugin.getLogger().info("World loaded: " + definition.worldName());
         return world;
     }
 
@@ -89,10 +83,6 @@ public class GameWorldManager {
             }
         }, 1L, 1L);
     }
-
-    // ============================================================
-    // UNLOAD
-    // ============================================================
 
     public boolean unloadWorld(GameWorldDefinition definition, boolean save) {
         World world = Bukkit.getWorld(definition.worldName());
@@ -142,10 +132,6 @@ public class GameWorldManager {
                 .filter(definition -> definition.gameId().equalsIgnoreCase(gameId))
                 .toList();
     }
-
-    // ============================================================
-    // CHECK
-    // ============================================================
 
     public boolean isGameWorld(World world, String gameId) {
         if (world == null) return false;

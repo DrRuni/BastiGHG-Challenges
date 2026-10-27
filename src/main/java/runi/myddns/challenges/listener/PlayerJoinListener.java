@@ -3,12 +3,14 @@ package runi.myddns.challenges.listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import runi.myddns.challenges.ChallengeMain;
+import runi.myddns.challenges.core.utils.ConsoleColor;
 
 public class PlayerJoinListener implements Listener {
 
@@ -44,6 +46,8 @@ public class PlayerJoinListener implements Listener {
                 plugin.getLobbyWorldManager()
                         .getSpawn()
         );
+
+        player.setGameMode(GameMode.SURVIVAL);
 
         if (player.isOp()
                 && !plugin.getLanguageManager().hasLanguage()) {
@@ -142,18 +146,45 @@ public class PlayerJoinListener implements Listener {
             PlayerResourcePackStatusEvent event
     ) {
 
-        plugin.getLogger().info(
-                "RESOURCE PACK STATUS: "
-                        + event.getPlayer().getName()
-                        + " -> "
-                        + event.getStatus()
-        );
+        Player player = event.getPlayer();
 
-        if (event.getStatus()
-                == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
+        switch (event.getStatus()) {
 
-            plugin.getLobbyDisplayManager()
-                    .refreshLogo();
+            case SUCCESSFULLY_LOADED -> {
+
+                Bukkit.getConsoleSender().sendMessage(
+                        ConsoleColor.SAGE
+                                + "[BastiGHG-Challenges] "
+                                + player.getName()
+                                + " successfully loaded the resource pack."
+                                + ConsoleColor.RESET
+                );
+
+                plugin.getLobbyDisplayManager().refreshLogo();
+            }
+
+            case DECLINED -> Bukkit.getConsoleSender().sendMessage(
+                    ConsoleColor.LIGHT_RED
+                            + "[BastiGHG-Challenges] "
+                            + player.getName()
+                            + " declined the resource pack."
+                            + ConsoleColor.RESET
+            );
+
+            case FAILED_DOWNLOAD, FAILED_RELOAD, INVALID_URL,
+                 DISCARDED -> Bukkit.getConsoleSender().sendMessage(
+                    ConsoleColor.LIGHT_RED
+                            + "[BastiGHG-Challenges] "
+                            + player.getName()
+                            + " failed to load the resource pack ("
+                            + event.getStatus()
+                            + ")."
+                            + ConsoleColor.RESET
+            );
+
+            default -> {
+            }
         }
     }
+
 }

@@ -1,13 +1,14 @@
 # LevelBlock
 
-LevelBlock ist ein Minecraft-Challenge-Game innerhalb von
-BastiGHG Challenges – Fan Project.
+LevelBlock is a Minecraft challenge game integrated into **BastiGHG Challenges – Fan Project**.
 
-Zu Beginn steht nur ein sehr kleiner Bereich zur Verfügung.
-Spieler können ihre Erfahrungslevel ausgeben, um weitere Blöcke
-freizuschalten.
+At the beginning, players have access to only a very small area of the world.
 
-Ein ausgegebenes Level schaltet einen weiteren Block frei.
+Players can spend their experience levels to unlock additional blocks and gradually expand the accessible world.
+
+**Each experience level spent unlocks one additional block.**
+
+> This game is part of an unofficial fan project and is not affiliated with BastiGHG.
 
 ## Current Version
 
@@ -15,13 +16,13 @@ Ein ausgegebenes Level schaltet einen weiteren Block frei.
 
 ## Features
 
-- Blockweise Erweiterung der Welt
-- Multiplayer-Unterstützung
-- Overworld, Nether und End
-- Persistenter Spielfortschritt
-- Separate Spieler- und Weltdaten
-- Zentrale WorldSettings
-- Reset-System
+- Block-by-block world expansion
+- Multiplayer support
+- Overworld, Nether and End
+- Persistent game progress
+- Separate player and world data
+- Central world settings
+- Reset system
 
 ## Commands
 

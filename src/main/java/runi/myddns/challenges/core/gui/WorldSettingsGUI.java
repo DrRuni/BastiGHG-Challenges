@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
-import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 import static runi.myddns.challenges.core.utils.ColorUtil.gradientText;
 import static runi.myddns.challenges.core.utils.DisplayColor.*;

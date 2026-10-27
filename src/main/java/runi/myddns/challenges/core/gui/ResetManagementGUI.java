@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
-import runi.myddns.challenges.games.MobArmyBattle.MobArmyBattleGame;
+import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 import java.util.List;
 

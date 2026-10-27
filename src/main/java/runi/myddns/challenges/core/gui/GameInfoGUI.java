@@ -50,10 +50,6 @@ public class GameInfoGUI implements Listener {
             ChallengeGame game
     ) {
 
-        // =========================
-        // INVENTORY - 4 REIHEN
-        // =========================
-
         Inventory inventory =
                 Bukkit.createInventory(
                         null,
@@ -65,11 +61,6 @@ public class GameInfoGUI implements Listener {
                                 TextColor.color(0xC38CFF)
                         )
                 );
-
-        // =========================
-        // CURRENT VERSION
-        // SLOT 4 - OBEN MITTE
-        // =========================
 
         String currentVersion =
                 plugin.getGameInfoManager()
@@ -89,10 +80,6 @@ public class GameInfoGUI implements Listener {
                 )
         );
 
-        // =========================
-        // DESCRIPTION
-        // =========================
-
         addSectionButtons(
                 inventory,
                 game,
@@ -108,10 +95,6 @@ public class GameInfoGUI implements Listener {
                 DESCRIPTION_LINES_PER_BUTTON,
                 new int[]{10}
         );
-
-        // =========================
-        // FEATURES
-        // =========================
 
         addSectionButtons(
                 inventory,
@@ -129,10 +112,6 @@ public class GameInfoGUI implements Listener {
                 new int[]{13, 14}
         );
 
-        // =========================
-        // COMMANDS
-        // =========================
-
         addSectionButtons(
                 inventory,
                 game,
@@ -145,10 +124,6 @@ public class GameInfoGUI implements Listener {
                 COMMAND_LINES_PER_BUTTON,
                 new int[]{16}
         );
-
-        // =========================
-        // CLOSE - LETZTE REIHE
-        // =========================
 
         inventory.setItem(
                 31,
