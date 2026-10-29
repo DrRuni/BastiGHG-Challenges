@@ -38,9 +38,18 @@ public class PlayerListener implements Listener {
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
-        if (!game.isLevelBorderPlayer(player)) return;
+        if (!game.isLevelBorderPlayer(player)) {
+            scoreboardManager.removePlayer(player);
+            return;
+        }
 
+        borderManager.getData().registerPlayer(player);
         scoreboardManager.addPlayer(player);
+        Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
+            if (player.isOnline() && game.isLevelBorderPlayer(player)) {
+                scoreboardManager.sendScoreboardHint(player);
+            }
+        }, 20L);
 
         player.sendMessage("");
 

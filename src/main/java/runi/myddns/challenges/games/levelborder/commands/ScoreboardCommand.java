@@ -58,7 +58,7 @@ public class ScoreboardCommand implements CommandExecutor, TabCompleter {
 
             case "hide" -> {
 
-                scoreboardManager.hide();
+                scoreboardManager.hide(player);
 
                 player.sendMessage(
                         game.getLanguageManager()
@@ -70,7 +70,7 @@ public class ScoreboardCommand implements CommandExecutor, TabCompleter {
 
             case "reload" -> {
 
-                scoreboardManager.show();
+                scoreboardManager.show(player);
                 scoreboardManager.startUpdater();
 
                 player.sendMessage(

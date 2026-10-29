@@ -1,7 +1,6 @@
 package runi.myddns.challenges.games.levelblock.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -85,6 +84,14 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            if (!game.isLevelBlockPlayer(player)) {
+                player.sendMessage(
+                        game.getLanguageManager()
+                                .getComponent("commands.levelblock.start-game-world-only")
+                );
+                return true;
+            }
+
             boolean started =
                     game.getLevelBlockGameManager()
                             .startGame(player);
@@ -153,8 +160,6 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            World resetWorld = player.getWorld();
-
             game.getPlugin()
                     .getVoteManager()
                     .startVote(
@@ -165,10 +170,7 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                                     ),
                             () -> {
 
-                                game.getLevelBlockGameManager()
-                                        .resetGame(
-                                                resetWorld
-                                        );
+                                game.resetGameData();
 
                                 Bukkit.broadcast(
                                         game.getLanguageManager()

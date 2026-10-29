@@ -438,6 +438,7 @@ public class LevelBlockDataManager {
 
     public void resetAll() {
 
+        eventStarted = false;
         startLocations.clear();
         unlockedBlocks.clear();
 

@@ -1,6 +1,7 @@
 package runi.myddns.challenges.core.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,6 +45,7 @@ public class LobbyCommand implements CommandExecutor {
                 }
 
                 online.teleport(plugin.getLobbyWorldManager().getSpawn());
+                online.setGameMode(GameMode.SURVIVAL);
             }
 
             sender.sendMessage(
@@ -68,6 +70,7 @@ public class LobbyCommand implements CommandExecutor {
         }
 
         player.teleport(plugin.getLobbyWorldManager().getSpawn());
+        player.setGameMode(GameMode.SURVIVAL);
         return true;
     }
 }

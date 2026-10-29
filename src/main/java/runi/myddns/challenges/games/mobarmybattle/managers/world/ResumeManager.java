@@ -52,6 +52,11 @@ public class ResumeManager {
         }
     }
 
+    public void saveActiveArenaId(String arenaId) {
+        config.set("arena.active", arenaId);
+        saveConfig();
+    }
+
     public void savePhase(int phase) {
         config.set("phase", phase);
         saveConfig();

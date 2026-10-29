@@ -72,7 +72,7 @@ public class LevelBorderManager {
     public void resetBorder(Player initiator) {
         game.getPlugin().getLogger().info(
                 ConsoleColor.RED + "     🔄 LevelBorder reset was executed by "
-                        + initiator.getName()
+                        + (initiator != null ? initiator.getName() : "System")
                         + "."
                         + ConsoleColor.RESET
         );
@@ -89,12 +89,16 @@ public class LevelBorderManager {
         Location center = data.getCenter();
         WorldBorder border = world.getWorldBorder();
 
-        border.setCenter(
-                Math.floor(center.getX()) + 0.5,
-                Math.floor(center.getZ()) + 0.5
-        );
+        double centerX = Math.floor(center.getX()) + 0.5;
+        double centerZ = Math.floor(center.getZ()) + 0.5;
 
-        border.changeSize(size, transitionSeconds);
+        if (border.getCenter().getX() != centerX
+                || border.getCenter().getZ() != centerZ) {
+
+            border.setCenter(centerX, centerZ);
+        }
+
+        border.changeSize(size, transitionSeconds * 20L);
     }
 
     private void applyBorderToAllWorlds(double size, long transitionSeconds) {

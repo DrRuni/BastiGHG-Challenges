@@ -1,6 +1,7 @@
 package runi.myddns.challenges.core.server;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -111,16 +112,26 @@ public class ServerIconManager implements Listener {
     }
 
     private Component createMotd() {
+
+        String version = plugin.getPluginMeta().getVersion();
+
+        String minecraftVersion = Bukkit.getMinecraftVersion();
+
         return MiniMessage.miniMessage().deserialize(
-                "<bold><gradient:#FF5ACD:#8B5CFF:#20D5FF>     BastiGHG's Challenges</gradient></bold> " +
+                "<bold><gradient:#FF5ACD:#8B5CFF:#20D5FF>" +
+                        "     BastiGHG's Challenges" +
+                        "</gradient></bold> " +
                         "<dark_gray>•</dark_gray> " +
-                        "<#C38CFF>Fan Project</#C38CFF>" +
+                        "<#FFD166>Fan Project</#FFD166>" +
                         "\n" +
                         "<light_purple><obfuscated>XX</obfuscated></light_purple> " +
-                        "<bold><gradient:#FF4FD8:#8C63FF:#22D3FF>CHALLENGE NETWORK</gradient></bold> " +
+                        "<bold><gradient:#FF4FD8:#8C63FF:#22D3FF>" +
+                        "CHALLENGE NETWORK" +
+                        "</gradient></bold> " +
                         "<dark_gray>┃</dark_gray> " +
-                        "<#22D3FF>Paper</#22D3FF> " +
-                        "<bold><white>26.2</white></bold> " +
+                        "<gray>" + minecraftVersion + "</gray> " +
+                        "<dark_gray>•</dark_gray> " +
+                        "<#22D3FF>v" + version + "</#22D3FF> " +
                         "<aqua><obfuscated>XX</obfuscated></aqua>"
         );
     }

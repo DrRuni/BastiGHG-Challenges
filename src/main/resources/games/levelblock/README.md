@@ -12,7 +12,7 @@ Players can spend their experience levels to unlock additional blocks and gradua
 
 ## Current Version
 
-`v0.9 Beta`
+`v0.9.1 Beta`
 
 ## Features
 

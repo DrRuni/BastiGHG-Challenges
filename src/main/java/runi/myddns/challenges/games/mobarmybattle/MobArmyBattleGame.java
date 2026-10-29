@@ -226,6 +226,7 @@ public class MobArmyBattleGame implements ChallengeGame {
 
     private void initializeMobArmyBattle() {
         blockRandomizerManager = new BlockRandomizerManager(this);
+        eventResume = new ResumeManager(this);
         arenaConfig = new ArenaConfig(this);
         arenaManager = new ArenaEventManager(this);
         teamManager = new TeamManager(this);
@@ -235,7 +236,6 @@ public class MobArmyBattleGame implements ChallengeGame {
         waveStorage = new WaveStorage(plugin, getDataFolder(), waveManager);
         scoreboardManager = arenaManager.getScoreboardManager();
         waveManager.setScoreboardManager(scoreboardManager);
-        eventResume = new ResumeManager(this);
         timerManager = new TimerManager(this);
         mobSaveManager.setTimerManager(timerManager);
         mobSaveListener = new MobSaveListener(plugin, mobSaveManager);
@@ -390,6 +390,10 @@ public class MobArmyBattleGame implements ChallengeGame {
                     player,
                     "world_mobarmy_lobby"
             );
+
+            if (player.getWorld().getName().equals("world_mobarmy_lobby")) {
+                player.setGameMode(org.bukkit.GameMode.SURVIVAL);
+            }
 
             prepareJoinedPlayer(player);
             return;

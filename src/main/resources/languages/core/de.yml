@@ -1,6 +1,6 @@
 # Core DE Languages
 
-file-version: 1
+file-version: 2
 
 commands:
   language:
@@ -75,14 +75,20 @@ reset-management:
   load-first: "<red>Bitte zuerst ein Game laden."
   unsupported-game: "<red>Für dieses Spiel gibt es hier keine Reset-Verwaltung."
   title-prefix: "Reset » "
-  progress:
-    name: "Spielstand zurücksetzen"
-    line-1: "Setzt den Fortschritt des Spiels zurück."
-    line-2: "Die Welten bleiben erhalten."
-  worlds:
-    name: "Welten zurücksetzen"
-    line-1: "Löscht und erstellt die Spielwelten neu."
-    line-2: "Achtung: Alle Änderungen in den Welten gehen verloren!"
+  data:
+    name: "Spieldaten zurücksetzen"
+    line-1: "Setzt den gesamten Spielfortschritt zurück."
+    line-2: "Inventare und Welten bleiben erhalten."
+  player:
+    name: "Spielerdaten zurücksetzen"
+    line-1: "Löscht Inventare, Rüstung und Enderchests."
+    line-2: "Setzt Erfahrung und Spielerstatus zurück."
+    line-3: "Setzt die Border auf 3 × 3. Welten bleiben erhalten."
+  all:
+    name: "Alles zurücksetzen"
+    line-1: "Setzt sämtliche Spieldaten zurück."
+    line-2: "Löscht alle Spielerstände und Inventare."
+    line-3: "Generiert alle Spielwelten neu."
   mobarmybattle:
     progress:
       name: "Spielfortschritt zurücksetzen"
@@ -141,10 +147,10 @@ vote:
   accepted-self: "<green>✔ Du hast zugestimmt."
   cancelled: "hat die Abstimmung abgebrochen."
   rejected: "hat die Abstimmung abgelehnt."
-  yes:
+  "yes":
     name: "JA"
     description: "Zustimmen"
-  no:
+  "no":
     name: "NEIN"
     description: "Ablehnen"
 

@@ -186,23 +186,22 @@ public class BorderDataManager {
         return map;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isScoreboardVisible() {
-        return dataCfg.getBoolean(
-                "scoreboard.visible",
-                true
-        );
+    public void registerPlayer(Player player) {
+        String path = "players." + player.getName();
+        if (dataCfg.isConfigurationSection(path)) return;
+
+        dataCfg.set(path + ".uuid", player.getUniqueId().toString());
+        dataCfg.set(path + ".level", player.getLevel());
+        save();
     }
 
-    public void setScoreboardVisible(
-            boolean visible
-    ) {
+    public boolean isScoreboardVisible(Player player) {
+        return dataCfg.getBoolean("players." + player.getName() + ".scoreboard-visible", false);
+    }
 
-        dataCfg.set(
-                "scoreboard.visible",
-                visible
-        );
-
+    public void setScoreboardVisible(Player player, boolean visible) {
+        registerPlayer(player);
+        dataCfg.set("players." + player.getName() + ".scoreboard-visible", visible);
         save();
     }
 
@@ -245,28 +244,57 @@ public class BorderDataManager {
 
     public void resetAllPlayerLevels() {
 
-        for (Player player :
-                Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!game.isLevelBorderPlayer(player)) continue;
 
             player.setLevel(0);
+            player.setExp(0.0f);
+            player.setTotalExperience(0);
         }
 
-        if (dataCfg.isConfigurationSection("players")) {
-            dataCfg.set(
-                    "players",
-                    null
+        dataCfg.set("players", null);
+        dataCfg.set("border.world", null);
+        dataCfg.set("border.center", null);
+        dataCfg.set("border.size", 3.0);
+        dataCfg.set("border.active", false);
+        dataCfg.set("border.max-total-level", 0);
+        dataCfg.set("scoreboard.visible", false);
+        dataCfg.set("timer.seconds", 0L);
+
+        save();
+    }
+
+    public void resetPlayerProgress() {
+
+        Map<String, Boolean> visiblePlayers = new LinkedHashMap<>();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!game.isLevelBorderPlayer(player)) continue;
+
+            visiblePlayers.put(
+                    player.getName(),
+                    isScoreboardVisible(player)
             );
         }
 
-        dataCfg.set(
-                "border.max-total-level",
-                0
-        );
+        dataCfg.set("players", null);
 
-        dataCfg.set(
-                "border.size",
-                1.0
-        );
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!game.isLevelBorderPlayer(player)) continue;
+
+            String path = "players." + player.getName();
+
+            dataCfg.set(path + ".uuid",
+                    player.getUniqueId().toString());
+
+            dataCfg.set(path + ".level", 0);
+
+            dataCfg.set(path + ".scoreboard-visible",
+                    visiblePlayers.getOrDefault(player.getName(), false));
+        }
+
+        dataCfg.set("border.size", 3.0);
+        dataCfg.set("border.max-total-level", 0);
 
         save();
     }

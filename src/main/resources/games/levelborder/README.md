@@ -8,7 +8,7 @@ The challenge starts with a very small WorldBorder. The border grows based on th
 
 ## Current Version
 
-`v1.2 Stable`
+`v1.2.1 Stable`
 
 ## Features
 

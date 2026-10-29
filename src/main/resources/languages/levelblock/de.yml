@@ -1,6 +1,6 @@
 # LevelBlock DE Language
 
-file-version: 1
+file-version: 2
 
 loading:
   starting: "LevelBlock wird geladen..."
@@ -21,6 +21,7 @@ commands:
     load-first: "<red>LevelBlock muss zuerst geladen werden."
     admin-start-only: "<red>❌ Nur ein Admin darf LevelBlock starten."
     already-started: "<red>LevelBlock wurde bereits gestartet."
+    start-game-world-only: "<red>Das Event kann nur in einer LevelBlock-Spielwelt gestartet werden."
     started: "<green>LevelBlock wurde gestartet."
     admin-reset-only: "<red>❌ Nur ein Admin darf LevelBlock zurücksetzen."
     unknown: "<red>Unbekannter Unterbefehl."

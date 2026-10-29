@@ -191,7 +191,6 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                 }
 
                 borderManager.setActive(true);
-                scoreboardManager.show();
 
                 for (Player p :
                         Bukkit.getOnlinePlayers()) {
@@ -389,10 +388,7 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                                         ),
                                 () -> {
 
-                                    scoreboardManager.reset();
-                                    borderManager.resetBorder(player);
-                                    timerManager.reset();
-                                    portalManager.clearPortalWorldData();
+                                    game.resetGameData(player);
 
                                     Bukkit.broadcast(
                                             game.getLanguageManager()

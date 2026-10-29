@@ -534,7 +534,6 @@ public class ArenaEventManager implements Listener {
                     bar.setTitle(
                             PlainTextComponentSerializer.plainText()
                                     .serialize(title)
-                                    + " §7(" + alive + "/" + total + ")"
                     );
 
                     bar.setProgress(Math.clamp(progress, 0.0, 1.0));

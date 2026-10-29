@@ -8,6 +8,27 @@
 
 ---
 
+## [1.0.1] - Stable Release
+
+### Changed
+- Updated to Paper/Minecraft 26.3
+- Reworked the reset system across all challenges
+- Updated internal game versions:
+    - MobArmyBattle v1.7.2 Stable
+    - LevelBorder v1.2.1 Stable
+    - LevelBlock v0.9.1 Beta
+
+### Fixed
+- **MobArmyBattle:** Fixed player reset from the central lobby
+- **LevelBorder:** Fixed smooth border expansion and incorrect border size (3×3) after reset
+- **LevelBorder:** Fixed scoreboard issues; scoreboard is now hidden by default with an INFO option to show it
+- **LevelBorder:** Fixed translation errors in reset voting
+- **LevelBorder & LevelBlock:** Full reset now correctly executes the game-specific reset functions
+
+### Notes
+- Improved reset reliability and overall game behavior
+- Reset system improvements are still in progress and will continue in v1.0.2
+
 ## [1.0.0] - Stable Release
 
 ### Added

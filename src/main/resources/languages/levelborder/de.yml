@@ -1,6 +1,6 @@
 # LevelBorder DE Language
 
-file-version: 1
+file-version: 2
 
 commands:
   levelborder:
@@ -97,6 +97,9 @@ scoreboard:
   border-size: "<aqua>🌐 Bordergröße:"
   border-size-value: "<gray>   - <gold><size> m"
   objective-title: "<gold>🌍 LevelBorder"
+  disabled-hint: |-
+    <gray>📊 Das LevelBorder-Scoreboard ist deaktiviert.
+    <green>➜ Zum Aktivieren <click:run_command:'/lbscore reload'><aqua><bold>[HIER]</bold></aqua></click> klicken <gray>oder <aqua>/lbscore reload</aqua> nutzen.
 
 loading:
   starting: "LevelBorder wird geladen..."

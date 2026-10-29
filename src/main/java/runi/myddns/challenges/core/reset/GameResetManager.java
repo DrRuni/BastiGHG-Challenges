@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.function.Consumer;
 import org.bukkit.World;
 import runi.myddns.challenges.games.levelblock.LevelBlockGame;
+import runi.myddns.challenges.games.levelborder.LevelBorderGame;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 public class GameResetManager {
@@ -98,23 +99,35 @@ public class GameResetManager {
         resetRunning = true;
         try {
             showTitleToAll(game.getDisplayName(),
-                    plugin.getLanguageManager().get("game-reset.worlds.resetting"), NamedTextColor.GOLD);
+                    plugin.getLanguageManager().get(
+                            "game-reset.worlds.resetting",
+                            "game", game.getDisplayName()
+                    ),
+                    NamedTextColor.GOLD);
 
             if (game instanceof MobArmyBattleGame mobArmy) {
                 mobArmy.getEventManager().resetGame(false);
             }
 
-            resetPlayers(game);
-
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!plugin.getGameWorldManager().isGamePlayer(player, game.getId())) continue;
+                if (!plugin.getGameWorldManager().isGamePlayer(player, game.getId())) {
+                    continue;
+                }
 
                 if (!(game instanceof MobArmyBattleGame)) {
                     game.leavePlayer(player);
                 }
 
                 if (!player.teleport(plugin.getLobbyWorldManager().getSpawn())) {
-                    throw new IllegalStateException("Could not evacuate player " + player.getName());
+                    throw new IllegalStateException(
+                            "Could not evacuate player " + player.getName()
+                    );
+                }
+
+                if (!(game instanceof LevelBorderGame)
+                        && !(game instanceof LevelBlockGame)) {
+                    plugin.getPlayerGameDataManager().clearPlayerState(player);
+                    player.updateInventory();
                 }
             }
 
@@ -122,8 +135,21 @@ public class GameResetManager {
                     "game-reset.worlds.broadcast-resetting", "game",
                     Component.text(game.getDisplayName())));
 
+            if (game instanceof LevelBorderGame levelBorder) {
+                levelBorder.resetGameData(null);
+            }
+
+            if (game instanceof LevelBlockGame levelBlock) {
+                levelBlock.resetWorldData();
+                levelBlock.getTimerDisplayManager().clearAll();
+            }
+
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 try {
+
+                    plugin.getPlayerGameDataManager()
+                            .deleteGamePlayerData(game.getId());
+
                     List<GameWorldDefinition> definitions = plugin.getGameWorldManager()
                             .getDefinitions(game.getId());
 
@@ -134,7 +160,10 @@ public class GameResetManager {
                     }
 
                     showTitleToAll(game.getDisplayName(),
-                            plugin.getLanguageManager().get("game-reset.worlds.recreating"),
+                            plugin.getLanguageManager().get(
+                                    "game-reset.worlds.recreating",
+                                    "game", game.getDisplayName()
+                            ),
                             NamedTextColor.YELLOW);
 
                     long seed = new Random().nextLong();
@@ -144,12 +173,6 @@ public class GameResetManager {
                                 : plugin.getWorldSourceManager().resetWorld(definition);
                         if (!ok) throw new IllegalStateException(
                                 "Could not recreate " + definition.worldName());
-                    }
-
-                    plugin.getPlayerGameDataManager().deleteGamePlayerData(game.getId());
-
-                    if (game instanceof LevelBlockGame levelBlock) {
-                        levelBlock.resetWorldData();
                     }
 
                     for (GameWorldDefinition definition : definitions) {
@@ -163,18 +186,28 @@ public class GameResetManager {
                     }
 
                     game.getWorldSettingsManager().applyAll();
+
                     showTitleToAll(game.getDisplayName(),
-                            plugin.getLanguageManager().get("game-reset.worlds.finished"),
+                            plugin.getLanguageManager().get(
+                                    "game-reset.worlds.finished",
+                                    "game", game.getDisplayName()
+                            ),
                             NamedTextColor.GREEN);
+
                     Bukkit.broadcast(plugin.getLanguageManager().getComponent(
                             "game-reset.worlds.broadcast-finished", "game",
                             Component.text(game.getDisplayName())));
                 } catch (Exception ex) {
                     plugin.getLogger().log(java.util.logging.Level.SEVERE,
                             "Complete world reset failed for " + game.getId(), ex);
+
                     showTitleToAll(game.getDisplayName(),
-                            plugin.getLanguageManager().get("game-reset.worlds.failed"),
+                            plugin.getLanguageManager().get(
+                                    "game-reset.worlds.failed",
+                                    "game", game.getDisplayName()
+                            ),
                             NamedTextColor.RED);
+
                     Bukkit.broadcast(plugin.getLanguageManager().getComponent(
                             "game-reset.worlds.broadcast-failed", "game",
                             Component.text(game.getDisplayName())));
@@ -271,8 +304,14 @@ public class GameResetManager {
                 } catch (Exception ex) {
                     plugin.getLogger().log(java.util.logging.Level.SEVERE,
                             "Selected world reset failed for " + game.getId(), ex);
+
                     Bukkit.broadcast(plugin.getLanguageManager()
-                            .getComponent("game-reset.worlds.failed"));
+                            .getComponent(
+                                    "game-reset.worlds.failed",
+                                    "game",
+                                    Component.text(game.getDisplayName())
+                            ));
+
                     resetRunning = false;
                 }
             }, 20L);

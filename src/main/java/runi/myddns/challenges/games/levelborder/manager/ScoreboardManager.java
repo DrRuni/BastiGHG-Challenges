@@ -1,6 +1,8 @@
 package runi.myddns.challenges.games.levelborder.manager;
 
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,12 +39,10 @@ public class ScoreboardManager {
         updaterTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!data.isScoreboardVisible()) return;
-
                 titleTick += 0.25f;
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (game.isLevelBorderPlayer(player)) {
+                    if (game.isLevelBorderPlayer(player) && data.isScoreboardVisible(player)) {
                         updateBoard(player);
                     }
                 }
@@ -108,21 +108,32 @@ public class ScoreboardManager {
                         data.getAllPlayerLevels()
                 );
 
+        // Einträge für aktive Spieler auch ohne gespeicherten Level berücksichtigen.
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (game.isLevelBorderPlayer(online)) {
+                allPlayers.putIfAbsent(online.getName(), online.getLevel());
+            }
+        }
+
+        // Die Sidebar hat maximal 15 Zeilen; 5 sind für Überschriften/Abstände reserviert.
         allPlayers.entrySet().stream()
                 .sorted(
                         Map.Entry.comparingByKey(
                                 String.CASE_INSENSITIVE_ORDER
                         )
                 )
+                .limit(10)
                 .forEach(entry -> {
 
+                    Player online = Bukkit.getPlayerExact(entry.getKey());
+                    boolean active = online != null && game.isLevelBorderPlayer(online);
                     Component playerLine =
                             game.getLanguageManager()
                                     .getComponent(
                                             "scoreboard.player-line",
                                             Map.of(
                                                     "player",
-                                                    Component.text(entry.getKey()),
+                                                    Component.text(entry.getKey(), active ? NamedTextColor.GREEN : NamedTextColor.GRAY),
 
                                                     "level",
                                                     Component.text(String.valueOf(entry.getValue()))
@@ -197,25 +208,24 @@ public class ScoreboardManager {
                 .setScore(0);
     }
 
-    public void hide() {
-        data.setScoreboardVisible(false);
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (game.isLevelBorderPlayer(player)) {
-                removePlayer(player);
-            }
-        }
+    public void hide(Player player) {
+        data.setScoreboardVisible(player, false);
+        removePlayer(player);
     }
 
-    public void show() {
-        data.setScoreboardVisible(true);
+    public void show(Player player) {
+        if (!game.isLevelBorderPlayer(player)) return;
+        data.setScoreboardVisible(player, true);
+        addPlayer(player);
+        updateBoard(player);
+    }
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (game.isLevelBorderPlayer(player)) {
-                addPlayer(player);
-                updateBoard(player);
-            }
-        }
+    public void sendScoreboardHint(Player player) {
+        if (!game.isLevelBorderPlayer(player) || data.isScoreboardVisible(player)) return;
+
+        player.sendMessage(Component.empty());
+        player.sendMessage(game.getLanguageManager().getComponent("scoreboard.disabled-hint"));
+        player.sendMessage(Component.empty());
     }
 
     public void reset() {
@@ -231,7 +241,7 @@ public class ScoreboardManager {
         if (player == null || boards.containsKey(player)) return;
         if (!game.isLevelBorderPlayer(player)) return;
 
-        if (!data.isScoreboardVisible()) return;
+        if (!data.isScoreboardVisible(player)) return;
 
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -243,6 +253,7 @@ public class ScoreboardManager {
         );
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.numberFormat(NumberFormat.blank());
 
         boards.put(player, board);
         objectives.put(player, objective);
@@ -252,11 +263,11 @@ public class ScoreboardManager {
     }
 
     public void removePlayer(Player player) {
-        boards.remove(player);
+        Scoreboard previous = boards.remove(player);
         objectives.remove(player);
 
-        player.setScoreboard(
-                Bukkit.getScoreboardManager().getMainScoreboard()
-        );
+        if (previous != null && player.isOnline() && player.getScoreboard() == previous) {
+            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+        }
     }
 }

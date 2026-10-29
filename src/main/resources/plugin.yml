@@ -1,14 +1,14 @@
 name: BastiGHG-Challenges
-version: '1.0.0 Stable'
+version: '1.0.1 Stable'
 
 game-versions:
-  mobarmybattle: '1.7.1 Stable'
-  levelborder: '1.2 Stable'
-  levelblock: '0.9 Beta'
+  mobarmybattle: '1.7.2 Stable'
+  levelborder: '1.2.1 Stable'
+  levelblock: '0.9.1 Beta'
 
 
 main: runi.myddns.challenges.ChallengeMain
-api-version: '26.2'
+api-version: '26.3'
 load: POSTWORLD
 
 commands:

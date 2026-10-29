@@ -10,7 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,15 +18,11 @@ import java.util.Locale;
 public class ArenaConfig {
 
     private static final String ARENA_FILE_NAME = "arena-koordinaten.yml";
-    private static final String EVENT_FILE_NAME = "gamedata.yml";
-
     private static final String ACTIVE_ARENA_PATH = "arena.active";
 
     private final JavaPlugin plugin;
     private final File dataFolder;
     private final MobArmyBattleGame game;
-
-    private File eventFile;
 
     private FileConfiguration arenaConfig;
     private FileConfiguration eventConfig;
@@ -60,11 +55,7 @@ public class ArenaConfig {
                         ARENA_FILE_NAME
                 );
 
-        eventFile =
-                new File(
-                        dataFolder,
-                        EVENT_FILE_NAME
-                );
+
 
         if (!dataFolder.exists()
                 && !dataFolder.mkdirs()) {
@@ -82,18 +73,8 @@ public class ArenaConfig {
             plugin.getLogger().info("[ArenaConfig] arena-koordinaten.yml wurde erstellt.");
         }
 
-        try {
-            if (eventFile.createNewFile()) {
-                plugin.getLogger().info(
-                        "[ArenaConfig] gamedata.yml wurde erstellt."
-                );
-            }
-        } catch (IOException e) {
-            plugin.getLogger().severe("[ArenaConfig] Konnte gamedata.yml nicht erstellen: " + e.getMessage());
-        }
-
         arenaConfig = YamlConfiguration.loadConfiguration(arenaFile);
-        eventConfig = YamlConfiguration.loadConfiguration(eventFile);
+        eventConfig = game.getEventResume().getConfig();
     }
 
     private void loadActiveArenaId() {
@@ -162,15 +143,9 @@ public class ArenaConfig {
     }
 
     private void saveActiveArenaId() {
-        if (eventConfig == null || eventFile == null) return;
+        if (activeArenaId == null) return;
 
-        eventConfig.set(ACTIVE_ARENA_PATH, activeArenaId);
-
-        try {
-            eventConfig.save(eventFile);
-        } catch (IOException e) {
-            plugin.getLogger().severe("[ArenaConfig] Konnte aktive Arena nicht in gamedata.yml speichern: " + e.getMessage());
-        }
+        game.getEventResume().saveActiveArenaId(activeArenaId);
     }
 
     private ArenaData loadArenaData(String arenaId) {

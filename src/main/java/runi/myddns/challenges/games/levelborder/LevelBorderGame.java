@@ -1,9 +1,6 @@
 package runi.myddns.challenges.games.levelborder;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -370,9 +367,12 @@ public class LevelBorderGame implements ChallengeGame {
                     world.getSpawnLocation();
         }
 
-        player.teleport(
-                targetLocation
-        );
+        if (player.teleport(targetLocation)) {
+            player.setGameMode(GameMode.SURVIVAL);
+            // Auch registrieren, falls der Spieler bereits in derselben Welt war.
+            dataManager.registerPlayer(player);
+            scoreboardManager.addPlayer(player);
+        }
     }
 
     @Override
@@ -420,6 +420,32 @@ public class LevelBorderGame implements ChallengeGame {
 
     public boolean isLevelBorderPlayer(Player player) {
         return plugin.getGameWorldManager().isGamePlayer(player, getId());
+    }
+
+    public void resetGameData(Player initiator) {
+
+        scoreboardManager.reset();
+        borderManager.resetBorder(initiator);
+        timerManager.reset();
+        portalManager.clearPortalWorldData();
+        plugin.getPlayerGameDataManager().resetGameExperience(getId());
+    }
+
+    public void resetPlayerData() {
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isLevelBorderPlayer(player)) continue;
+
+            plugin.getPlayerGameDataManager().clearPlayerState(player);
+            player.updateInventory();
+        }
+
+        plugin.getPlayerGameDataManager().resetGamePlayerData(getId());
+        dataManager.resetPlayerProgress();
+
+        if (dataManager.isActive()) {
+            borderManager.applyBorder();
+        }
     }
 
     public FileConfiguration getConfig() {return config;}

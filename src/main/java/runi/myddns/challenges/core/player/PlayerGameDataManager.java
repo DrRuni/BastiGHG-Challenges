@@ -238,6 +238,95 @@ public class PlayerGameDataManager {
         }
     }
 
+    public void resetGameExperience(String gameId) {
+
+        File gameFolder = new File(
+                playerDataFolder,
+                gameId.toLowerCase(java.util.Locale.ROOT)
+        );
+
+        if (!gameFolder.exists()) return;
+
+        File[] files = gameFolder.listFiles(
+                (_, name) -> name.toLowerCase(java.util.Locale.ROOT)
+                        .endsWith(".yml")
+        );
+
+        if (files == null) return;
+
+        for (File file : files) {
+
+            YamlConfiguration config =
+                    YamlConfiguration.loadConfiguration(file);
+
+            config.set("experience.level", 0);
+            config.set("experience.exp", 0.0);
+            config.set("experience.total", 0);
+
+            try {
+                config.save(file);
+            } catch (IOException exception) {
+                plugin.getLogger().log(
+                        Level.SEVERE,
+                        "Could not reset player experience: " + file.getName(),
+                        exception
+                );
+            }
+        }
+    }
+
+    public void resetGamePlayerData(String gameId) {
+
+        File gameFolder = new File(
+                playerDataFolder,
+                gameId.toLowerCase(java.util.Locale.ROOT)
+        );
+
+        if (!gameFolder.exists()) return;
+
+        File[] files = gameFolder.listFiles(
+                (_, name) -> name.toLowerCase(java.util.Locale.ROOT)
+                        .endsWith(".yml")
+        );
+
+        if (files == null) return;
+
+        for (File file : files) {
+
+            YamlConfiguration config =
+                    YamlConfiguration.loadConfiguration(file);
+
+            // Inventare und Enderchest leeren.
+            config.set("inventory.contents",
+                    java.util.Arrays.asList(new ItemStack[36]));
+            config.set("inventory.armor",
+                    java.util.Arrays.asList(new ItemStack[4]));
+            config.set("inventory.offhand", null);
+            config.set("enderchest",
+                    java.util.Arrays.asList(new ItemStack[27]));
+
+            // Erfahrung und Spielerzustand zurücksetzen.
+            config.set("experience.level", 0);
+            config.set("experience.exp", 0.0);
+            config.set("experience.total", 0);
+
+            config.set("player.health", 20.0);
+            config.set("player.food", 20);
+            config.set("player.saturation", 5.0f);
+            config.set("effects", java.util.List.of());
+
+            try {
+                config.save(file);
+            } catch (IOException exception) {
+                plugin.getLogger().log(
+                        Level.SEVERE,
+                        "Could not reset player data: " + file.getName(),
+                        exception
+                );
+            }
+        }
+    }
+
     @SuppressWarnings("unused")
     public void deletePlayerData(
             UUID uuid,

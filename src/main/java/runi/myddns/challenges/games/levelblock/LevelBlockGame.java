@@ -1,9 +1,6 @@
 package runi.myddns.challenges.games.levelblock;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.command.PluginCommand;
@@ -464,25 +461,10 @@ public class LevelBlockGame implements ChallengeGame {
             );
         }
 
-        Bukkit.getConsoleSender()
-                .sendMessage("");
-
-        Bukkit.getConsoleSender()
-                .sendMessage(
-                        ConsoleColor.DARK_GOLDEN_LIME
-                                + "  ═══════════════  LevelBlock - " + getDisplayVersion() + " ═══════════════"
-                                + ConsoleColor.RESET
-                );
-
-        Bukkit.getConsoleSender()
-                .sendMessage(
-                        ConsoleColor.DARK_GOLDEN_LIME
-                                + "                      loaded"
-                                + ConsoleColor.RESET
-                );
-
-        Bukkit.getConsoleSender()
-                .sendMessage("");
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  LevelBlock - " + getDisplayVersion() + " ═══════════════" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                          loaded" + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage("");
     }
 
     @Override
@@ -538,9 +520,9 @@ public class LevelBlockGame implements ChallengeGame {
                     world.getSpawnLocation();
         }
 
-        player.teleport(
-                targetLocation
-        );
+        if (player.teleport(targetLocation)) {
+            player.setGameMode(GameMode.SURVIVAL);
+        }
 
         if (gameManager.isStarted()) {
             gameTimerManager.resume();
@@ -669,12 +651,25 @@ public class LevelBlockGame implements ChallengeGame {
     }
 
     public void resetWorldData() {
-
-        borderManager
-                .getDataManager()
-                .resetAll();
-
+        borderManager.getDataManager().resetAll();
         gameTimerManager.reset();
+    }
+
+    public void resetGameData() {
+        resetWorldData();
+        timerManager.clearAll();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isLevelBlockPlayer(player)) continue;
+
+            plugin.getPlayerGameDataManager().clearPlayerState(player);
+            player.updateInventory();
+        }
+
+        plugin.getPlayerGameDataManager().resetGamePlayerData(getId());
+        borderManager.getLineManager().reset();
+        borderManager.getDisplayManager().refreshAll();
+        borderManager.getLineManager().refreshAll();
     }
 
     @Override
@@ -686,27 +681,21 @@ public class LevelBlockGame implements ChallengeGame {
     public GameWorldSettingsManager getWorldSettingsManager() {
         return worldSettingsManager;
     }
-
     public ChallengeMain getPlugin() {
         return plugin;
     }
-
     public BorderManager getBorderManager() {
         return borderManager;
     }
-
     public LevelBlockGameManager getLevelBlockGameManager() {
         return gameManager;
     }
-
     public GameTimerManager getTimerManager() {
         return gameTimerManager;
     }
-
     public TimerManager getTimerDisplayManager() {
         return timerManager;
     }
-
     public LanguageManager getLanguageManager() {
         return languageManager;
     }

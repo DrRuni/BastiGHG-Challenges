@@ -191,12 +191,15 @@ public class LanguageManager {
             String placeholder,
             Component value
     ) {
+        String text = get(defaultGroup, path)
+                .replace(
+                        "%" + placeholder + "%",
+                        "<" + placeholder + ">"
+                );
+
         return miniMessage.deserialize(
-                get(defaultGroup, path),
-                Placeholder.component(
-                        placeholder,
-                        value
-                )
+                text,
+                Placeholder.component(placeholder, value)
         );
     }
 
@@ -206,12 +209,15 @@ public class LanguageManager {
             String placeholder,
             Component value
     ) {
+        String text = get(group, path)
+                .replace(
+                        "%" + placeholder + "%",
+                        "<" + placeholder + ">"
+                );
+
         return miniMessage.deserialize(
-                get(group, path),
-                Placeholder.component(
-                        placeholder,
-                        value
-                )
+                text,
+                Placeholder.component(placeholder, value)
         );
     }
 
@@ -231,23 +237,24 @@ public class LanguageManager {
             String path,
             Map<String, Component> placeholders
     ) {
+        TagResolver.Builder resolver = TagResolver.builder();
+        String text = get(group, path);
 
-        TagResolver.Builder resolver =
-                TagResolver.builder();
+        for (Map.Entry<String, Component> entry : placeholders.entrySet()) {
+            String key = entry.getKey();
 
-        for (Map.Entry<String, Component> entry
-                : placeholders.entrySet()) {
+            text = text.replace(
+                    "%" + key + "%",
+                    "<" + key + ">"
+            );
 
             resolver.resolver(
-                    Placeholder.component(
-                            entry.getKey(),
-                            entry.getValue()
-                    )
+                    Placeholder.component(key, entry.getValue())
             );
         }
 
         return miniMessage.deserialize(
-                get(group, path),
+                text,
                 resolver.build()
         );
     }

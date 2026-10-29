@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
+import runi.myddns.challenges.games.levelborder.LevelBorderGame;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
 import java.util.List;
@@ -177,35 +178,51 @@ public class ResetManagementGUI implements Listener {
                     plugin.getLanguageManager().get("reset-management.mobarmybattle.all.description")
             ));
 
-        } else {
-            inventory.setItem(
-                    11,
-                    createItem(
-                            Material.REDSTONE,
-                            plugin.getLanguageManager()
-                                    .get("reset-management.progress.name"),
-                            NamedTextColor.GOLD,
-                            plugin.getLanguageManager()
-                                    .get("reset-management.progress.line-1"),
-                            plugin.getLanguageManager()
-                                    .get("reset-management.progress.line-2")
-                    )
-            );
+        } else if (game instanceof LevelBorderGame) {
+            inventory.setItem(11, createItem(
+                    Material.REDSTONE,
+                    plugin.getLanguageManager().get("reset-management.data.name"),
+                    NamedTextColor.GOLD,
+                    plugin.getLanguageManager().get("reset-management.data.line-1"),
+                    plugin.getLanguageManager().get("reset-management.data.line-2")
+            ));
 
-            inventory.setItem(
-                    15,
-                    createItem(
-                            Material.TNT,
-                            plugin.getLanguageManager()
-                                    .get("reset-management.worlds.name"),
-                            NamedTextColor.RED,
-                            plugin.getLanguageManager()
-                                    .get("reset-management.worlds.line-1"),
-                            plugin.getLanguageManager()
-                                    .get("reset-management.worlds.line-2")
-                    )
-            );
+            inventory.setItem(13, createItem(
+                    Material.PLAYER_HEAD,
+                    plugin.getLanguageManager().get("reset-management.player.name"),
+                    NamedTextColor.AQUA,
+                    plugin.getLanguageManager().get("reset-management.player.line-1"),
+                    plugin.getLanguageManager().get("reset-management.player.line-2"),
+                    plugin.getLanguageManager().get("reset-management.player.line-3")
+            ));
 
+            inventory.setItem(15, createItem(
+                    Material.TNT,
+                    plugin.getLanguageManager().get("reset-management.all.name"),
+                    NamedTextColor.RED,
+                    plugin.getLanguageManager().get("reset-management.all.line-1"),
+                    plugin.getLanguageManager().get("reset-management.all.line-2"),
+                    plugin.getLanguageManager().get("reset-management.all.line-3")
+            ));
+
+        } else if (game.getId().equalsIgnoreCase("levelblock")) {
+
+            inventory.setItem(11, createItem(
+                    Material.REDSTONE,
+                    plugin.getLanguageManager().get("reset-management.data.name"),
+                    NamedTextColor.GOLD,
+                    plugin.getLanguageManager().get("reset-management.data.line-1"),
+                    plugin.getLanguageManager().get("reset-management.data.line-2")
+            ));
+
+            inventory.setItem(15, createItem(
+                    Material.TNT,
+                    plugin.getLanguageManager().get("reset-management.all.name"),
+                    NamedTextColor.RED,
+                    plugin.getLanguageManager().get("reset-management.all.line-1"),
+                    plugin.getLanguageManager().get("reset-management.all.line-2"),
+                    plugin.getLanguageManager().get("reset-management.all.line-3")
+            ));
         }
 
         inventory.setItem(
@@ -270,7 +287,6 @@ public class ResetManagementGUI implements Listener {
             }
             if (slot != 10 && slot != 12 && slot != 14 && slot != 16) return;
 
-            player.closeInventory();
             switch (slot) {
                 case 10 -> plugin.getVoteManager().startVote(
                         game.getDisplayName(),
@@ -306,45 +322,39 @@ public class ResetManagementGUI implements Listener {
 
             case 11 -> {
 
-                player.closeInventory();
-
-                if (game.getId().equalsIgnoreCase("levelborder")) {
-
-                    Bukkit.dispatchCommand(
-                            player,
-                            "levelborder reset"
-                    );
+                if (game instanceof LevelBorderGame) {
+                    Bukkit.dispatchCommand(player, "levelborder reset");
 
                 } else if (game.getId().equalsIgnoreCase("levelblock")) {
-
-                    Bukkit.dispatchCommand(
-                            player,
-                            "levelblock reset"
-                    );
+                    Bukkit.dispatchCommand(player, "levelblock reset");
                 }
+            }
+
+            case 13 -> {
+                if (!(game instanceof LevelBorderGame levelBorder)) return;
+
+
+                plugin.getVoteManager().startVote(
+                        game.getDisplayName(),
+                        plugin.getLanguageManager()
+                                .get("reset-management.player.name"),
+                        levelBorder::resetPlayerData
+                );
             }
 
             case 15 -> {
 
-                player.closeInventory();
-
                 if (game.getId().equalsIgnoreCase("levelborder")) {
-
-                    Bukkit.dispatchCommand(
-                            player,
-                            "levelborder reset world"
-                    );
+                    Bukkit.dispatchCommand(player, "levelborder reset world");
 
                 } else if (game.getId().equalsIgnoreCase("levelblock")) {
-
-                    Bukkit.dispatchCommand(
-                            player,
-                            "levelblock reset world"
-                    );
+                    Bukkit.dispatchCommand(player, "levelblock reset world");
                 }
             }
 
             case 22 -> plugin.getWorldSettingsGUI().open(player);
+
+            default -> { }
         }
     }
 

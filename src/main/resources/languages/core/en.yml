@@ -1,6 +1,6 @@
 # Core EN Languages
 
-file-version: 1
+file-version: 2
 
 commands:
   language:
@@ -75,14 +75,20 @@ reset-management:
   load-first: "<red>Please load a game first."
   unsupported-game: "<red>This game does not have reset management here."
   title-prefix: "Reset » "
-  progress:
-    name: "Reset game progress"
-    line-1: "Resets the game's progress."
-    line-2: "The worlds are kept."
-  worlds:
-    name: "Reset worlds"
-    line-1: "Deletes and recreates the game worlds."
-    line-2: "Warning: All changes in the worlds will be lost!"
+  data:
+    name: "Reset Game Data"
+    line-1: "Resets all game progress."
+    line-2: "Inventories and worlds are preserved."
+  player:
+    name: "Reset Player Data"
+    line-1: "Clears inventories, armor and ender chests."
+    line-2: "Resets experience and player status."
+    line-3: "Resets the border to 3 × 3. Worlds are preserved."
+  all:
+    name: "Reset Everything"
+    line-1: "Resets all game progress."
+    line-2: "Deletes all player data and inventories."
+    line-3: "Regenerates all game worlds."
   mobarmybattle:
     progress:
       name: "Reset game progress"
@@ -141,10 +147,10 @@ vote:
   accepted-self: "<green>✔ You agreed."
   cancelled: "cancelled the vote."
   rejected: "rejected the vote."
-  yes:
+  "yes":
     name: "YES"
     description: "Accept"
-  no:
+  "no":
     name: "NO"
     description: "Reject"
 
