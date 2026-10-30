@@ -92,8 +92,23 @@ Bug reports, feature requests and general feedback are welcome.
 
 You can use the project's Discord server to report bugs, suggest improvements or discuss the plugin.
 
-## License
+## License & Copyright
 
-**All rights reserved.**
+Copyright (c) 2026 DrRuni. All rights reserved.
 
-Redistribution, modification or re-uploading of this project is not allowed without permission.
+BastiGHG Challenges is **source-available, not open source**.
+
+The source code is publicly available for viewing, inspection,
+and educational reference.
+
+Copying, modifying, redistributing, sublicensing, or reusing
+the source code in other projects is not permitted without
+prior written permission from the copyright holder.
+
+The compiled plugin may be downloaded and used on compatible
+Minecraft servers through official distribution channels.
+
+Redistribution, modification, or re-uploading of the compiled
+plugin is not permitted without prior written permission.
+
+For full details, see [COPYRIGHT.md](COPYRIGHT.md).
