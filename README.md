@@ -1,114 +1,260 @@
-# BastiGHG Challenges – Fan Project
+![BastiGHG Challenges – Fan Project](images/banner.png)
 
-A Minecraft Paper plugin that combines multiple challenge game modes into one central system.
+<div align="center">
 
-> **Disclaimer:** This is an unofficial fan project and is not affiliated with, endorsed by, or officially connected to BastiGHG.
+[![Latest Release](https://img.shields.io/github/v/release/DrRuni/BastiGHG-Challenges?style=for-the-badge&label=Version&color=22C55E)](https://github.com/DrRuni/BastiGHG-Challenges/releases/latest)
+![Paper](https://img.shields.io/badge/Paper-26.3-4682B4?style=for-the-badge)
+![Java](https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge)
 
-## Features
+[![Discord](https://img.shields.io/badge/Discord-Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/t2c98sWr7G)
+[![SpigotMC](https://img.shields.io/badge/SpigotMC-Download-ED8106?style=for-the-badge)](https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/)
+[![CurseForge](https://img.shields.io/badge/CurseForge-Download-F16436?style=for-the-badge)](https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject)
 
-- Central lobby and game management system
-- Multiple integrated challenge game modes
-- Separate worlds and player data for each game
-- Dynamic game selection, loading and unloading
-- Centralized world settings and management
-- Game reset and voting system
-- Lobby displays and interactive buttons
+
+### One Plugin. Multiple Challenges. One Central Lobby.
+
+**A Minecraft Paper plugin combining multiple independent challenge games into one unified system.**
+
+🇩🇪 **Ein Plugin. Mehrere Challenges. Eine zentrale Lobby.**
+
+*All your favorite challenges in one place!*
+
+</div>
+
+> **Disclaimer:** BastiGHG Challenges is an independent, unofficial fan project inspired by Minecraft challenges played by BastiGHG. It is not affiliated with, endorsed by, or officially connected to BastiGHG.
+
+---
+
+## 🎮 About the Project
+
+**BastiGHG Challenges – Fan Project** brings multiple Minecraft challenge game modes together in a single Paper plugin.
+
+Instead of installing and managing separate plugins for every challenge, players can access all integrated games through one shared lobby.
+
+Each game maintains its own worlds, player data, settings and progress while being managed by a centralized system.
+
+The project is continuously developed with new challenge games, improvements and additional features planned for future releases.
+
+**The goal: One central platform for an expanding collection of Minecraft challenges.**
+
+---
+
+## 🏠 Central Lobby
+
+![Central Lobby](images/lobby.png)
+
+The central lobby is the heart of BastiGHG Challenges.
+
+From here, players can select, load, configure and manage the available challenge games.
+
+### Lobby Features
+
+- Central game selection and management
+- Dynamic loading and unloading of games
+- Interactive displays and buttons
+- Game status and loading information
+- Centralized game reset and voting systems
+- Shared world settings and management
 - German and English language support
-- Centralized language system for Core and all included games
-- Save and resume functionality for game progress
-- Multiplayer support
+- Custom logos, icons and interface graphics
 
-## Included Games
+Every challenge runs in its own environment, keeping different game modes separated while allowing players to switch between them.
 
-### MobArmyBattle
+---
 
-Two teams compete against each other.
+## ⚔️ Included Games
 
-Players collect equipment, prepare mob waves for the opposing team, and later fight through enemy waves inside an arena.
+Discover the currently available challenge games.
 
-**Current internal version:** `v1.7.2`
+Each game has its own documentation with detailed explanations, gameplay mechanics and instructions.
 
-### LevelBorder
+### ⚔️ MobArmyBattle
 
-The world border grows based on the combined player levels.
+[![MobArmyBattle](images/mobarmybattle/preview.png)](game-readmes/README-MobArmyBattle.md)
 
-The more levels players collect, the larger the playable area becomes.
+**Prepare your army. Challenge the opposing team. Survive the arena.**
 
-**Current internal version:** `v1.2.1`
+A multiplayer team challenge where players collect resources, prepare mob waves for their opponents and fight through enemy waves inside an arena.
 
-### LevelBlock
+**Internal Version:** `v1.7.2 Stable`
 
-The playable world expands block by block as players progress.
+📖 **[View MobArmyBattle Documentation](game-readmes/README-MobArmyBattle.md)**
 
-**Current internal version:** `v0.9.1`
+---
 
-## Commands
+### 🌍 LevelBorder
 
-Each game has its own main command:
+[![LevelBorder](images/levelborder/preview.png)](game-readmes/README-LevelBorder.md)
 
-- `/mobarmy`
-- `/levelborder`
-- `/levelblock`
+**Collect experience. Expand your world. Explore further.**
 
-For detailed game information:
+A survival challenge where the world border grows based on the combined experience levels of all participating players.
 
-- `/mobarmy info`
-- `/levelborder info`
-- `/levelblock info`
+**Internal Version:** `v1.2.1 Stable`
 
-## Requirements
+📖 **[View LevelBorder Documentation](game-readmes/README-LevelBorder.md)**
 
-- Minecraft Java Edition
-- Paper `26.3`
-- Java `25`
+---
 
-The plugin is currently developed and tested on Paper 26.3.
+### 🧩 LevelBlock
 
-**Note:** Paper 26.2 and earlier versions are not supported by this release.
+[![LevelBlock](images/levelblock/preview.png)](game-readmes/README-LevelBlock.md)
 
-## Installation
+**Progress block by block and unlock a growing world.**
 
-1. Download the latest plugin `.jar` file.
-2. Place it inside your server's `plugins` folder.
-3. Start or restart your Paper server.
-4. Join the central lobby.
-5. Select and load a challenge game.
+A unique survival challenge where the playable area gradually expands as players progress through the game.
 
-## Development Status
+**Internal Version:** `v0.9.1 Beta`
 
-**Current project version:** `v1.0.1 Stable`
+📖 **[View LevelBlock Documentation](game-readmes/README-LevelBlock.md)**
 
-BastiGHG Challenges reached its first stable release with version `1.0.0`.
+---
 
-Version `1.0.1` is a maintenance update focusing on compatibility with Paper 26.3 and improvements to the game reset systems.
+### 🚀 More Challenges Coming Soon!
 
-The core systems are functional and available for multiplayer gameplay.
+BastiGHG Challenges is designed to grow.
 
-Development continues with further optimizations, bug fixes and improvements to the included games.
+Additional game modes, new mechanics and further improvements are planned for upcoming versions.
 
-## Feedback and Bug Reports
+The community can help shape future development by suggesting new challenges and sharing feedback on Discord.
 
-Bug reports, feature requests and general feedback are welcome.
+**[Join the Community](https://discord.gg/t2c98sWr7G)**
 
-You can use the project's Discord server to report bugs, suggest improvements or discuss the plugin.
+---
 
-## License & Copyright
+## ✨ Core Features
 
-Copyright (c) 2026 DrRuni. All rights reserved.
+| Feature | Description |
+|---|---|
+| 🏠 Central Lobby | One shared hub for all challenge games |
+| 🎮 Multiple Games | Different challenges integrated into one plugin |
+| 🌍 Independent Worlds | Separate worlds for individual game modes |
+| 👤 Player Data | Individual player data and inventories |
+| 🔄 Dynamic Game Management | Load and unload games as needed |
+| 💾 Save & Resume | Save and restore supported game progress |
+| 🛠️ World Settings | Centralized management of game world options |
+| 🗳️ Voting System | Multiplayer voting for supported actions |
+| ♻️ Reset Management | Central management of game and world resets |
+| 🌐 Languages | German and English support |
+| 🎨 Resource Pack | Custom lobby graphics, logos and icons |
+| 👥 Multiplayer | Challenge gameplay with friends |
+
+---
+
+## 📦 Installation
+
+### Requirements
+
+| Component | Required Version |
+|---|---|
+| Minecraft | Java Edition |
+| Server Software | Paper 26.3 |
+| Java | Java 25 |
+
+**Important:** The current release requires Paper 26.3. Paper 26.2 and earlier versions are not supported.
+
+### Getting Started
+
+1. Download the latest BastiGHG Challenges `.jar` file.
+2. Place the file inside your Paper server's `plugins` folder.
+3. Start or restart your Minecraft server.
+4. Join the server and enter the central lobby.
+5. Select, load and start your preferred challenge game.
+
+### Main Commands
+
+| Command | Description |
+|---|---|
+| `/lobby` | Return to the central lobby |
+| `/language` | Open the language selection |
+| `/gamesettings` | Open the selected game's settings |
+| `/mobarmy` | MobArmyBattle commands |
+| `/levelborder` | LevelBorder commands |
+| `/levelblock` | LevelBlock commands |
+
+Each game also provides its own information commands and additional functionality.
+
+---
+
+## 🎨 Resource Pack
+
+BastiGHG Challenges includes an optional resource pack for the custom visual elements used throughout the plugin.
+
+It provides:
+
+- Custom lobby logos
+- Game icons
+- Interface symbols
+- Custom display graphics
+
+The resource pack is automatically offered when joining the server.
+
+Without the resource pack, some custom visual elements may not display correctly.
+
+---
+
+## 📋 Development & Changelog
+
+**Current Project Version:** `v1.0.1 Stable`
+
+The first stable version of BastiGHG Challenges was released as `v1.0.0`.
+
+Development continues with bug fixes, compatibility updates, optimizations and additional game modes.
+
+**[📜 View Changelog](CHANGELOG.md)**
+
+**[📦 View GitHub Releases](https://github.com/DrRuni/BastiGHG-Challenges/releases)**
+
+---
+
+## 💬 Community & Support
+
+Feedback, feature suggestions and bug reports are always welcome.
+
+Join the Discord community to:
+
+- Report bugs and technical issues
+- Suggest new challenge games
+- Share ideas and feedback
+- Follow development announcements
+- Participate in community discussions
+
+**[💬 Join our Discord Server](https://discord.gg/t2c98sWr7G)**
+
+---
+
+## 🤖 Development
+
+BastiGHG Challenges is an independently managed fan project developed with the assistance of AI tools.
+
+AI-assisted development supports Java programming, documentation and selected graphical assets.
+
+Gameplay concepts, development decisions, integration, testing and project maintenance are directed and managed by the project creator.
+
+---
+
+## 📜 License & Copyright
+
+Copyright © 2026 DrRuni. All rights reserved.
 
 BastiGHG Challenges is **source-available, not open source**.
 
-The source code is publicly available for viewing, inspection,
-and educational reference.
+The source code is publicly available for viewing and inspection. General reuse, modification or redistribution is not permitted without prior written permission.
 
-Copying, modifying, redistributing, sublicensing, or reusing
-the source code in other projects is not permitted without
-prior written permission from the copyright holder.
+The compiled plugin may be downloaded and used on compatible Minecraft servers through official distribution channels.
 
-The compiled plugin may be downloaded and used on compatible
-Minecraft servers through official distribution channels.
+**[View Copyright & Usage Terms](COPYRIGHT.md)**
 
-Redistribution, modification, or re-uploading of the compiled
-plugin is not permitted without prior written permission.
+---
 
-For full details, see [COPYRIGHT.md](COPYRIGHT.md).
+<div align="center">
+
+**Made with ❤️ by DrRuni**
+
+*BastiGHG Challenges – Fan Project*
+
+**An independent community fan project. Not affiliated with BastiGHG.**
+
+[GitHub](https://github.com/DrRuni/BastiGHG-Challenges) · [Releases](https://github.com/DrRuni/BastiGHG-Challenges/releases) · [Discord](https://discord.gg/t2c98sWr7G)
+
+</div>
