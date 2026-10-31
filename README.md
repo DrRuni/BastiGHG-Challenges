@@ -1,7 +1,7 @@
 <p align="center">
   <img src="images/banner.png"
        alt="BastiGHG Challenges – Fan Project"
-       width="900">
+       width="1400">
 </p>
 
 <div align="center">
@@ -79,7 +79,7 @@
 <h2 align="center"><img src="images/buttons/headings/central-lobby.svg" width="550" alt="Central Lobby"></h2>
 
 <p align="center">
-  <img src="images/lobby.png" alt="Central Lobby" width="750">
+  <img src="images/lobby.png" alt="Central Lobby" width="1200">
 </p>
 
 
