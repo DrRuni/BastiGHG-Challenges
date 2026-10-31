@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="144" viewBox="0 0 760 144" role="img" aria-label="Deutsche README">
+<defs><clipPath id="rounded"><rect x="4" y="4" width="752" height="136" rx="23"/></clipPath><linearGradient id="shine" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".25"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".24"/></linearGradient></defs>
+<g clip-path="url(#rounded)"><rect width="760" height="48" fill="#111111"/><rect y="48" width="760" height="48" fill="#DD0000"/><rect y="96" width="760" height="48" fill="#FFCE00"/><rect x="243" y="29" width="274" height="86" rx="16" fill="#171717" opacity=".83"/><rect width="760" height="144" fill="url(#shine)"/></g>
+<rect x="4" y="4" width="752" height="136" rx="23" fill="none" stroke="#ffefcc" stroke-opacity=".8" stroke-width="5"/>
+<text x="380" y="89" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="53" text-anchor="middle" fill="white" letter-spacing="4">README</text>
+</svg>

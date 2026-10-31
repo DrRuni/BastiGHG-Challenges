@@ -26,13 +26,15 @@
 
 <br><br>
 
-<a href="README.md">
-  <img src="https://img.shields.io/badge/English-README-287FA3?style=plastic" alt="English README">
-</a>
-&nbsp;&nbsp;
-<a href="README_DE.md">
-  <img src="https://img.shields.io/badge/Deutsch-README-555555?style=plastic" alt="Deutsche README">
-</a>
+<p align="center">
+  <a href="README.md">
+    <img src="images/buttons/english.svg" width="260" alt="English README">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="README_DE.md">
+    <img src="images/buttons/deutsch.svg" width="260" alt="Deutsche README">
+  </a>
+</p>
 
 ### One Plugin. Multiple Challenges. One Central Lobby.
 
