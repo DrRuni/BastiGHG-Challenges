@@ -200,7 +200,7 @@ Development continues with bug fixes, compatibility updates, optimizations and a
 
 ---
 
-#<h2 align="center"><img src="images/headings/community-support.svg" width="550" alt="Community & Support"></h2>
+<h2 align="center"><img src="images/headings/community-support.svg" width="550" alt="Community & Support"></h2>
 
 Feedback, feature suggestions and bug reports are always welcome.
 
