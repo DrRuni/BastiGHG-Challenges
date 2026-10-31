@@ -24,14 +24,20 @@
   <img src="https://img.shields.io/badge/CurseForge-Download-F16436?style=plastic" alt="CurseForge">
 </a>
 
-</div>
+<br><br>
 
+<a href="README.md">
+  <img src="https://img.shields.io/badge/English-README-287FA3?style=plastic" alt="English README">
+</a>
+&nbsp;&nbsp;
+<a href="README_DE.md">
+  <img src="https://img.shields.io/badge/Deutsch-README-555555?style=plastic" alt="Deutsche README">
+</a>
 
 ### One Plugin. Multiple Challenges. One Central Lobby.
 
 **A Minecraft Paper plugin combining multiple independent challenge games into one unified system.**
 
-🇩🇪 **Ein Plugin. Mehrere Challenges. Eine zentrale Lobby.**
 
 *All your favorite challenges in one place!*
 
@@ -41,7 +47,7 @@
 
 ---
 
-<h2 align="center"><img src="images/headings/about-project.svg" width="550" alt="About the Project"></h2>
+<h2 align="center"><img src="images/buttons/headings/about-project.svg" width="550" alt="About the Project"></h2>
 
 **BastiGHG Challenges – Fan Project** brings multiple Minecraft challenge game modes together in a single Paper plugin.
 
@@ -55,7 +61,7 @@ The project is continuously developed with new challenge games, improvements and
 
 ---
 
-<h2 align="center"><img src="images/headings/central-lobby.svg" width="550" alt="Central Lobby"></h2>
+<h2 align="center"><img src="images/buttons/headings/central-lobby.svg" width="550" alt="Central Lobby"></h2>
 
 <p align="center">
   <img src="images/lobby.png" alt="Central Lobby" width="750">
@@ -80,7 +86,7 @@ Every challenge runs in its own environment, keeping different game modes separa
 
 ---
 
-<h2 align="center"><img src="images/headings/included-games.svg" width="550" alt="Included Games"></h2>
+<h2 align="center"><img src="images/buttons/headings/included-games.svg" width="550" alt="Included Games"></h2>
 
 <p align="center">
   Explore the available challenge games.<br>
@@ -103,7 +109,7 @@ Every challenge runs in its own environment, keeping different game modes separa
 
 ---
 
-<h3 align="center"><img src="images/headings/more-challenges.svg" width="450" alt="More Challenges Coming Soon"></h3>
+<h3 align="center"><img src="images/buttons/headings/more-challenges.svg" width="450" alt="More Challenges Coming Soon"></h3>
 
 BastiGHG Challenges is designed to grow.
 
@@ -115,7 +121,7 @@ The community can help shape future development by suggesting new challenges and
 
 ---
 
-<h2 align="center"><img src="images/headings/core-features.svg" width="550" alt="Core Features"></h2>
+<h2 align="center"><img src="images/buttons/headings/core-features.svg" width="550" alt="Core Features"></h2>
 
 | Feature | Description |
 |---|---|
@@ -134,7 +140,7 @@ The community can help shape future development by suggesting new challenges and
 
 ---
 
-<h2 align="center"><img src="images/headings/installation.svg" width="550" alt="Installation"></h2>
+<h2 align="center"><img src="images/buttons/headings/installation.svg" width="550" alt="Installation"></h2>
 
 ### Requirements
 
@@ -169,7 +175,7 @@ Each game also provides its own information commands and additional functionalit
 
 ---
 
-<h2 align="center"><img src="images/headings/resource-pack.svg" width="550" alt="Resource Pack"></h2>
+<h2 align="center"><img src="images/buttons/headings/resource-pack.svg" width="550" alt="Resource Pack"></h2>
 
 BastiGHG Challenges includes an optional resource pack for the custom visual elements used throughout the plugin.
 
@@ -186,7 +192,7 @@ Without the resource pack, some custom visual elements may not display correctly
 
 ---
 
-<h2 align="center"><img src="images/headings/development-changelog.svg" width="550" alt="Development & Changelog"></h2>
+<h2 align="center"><img src="images/buttons/headings/development-changelog.svg" width="550" alt="Development & Changelog"></h2>
 
 **Current Project Version:** `v1.0.1 Stable`
 
@@ -200,7 +206,7 @@ Development continues with bug fixes, compatibility updates, optimizations and a
 
 ---
 
-<h2 align="center"><img src="images/headings/community-support.svg" width="550" alt="Community & Support"></h2>
+<h2 align="center"><img src="images/buttons/headings/community-support.svg" width="550" alt="Community & Support"></h2>
 
 Feedback, feature suggestions and bug reports are always welcome.
 
@@ -216,7 +222,7 @@ Join the Discord community to:
 
 ---
 
-<h2 align="center"><img src="images/headings/development.svg" width="550" alt="Development"></h2>
+<h2 align="center"><img src="images/buttons/headings/development.svg" width="550" alt="Development"></h2>
 
 BastiGHG Challenges is an independently managed fan project developed with the assistance of AI tools.
 
@@ -226,7 +232,7 @@ Gameplay concepts, development decisions, integration, testing and project maint
 
 ---
 
-<h2 align="center"><img src="images/headings/license-copyright.svg" width="550" alt="License & Copyright"></h2>
+<h2 align="center"><img src="images/buttons/headings/license-copyright.svg" width="550" alt="License & Copyright"></h2>
 
 Copyright © 2026 DrRuni. All rights reserved.
 
