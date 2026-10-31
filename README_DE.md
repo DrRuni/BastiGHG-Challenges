@@ -151,7 +151,7 @@
 
 <p align="center">
   <strong>
-    <a href="https://discord.gg/t2c98sWr7G">Der Community beitreten</a>
+    <a href="https://discord.gg/t2c98sWr7G">Join Discord</a>
   </strong>
 </p>
 

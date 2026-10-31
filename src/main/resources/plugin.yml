@@ -1,9 +1,9 @@
 name: BastiGHG-Challenges
-version: '1.0.1 Stable'
+version: '9.0.1'
 
 game-versions:
-  mobarmybattle: '1.7.2 Stable'
-  levelborder: '1.2.1 Stable'
+  mobarmybattle: '1.7.2'
+  levelborder: '1.2.1'
   levelblock: '0.9.1 Beta'
 
 
