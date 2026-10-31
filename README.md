@@ -6,9 +6,9 @@
 ![Paper](https://img.shields.io/badge/Paper-26.3-4682B4?style=for-the-badge)
 ![Java](https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge)
 
-[![Discord](https://img.shields.io/badge/Discord-Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/t2c98sWr7G)
-[![SpigotMC](https://img.shields.io/badge/SpigotMC-Download-ED8106?style=for-the-badge)](https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/)
-[![CurseForge](https://img.shields.io/badge/CurseForge-Download-F16436?style=for-the-badge)](https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject)
+[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/t2c98sWr7G)
+[![SpigotMC](https://img.shields.io/badge/SpigotMC-ED8106?style=for-the-badge)](https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/)
+[![CurseForge](https://img.shields.io/badge/CurseForge-F16436?style=for-the-badge)](https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject)
 
 
 ### One Plugin. Multiple Challenges. One Central Lobby.
