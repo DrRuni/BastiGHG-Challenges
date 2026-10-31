@@ -6,9 +6,10 @@
 
 <div align="center">
 
-[![Latest Release](https://img.shields.io/github/v/release/DrRuni/BastiGHG-Challenges?style=plastic&label=Version&color=22C55E)](https://github.com/DrRuni/BastiGHG-Challenges/releases/latest)
+[![Plugin Version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FDrRuni%2FBastiGHG-Challenges%2Fmain%2Fsrc%2Fmain%2Fresources%2Fplugin.yml&query=%24.version&label=Version&color=22C55E&style=plastic)](https://github.com/DrRuni/BastiGHG-Challenges/blob/main/src/main/resources/plugin.yml)
 ![Paper](https://img.shields.io/badge/Paper-26.3-4682B4?style=plastic)
 ![Java](https://img.shields.io/badge/Java-25-E76F00?style=plastic)
+
 
 <br>
 
@@ -225,118 +226,239 @@
 
 <h2 align="center"><img src="images/buttons/headings/installation.svg" width="550" alt="Installation"></h2>
 
-### Requirements
 
-| Component | Required Version |
-|---|---|
-| Minecraft | Java Edition |
-| Server Software | Paper 26.3 |
-| Java | Java 25 |
+<h3 align="center">Requirements</h3>
 
-**Important:** The current release requires Paper 26.3. Paper 26.2 and earlier versions are not supported.
+<div align="center">
+  <table>
+    <tr>
+      <th>Component</th>
+      <th>Required Version</th>
+    </tr>
+    <tr>
+      <td>Minecraft</td>
+      <td>Java Edition</td>
+    </tr>
+    <tr>
+      <td>Server Software</td>
+      <td>Paper 26.3</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>Java 25</td>
+    </tr>
+  </table>
+</div>
 
-### Getting Started
+<p align="center">
+  <strong>Important:</strong> The current release requires Paper 26.3.
+  Paper 26.2 and earlier versions are not supported.
+</p>
 
-1. Download the latest BastiGHG Challenges `.jar` file.
-2. Place the file inside your Paper server's `plugins` folder.
-3. Start or restart your Minecraft server.
-4. Join the server and enter the central lobby.
-5. Select, load and start your preferred challenge game.
+<h3 align="center">Getting Started</h3>
 
-### Main Commands
+<p align="center">
+  1. Download the latest BastiGHG Challenges <code>.jar</code> file.<br>
+  2. Place the file inside your Paper server's <code>plugins</code> folder.<br>
+  3. Start or restart your Minecraft server.<br>
+  4. Join the server and enter the central lobby.<br>
+  5. Select, load and start your preferred challenge game.
+</p>
 
-| Command | Description |
-|---|---|
-| `/lobby` | Return to the central lobby |
-| `/language` | Open the language selection |
-| `/gamesettings` | Open the selected game's settings |
-| `/mobarmy` | MobArmyBattle commands |
-| `/levelborder` | LevelBorder commands |
-| `/levelblock` | LevelBlock commands |
+<h3 align="center">Main Commands</h3>
 
-Each game also provides its own information commands and additional functionality.
+<div align="center">
+  <table>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td><code>/lobby</code></td>
+      <td>Return to the central lobby</td>
+    </tr>
+    <tr>
+      <td><code>/language</code></td>
+      <td>Open the language selection</td>
+    </tr>
+    <tr>
+      <td><code>/gamesettings</code></td>
+      <td>Open the selected game's settings</td>
+    </tr>
+    <tr>
+      <td><code>/mobarmy</code></td>
+      <td>MobArmyBattle commands</td>
+    </tr>
+    <tr>
+      <td><code>/levelborder</code></td>
+      <td>LevelBorder commands</td>
+    </tr>
+    <tr>
+      <td><code>/levelblock</code></td>
+      <td>LevelBlock commands</td>
+    </tr>
+  </table>
+</div>
+
+<p align="center">
+  Each game also provides its own information commands and additional functionality.
+</p>
+
 
 ---
 
 <h2 align="center"><img src="images/buttons/headings/resource-pack.svg" width="550" alt="Resource Pack"></h2>
 
-BastiGHG Challenges includes an optional resource pack for the custom visual elements used throughout the plugin.
 
-It provides:
+<p align="center">
+  BastiGHG Challenges includes an optional resource pack for the custom visual elements used throughout the plugin.
+</p>
 
-- Custom lobby logos
-- Game icons
-- Interface symbols
-- Custom display graphics
+<p align="center">
+  It provides:
+</p>
 
-The resource pack is automatically offered when joining the server.
+<p align="center">
+  Custom lobby logos<br>
+  Game icons<br>
+  Interface symbols<br>
+  Custom display graphics
+</p>
 
-Without the resource pack, some custom visual elements may not display correctly.
+<p align="center">
+  The resource pack is automatically offered when joining the server.
+</p>
+
+<p align="center">
+  Without the resource pack, some custom visual elements may not display correctly.
+</p>
+
 
 ---
 
 <h2 align="center"><img src="images/buttons/headings/development-changelog.svg" width="550" alt="Development & Changelog"></h2>
 
-**Current Project Version:** `v1.0.1 Stable`
 
-The first stable version of BastiGHG Challenges was released as `v1.0.0`.
+<p align="center">
+  <strong>Current Project Version:</strong>
+  <img src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/DrRuni/BastiGHG-Challenges/main/src/main/resources/plugin.yml&query=$.version&label=Version&color=22C55E&style=plastic"
+       alt="Current Project Version">
+</p>
 
-Development continues with bug fixes, compatibility updates, optimizations and additional game modes.
+<p align="center">
+  The first stable version of BastiGHG Challenges was released as <code>v1.0.0</code>.
+</p>
 
-**[📜 View Changelog](CHANGELOG.md)**
+<p align="center">
+  Development continues with bug fixes, compatibility updates, optimizations and additional game modes.
+</p>
 
-**[📦 View GitHub Releases](https://github.com/DrRuni/BastiGHG-Challenges/releases)**
+<p align="center">
+  <strong>
+    <a href="CHANGELOG.md">📜 View Changelog</a>
+  </strong>
+</p>
+
+<p align="center">
+  <strong>
+    <a href="https://github.com/DrRuni/BastiGHG-Challenges/releases">📦 View GitHub Releases</a>
+  </strong>
+</p>
 
 ---
 
 <h2 align="center"><img src="images/buttons/headings/community-support.svg" width="550" alt="Community & Support"></h2>
 
-Feedback, feature suggestions and bug reports are always welcome.
 
-Join the Discord community to:
+<p align="center">
+  Feedback, feature suggestions and bug reports are always welcome.
+</p>
 
-- Report bugs and technical issues
-- Suggest new challenge games
-- Share ideas and feedback
-- Follow development announcements
-- Participate in community discussions
+<p align="center">
+  Join the Discord community to:
+</p>
 
-**[💬 Join our Discord Server](https://discord.gg/t2c98sWr7G)**
+<p align="center">
+  Report bugs and technical issues<br>
+  Suggest new challenge games<br>
+  Share ideas and feedback<br>
+  Follow development announcements<br>
+  Participate in community discussions
+</p>
+
+<p align="center">
+  <strong>
+    <a href="https://discord.gg/t2c98sWr7G">💬 Join our Discord Server</a>
+  </strong>
+</p>
+
 
 ---
 
 <h2 align="center"><img src="images/buttons/headings/development.svg" width="550" alt="Development"></h2>
 
-BastiGHG Challenges is an independently managed fan project developed with the assistance of AI tools.
 
-AI-assisted development supports Java programming, documentation and selected graphical assets.
+<p align="center">
+  BastiGHG Challenges is an independently managed fan project developed with the assistance of AI tools.
+</p>
 
-Gameplay concepts, development decisions, integration, testing and project maintenance are directed and managed by the project creator.
+<p align="center">
+  AI-assisted development supports Java programming, documentation and selected graphical assets.
+</p>
+
+<p align="center">
+  Gameplay concepts, development decisions, integration, testing and project maintenance are directed and managed by the project creator.
+</p>
+
 
 ---
 
 <h2 align="center"><img src="images/buttons/headings/license-copyright.svg" width="550" alt="License & Copyright"></h2>
 
-Copyright © 2026 DrRuni. All rights reserved.
 
-BastiGHG Challenges is **source-available, not open source**.
+<p align="center">
+  Copyright © 2026 DrRuni. All rights reserved.
+</p>
 
-The source code is publicly available for viewing and inspection. General reuse, modification or redistribution is not permitted without prior written permission.
+<p align="center">
+  BastiGHG Challenges is <strong>source-available, not open source</strong>.
+</p>
 
-The compiled plugin may be downloaded and used on compatible Minecraft servers through official distribution channels.
+<p align="center">
+  The source code is publicly available for viewing and inspection.
+  General reuse, modification or redistribution is not permitted
+  without prior written permission.
+</p>
 
-**[View Copyright & Usage Terms](COPYRIGHT.md)**
+<p align="center">
+  The compiled plugin may be downloaded and used on compatible Minecraft
+  servers through official distribution channels.
+</p>
+
+<p align="center">
+  <strong>
+    <a href="COPYRIGHT.md">View Copyright &amp; Usage Terms</a>
+  </strong>
+</p>
 
 ---
 
-<div align="center">
+<p align="center">
+  <strong>Made with ❤️ by DrRuni</strong>
+</p>
 
-**Made with ❤️ by DrRuni**
+<p align="center">
+  <em>BastiGHG Challenges – Fan Project</em>
+</p>
 
-*BastiGHG Challenges – Fan Project*
+<p align="center">
+  <strong>An independent community fan project. Not affiliated with BastiGHG.</strong>
+</p>
 
-**An independent community fan project. Not affiliated with BastiGHG.**
-
-[GitHub](https://github.com/DrRuni/BastiGHG-Challenges) · [Releases](https://github.com/DrRuni/BastiGHG-Challenges/releases) · [Discord](https://discord.gg/t2c98sWr7G)
-
-</div>
+<p align="center">
+  <a href="https://github.com/DrRuni/BastiGHG-Challenges">GitHub</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/DrRuni/BastiGHG-Challenges/releases">Releases</a>
+  &nbsp;·&nbsp;
+  <a href="https://discord.gg/t2c98sWr7G">Discord</a>
+</p>
