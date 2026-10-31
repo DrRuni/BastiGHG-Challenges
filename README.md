@@ -1,14 +1,30 @@
-![BastiGHG Challenges – Fan Project](images/banner.png)
+<p align="center">
+  <img src="images/banner.png"
+       alt="BastiGHG Challenges – Fan Project"
+       width="900">
+</p>
 
 <div align="center">
 
-[![Latest Release](https://img.shields.io/github/v/release/DrRuni/BastiGHG-Challenges?style=for-the-badge&label=Version&color=22C55E)](https://github.com/DrRuni/BastiGHG-Challenges/releases/latest)
-![Paper](https://img.shields.io/badge/Paper-26.3-4682B4?style=for-the-badge)
-![Java](https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge)
+[![Latest Release](https://img.shields.io/github/v/release/DrRuni/BastiGHG-Challenges?style=plastic&label=Version&color=22C55E)](https://github.com/DrRuni/BastiGHG-Challenges/releases/latest)
+![Paper](https://img.shields.io/badge/Paper-26.3-4682B4?style=plastic)
+![Java](https://img.shields.io/badge/Java-25-E76F00?style=plastic)
 
-[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/t2c98sWr7G)
-[![SpigotMC](https://img.shields.io/badge/SpigotMC-ED8106?style=for-the-badge)](https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/)
-[![CurseForge](https://img.shields.io/badge/CurseForge-F16436?style=for-the-badge)](https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject)
+<br>
+
+<a href="https://discord.gg/t2c98sWr7G">
+  <img src="https://img.shields.io/badge/Discord-Community-5865F2?style=plastic&logo=discord&logoColor=white" alt="Discord">
+</a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/">
+  <img src="https://img.shields.io/badge/SpigotMC-Download-ED8106?style=plastic" alt="SpigotMC">
+</a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject">
+  <img src="https://img.shields.io/badge/CurseForge-Download-F16436?style=plastic" alt="CurseForge">
+</a>
+
+</div>
 
 
 ### One Plugin. Multiple Challenges. One Central Lobby.
@@ -25,7 +41,7 @@
 
 ---
 
-## 🎮 About the Project
+<h2 align="center"><img src="images/headings/about-project.svg" width="550" alt="About the Project"></h2>
 
 **BastiGHG Challenges – Fan Project** brings multiple Minecraft challenge game modes together in a single Paper plugin.
 
@@ -39,9 +55,11 @@ The project is continuously developed with new challenge games, improvements and
 
 ---
 
-## 🏠 Central Lobby
+<h2 align="center"><img src="images/headings/central-lobby.svg" width="550" alt="Central Lobby"></h2>
 
-![Central Lobby](images/lobby.png)
+<p align="center">
+  <img src="images/lobby.png" alt="Central Lobby" width="750">
+</p>
 
 The central lobby is the heart of BastiGHG Challenges.
 
@@ -62,55 +80,30 @@ Every challenge runs in its own environment, keeping different game modes separa
 
 ---
 
-## ⚔️ Included Games
+<h2 align="center"><img src="images/headings/included-games.svg" width="550" alt="Included Games"></h2>
 
-Discover the currently available challenge games.
+<p align="center">
+  Explore the available challenge games.<br>
+  Click on a game to view its dedicated documentation.
+</p>
 
-Each game has its own documentation with detailed explanations, gameplay mechanics and instructions.
-
-### ⚔️ MobArmyBattle
-
-[![MobArmyBattle](images/mobarmybattle/preview.png)](game-readmes/README-MobArmyBattle.md)
-
-**Prepare your army. Challenge the opposing team. Survive the arena.**
-
-A multiplayer team challenge where players collect resources, prepare mob waves for their opponents and fight through enemy waves inside an arena.
-
-**Internal Version:** `v1.7.2 Stable`
-
-📖 **[View MobArmyBattle Documentation](game-readmes/README-MobArmyBattle.md)**
-
----
-
-### 🌍 LevelBorder
-
-[![LevelBorder](images/levelborder/preview.png)](game-readmes/README-LevelBorder.md)
-
-**Collect experience. Expand your world. Explore further.**
-
-A survival challenge where the world border grows based on the combined experience levels of all participating players.
-
-**Internal Version:** `v1.2.1 Stable`
-
-📖 **[View LevelBorder Documentation](game-readmes/README-LevelBorder.md)**
+<p align="center">
+  <a href="game-readmes/README-MobArmyBattle.md">
+    <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
+  </a>
+  &nbsp;&nbsp;
+  <a href="game-readmes/README-LevelBorder.md">
+    <img src="images/buttons/levelborder.svg" width="280" alt="LevelBorder">
+  </a>
+  &nbsp;&nbsp;
+  <a href="game-readmes/README-LevelBlock.md">
+    <img src="images/buttons/levelblock.svg" width="280" alt="LevelBlock">
+  </a>
+</p>
 
 ---
 
-### 🧩 LevelBlock
-
-[![LevelBlock](images/levelblock/preview.png)](game-readmes/README-LevelBlock.md)
-
-**Progress block by block and unlock a growing world.**
-
-A unique survival challenge where the playable area gradually expands as players progress through the game.
-
-**Internal Version:** `v0.9.1 Beta`
-
-📖 **[View LevelBlock Documentation](game-readmes/README-LevelBlock.md)**
-
----
-
-### 🚀 More Challenges Coming Soon!
+<h3 align="center"><img src="images/headings/more-challenges.svg" width="450" alt="More Challenges Coming Soon"></h3>
 
 BastiGHG Challenges is designed to grow.
 
@@ -122,7 +115,7 @@ The community can help shape future development by suggesting new challenges and
 
 ---
 
-## ✨ Core Features
+<h2 align="center"><img src="images/headings/core-features.svg" width="550" alt="Core Features"></h2>
 
 | Feature | Description |
 |---|---|
@@ -141,7 +134,7 @@ The community can help shape future development by suggesting new challenges and
 
 ---
 
-## 📦 Installation
+<h2 align="center"><img src="images/headings/installation.svg" width="550" alt="Installation"></h2>
 
 ### Requirements
 
@@ -176,7 +169,7 @@ Each game also provides its own information commands and additional functionalit
 
 ---
 
-## 🎨 Resource Pack
+<h2 align="center"><img src="images/headings/resource-pack.svg" width="550" alt="Resource Pack"></h2>
 
 BastiGHG Challenges includes an optional resource pack for the custom visual elements used throughout the plugin.
 
@@ -193,7 +186,7 @@ Without the resource pack, some custom visual elements may not display correctly
 
 ---
 
-## 📋 Development & Changelog
+<h2 align="center"><img src="images/headings/development-changelog.svg" width="550" alt="Development & Changelog"></h2>
 
 **Current Project Version:** `v1.0.1 Stable`
 
@@ -207,7 +200,7 @@ Development continues with bug fixes, compatibility updates, optimizations and a
 
 ---
 
-## 💬 Community & Support
+#<h2 align="center"><img src="images/headings/community-support.svg" width="550" alt="Community & Support"></h2>
 
 Feedback, feature suggestions and bug reports are always welcome.
 
@@ -223,7 +216,7 @@ Join the Discord community to:
 
 ---
 
-## 🤖 Development
+<h2 align="center"><img src="images/headings/development.svg" width="550" alt="Development"></h2>
 
 BastiGHG Challenges is an independently managed fan project developed with the assistance of AI tools.
 
@@ -233,7 +226,7 @@ Gameplay concepts, development decisions, integration, testing and project maint
 
 ---
 
-## 📜 License & Copyright
+<h2 align="center"><img src="images/headings/license-copyright.svg" width="550" alt="License & Copyright"></h2>
 
 Copyright © 2026 DrRuni. All rights reserved.
 

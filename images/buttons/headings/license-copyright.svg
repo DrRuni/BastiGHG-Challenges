@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="100" viewBox="0 0 900 100" role="img" aria-label="License &amp; Copyright">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#20232A"/>
+      <stop offset="55%" stop-color="#353B45"/>
+      <stop offset="100%" stop-color="#171A1F"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" x2="1">
+      <stop offset="0%" stop-color="#64748B" stop-opacity=".2"/>
+      <stop offset="50%" stop-color="#AEB7C4" stop-opacity=".9"/>
+      <stop offset="100%" stop-color="#64748B" stop-opacity=".2"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="4" width="896" height="92" rx="18" fill="#0F1116" opacity=".24"/>
+  <rect x="1" y="1" width="898" height="94" rx="16" fill="url(#bg)" stroke="#626A75" stroke-width="1.5"/>
+  <path d="M 28 8 H 872" stroke="#FFFFFF" opacity=".15" stroke-width="2"/>
+  <path d="M 48 89 H 852" stroke="url(#line)" stroke-width="2"/>
+  <text x="450" y="59" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="700" fill="#F3F5F8" letter-spacing=".5">License &amp; Copyright</text>
+</svg>
