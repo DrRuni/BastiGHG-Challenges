@@ -50,6 +50,31 @@
 
 ---
 
+
+<h2 align="center"><img src="images/buttons/headings/included-games.svg" width="550" alt="Included Games"></h2>
+
+<p align="center">
+  Explore the available challenge games.<br>
+  Click on a game to view its dedicated documentation.
+</p>
+
+<p align="center">
+  <a href="game-readmes/README-MobArmyBattle.md">
+    <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
+  </a>
+  &nbsp;&nbsp;
+  <a href="game-readmes/README-LevelBorder.md">
+    <img src="images/buttons/levelborder.svg" width="280" alt="LevelBorder">
+  </a>
+  &nbsp;&nbsp;
+  <a href="game-readmes/README-LevelBlock.md">
+    <img src="images/buttons/levelblock.svg" width="280" alt="LevelBlock">
+  </a>
+</p>
+
+
+---
+
 <h2 align="center"><img src="images/buttons/headings/about-project.svg" width="550" alt="About the Project"></h2>
 
 
@@ -109,28 +134,6 @@
 </p>
 
 
----
-
-<h2 align="center"><img src="images/buttons/headings/included-games.svg" width="550" alt="Included Games"></h2>
-
-<p align="center">
-  Explore the available challenge games.<br>
-  Click on a game to view its dedicated documentation.
-</p>
-
-<p align="center">
-  <a href="game-readmes/README-MobArmyBattle.md">
-    <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
-  </a>
-  &nbsp;&nbsp;
-  <a href="game-readmes/README-LevelBorder.md">
-    <img src="images/buttons/levelborder.svg" width="280" alt="LevelBorder">
-  </a>
-  &nbsp;&nbsp;
-  <a href="game-readmes/README-LevelBlock.md">
-    <img src="images/buttons/levelblock.svg" width="280" alt="LevelBlock">
-  </a>
-</p>
 
 ---
 

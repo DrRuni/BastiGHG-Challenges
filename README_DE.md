@@ -50,6 +50,29 @@
 
 ---
 
+<h2 align="center"><img src="images/buttons/headings/de/included-games.svg" width="550" alt="Enthaltene Games"></h2>
+
+<p align="center">
+  Entdecke die verfügbaren Challenge-Games.<br>
+  Klicke auf ein Game, um die dazugehörige Dokumentation mit Details und Anleitungen zu öffnen.
+</p>
+
+<p align="center">
+  <a href="game-readmes/README-MobArmyBattle.md">
+    <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
+  </a>
+  &nbsp;&nbsp;
+  <a href="game-readmes/README-LevelBorder.md">
+    <img src="images/buttons/levelborder.svg" width="280" alt="LevelBorder">
+  </a>
+  &nbsp;&nbsp;
+  <a href="game-readmes/README-LevelBlock.md">
+    <img src="images/buttons/levelblock.svg" width="280" alt="LevelBlock">
+  </a>
+</p>
+
+---
+
 <h2 align="center"><img src="images/buttons/headings/de/about-project.svg" width="550" alt="Über das Projekt"></h2>
 
 
@@ -106,30 +129,6 @@
 
 <p align="center">
   Jede Challenge läuft in einer eigenen Umgebung. Dadurch bleiben die Spielmodi voneinander getrennt, während Spieler zwischen ihnen wechseln können.
-</p>
-
-
----
-
-<h2 align="center"><img src="images/buttons/headings/de/included-games.svg" width="550" alt="Enthaltene Games"></h2>
-
-<p align="center">
-  Entdecke die verfügbaren Challenge-Games.<br>
-  Klicke auf ein Game, um die dazugehörige Dokumentation mit Details und Anleitungen zu öffnen.
-</p>
-
-<p align="center">
-  <a href="game-readmes/README-MobArmyBattle.md">
-    <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
-  </a>
-  &nbsp;&nbsp;
-  <a href="game-readmes/README-LevelBorder.md">
-    <img src="images/buttons/levelborder.svg" width="280" alt="LevelBorder">
-  </a>
-  &nbsp;&nbsp;
-  <a href="game-readmes/README-LevelBlock.md">
-    <img src="images/buttons/levelblock.svg" width="280" alt="LevelBlock">
-  </a>
 </p>
 
 ---

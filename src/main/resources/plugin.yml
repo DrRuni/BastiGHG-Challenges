@@ -1,5 +1,5 @@
 name: BastiGHG-Challenges
-version: 'test- 1.0.1'
+version: '1.0.1'
 
 game-versions:
   mobarmybattle: '1.7.2'
@@ -8,7 +8,7 @@ game-versions:
 
 
 main: runi.myddns.challenges.ChallengeMain
-api-version: '26.3'
+api-version: 'test 26.3'
 load: POSTWORLD
 
 commands:
