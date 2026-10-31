@@ -51,15 +51,27 @@
 
 <h2 align="center"><img src="images/buttons/headings/about-project.svg" width="550" alt="About the Project"></h2>
 
-**BastiGHG Challenges – Fan Project** brings multiple Minecraft challenge game modes together in a single Paper plugin.
 
-Instead of installing and managing separate plugins for every challenge, players can access all integrated games through one shared lobby.
+<p align="center">
+  <strong>BastiGHG Challenges – Fan Project</strong> brings multiple Minecraft challenge game modes together in a single Paper plugin.
+</p>
 
-Each game maintains its own worlds, player data, settings and progress while being managed by a centralized system.
+<p align="center">
+  Instead of installing and managing separate plugins for every challenge, players can access all integrated games through one shared lobby.
+</p>
 
-The project is continuously developed with new challenge games, improvements and additional features planned for future releases.
+<p align="center">
+  Each game maintains its own worlds, player data, settings and progress while being managed by a centralized system.
+</p>
 
-**The goal: One central platform for an expanding collection of Minecraft challenges.**
+<p align="center">
+  The project is continuously developed with new challenge games, improvements and additional features planned for future releases.
+</p>
+
+<p align="center">
+  <strong>The goal: One central platform for an expanding collection of Minecraft challenges.</strong>
+</p>
+
 
 ---
 
@@ -69,22 +81,32 @@ The project is continuously developed with new challenge games, improvements and
   <img src="images/lobby.png" alt="Central Lobby" width="750">
 </p>
 
-The central lobby is the heart of BastiGHG Challenges.
 
-From here, players can select, load, configure and manage the available challenge games.
+<p align="center">
+  The central lobby is the heart of BastiGHG Challenges.
+</p>
 
-### Lobby Features
+<p align="center">
+  From here, players can select, load, configure and manage the available challenge games.
+</p>
 
-- Central game selection and management
-- Dynamic loading and unloading of games
-- Interactive displays and buttons
-- Game status and loading information
-- Centralized game reset and voting systems
-- Shared world settings and management
-- German and English language support
-- Custom logos, icons and interface graphics
+<h3 align="center">Lobby Features</h3>
 
-Every challenge runs in its own environment, keeping different game modes separated while allowing players to switch between them.
+<p align="center">
+  Central game selection and management<br>
+  Dynamic loading and unloading of games<br>
+  Interactive displays and buttons<br>
+  Game status and loading information<br>
+  Centralized game reset and voting systems<br>
+  Shared world settings and management<br>
+  German and English language support<br>
+  Custom logos, icons and interface graphics
+</p>
+
+<p align="center">
+  Every challenge runs in its own environment, keeping different game modes separated while allowing players to switch between them.
+</p>
+
 
 ---
 
@@ -113,34 +135,93 @@ Every challenge runs in its own environment, keeping different game modes separa
 
 <h3 align="center"><img src="images/buttons/headings/more-challenges.svg" width="450" alt="More Challenges Coming Soon"></h3>
 
-BastiGHG Challenges is designed to grow.
 
-Additional game modes, new mechanics and further improvements are planned for upcoming versions.
+<p align="center">
+  BastiGHG Challenges is designed to grow.
+</p>
 
-The community can help shape future development by suggesting new challenges and sharing feedback on Discord.
+<p align="center">
+  Additional game modes, new mechanics and further improvements are planned for upcoming versions.
+</p>
 
-**[Join the Community](https://discord.gg/t2c98sWr7G)**
+<p align="center">
+  The community can help shape future development by suggesting new challenges and sharing feedback on Discord.
+</p>
+
+<p align="center">
+  <strong>
+    <a href="https://discord.gg/t2c98sWr7G">Join the Community</a>
+  </strong>
+</p>
+
+
+---
+
+
+<h2 align="center">
+  <img src="images/buttons/headings/core-features.svg"
+       width="550" alt="Core Features">
+</h2>
+
+<div align="center">
+  <table>
+    <tr>
+      <th>Feature</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>🏠 Central Lobby</td>
+      <td>One shared hub for all challenge games</td>
+    </tr>
+    <tr>
+      <td>🎮 Multiple Games</td>
+      <td>Different challenges integrated into one plugin</td>
+    </tr>
+    <tr>
+      <td>🌍 Independent Worlds</td>
+      <td>Separate worlds for individual game modes</td>
+    </tr>
+    <tr>
+      <td>👤 Player Data</td>
+      <td>Individual player data and inventories</td>
+    </tr>
+    <tr>
+      <td>🔄 Dynamic Game Management</td>
+      <td>Load and unload games as needed</td>
+    </tr>
+    <tr>
+      <td>💾 Save &amp; Resume</td>
+      <td>Save and restore supported game progress</td>
+    </tr>
+    <tr>
+      <td>🛠️ World Settings</td>
+      <td>Centralized management of game world options</td>
+    </tr>
+    <tr>
+      <td>🗳️ Voting System</td>
+      <td>Multiplayer voting for supported actions</td>
+    </tr>
+    <tr>
+      <td>♻️ Reset Management</td>
+      <td>Central management of game and world resets</td>
+    </tr>
+    <tr>
+      <td>🌐 Languages</td>
+      <td>German and English support</td>
+    </tr>
+    <tr>
+      <td>🎨 Resource Pack</td>
+      <td>Custom lobby graphics, logos and icons</td>
+    </tr>
+    <tr>
+      <td>👥 Multiplayer</td>
+      <td>Challenge gameplay with friends</td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-<h2 align="center"><img src="images/buttons/headings/core-features.svg" width="550" alt="Core Features"></h2>
-
-| Feature | Description |
-|---|---|
-| 🏠 Central Lobby | One shared hub for all challenge games |
-| 🎮 Multiple Games | Different challenges integrated into one plugin |
-| 🌍 Independent Worlds | Separate worlds for individual game modes |
-| 👤 Player Data | Individual player data and inventories |
-| 🔄 Dynamic Game Management | Load and unload games as needed |
-| 💾 Save & Resume | Save and restore supported game progress |
-| 🛠️ World Settings | Centralized management of game world options |
-| 🗳️ Voting System | Multiplayer voting for supported actions |
-| ♻️ Reset Management | Central management of game and world resets |
-| 🌐 Languages | German and English support |
-| 🎨 Resource Pack | Custom lobby graphics, logos and icons |
-| 👥 Multiplayer | Challenge gameplay with friends |
-
----
 
 <h2 align="center"><img src="images/buttons/headings/installation.svg" width="550" alt="Installation"></h2>
 
