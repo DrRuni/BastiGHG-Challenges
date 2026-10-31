@@ -461,4 +461,4 @@
   <a href="https://github.com/DrRuni/BastiGHG-Challenges/releases">Releases</a>
   &nbsp;·&nbsp;
   <a href="https://discord.gg/t2c98sWr7G">Discord</a>
-</p>
+</p> 
