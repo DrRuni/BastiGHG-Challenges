@@ -11,34 +11,40 @@
 </p><!-- Community and download links -->
 <p align="center">
   <a href="https://discord.gg/t2c98sWr7G">
-  <img src="https://img.shields.io/badge/Discord-Community-5865F2?style=plastic&amp;logo=discord&amp;logoColor=white"
-       alt="Discord" height="30">
-</a>
-&nbsp;&nbsp;&nbsp;
-<a href="https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/">
-  <img src="https://img.shields.io/badge/SpigotMC-Download-ED8106?style=plastic"
-       alt="SpigotMC" height="30">
-</a>
-&nbsp;&nbsp;&nbsp;
-<a href="https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject">
-  <img src="https://img.shields.io/badge/CurseForge-Download-F16436?style=plastic"
-       alt="CurseForge" height="30">
-</a>
+    <img src="https://img.shields.io/badge/Discord-Community-5865F2?style=plastic&amp;logo=discord&amp;logoColor=white"
+         alt="Discord" height="30">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://www.spigotmc.org/resources/bastighg-challenges-%E2%80%93-fan-project.139873/">
+    <img src="https://img.shields.io/badge/SpigotMC-Download-ED8106?style=plastic"
+         alt="SpigotMC" height="30">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://www.curseforge.com/minecraft/bukkit-plugins/bastighg-challenges-fanproject">
+    <img src="https://img.shields.io/badge/CurseForge-Download-F16436?style=plastic"
+         alt="CurseForge" height="30">
+  </a>
+</p>
 <br><br><br><br>
-</p><!-- Language selection: both buttons are deliberately retained -->
+
+<!-- Language selection: both buttons are deliberately retained -->
 <p align="center">
   <a href="README.md"><img src="images/buttons/english.svg" width="260" alt="English README"></a>
   &nbsp;&nbsp;&nbsp;
   <a href="README_DE.md"><img src="images/buttons/deutsch.svg" width="260" alt="Deutsche README"></a>
-</p><div align="center">One Plugin. Multiple Challenges. One Central Lobby.
-A Minecraft Paper plugin combining multiple independent challenge games into one unified system.
-
-All your favorite challenges in one place!
+</p><div align="center">
+  <h3>One Plugin. Multiple Challenges. One Central Lobby.</h3>
+  <p><strong>A Minecraft Paper plugin combining multiple independent challenge games into one unified system.</strong></p>
+  <p><em>All your favorite challenges in one place!</em></p>
 </div>Disclaimer: BastiGHG Challenges is an independent, unofficial fan project inspired by Minecraft challenges played by BastiGHG. It is not affiliated with, endorsed by, or officially connected to BastiGHG.
 
-<h2 align="center"><img src="images/buttons/headings/included-games.svg" width="550" alt="Included Games"></h2><p align="center">
-Explore the available challenge games.<br>
-Click on a game to view its dedicated documentation.
+<h2 align="center">
+  <img src="images/buttons/headings/included-games.svg"
+       width="550"
+       alt="Included Games">
+</h2><p align="center">
+  Explore the available challenge games.<br>
+  Click on a game to view its dedicated documentation.
 </p><p align="center">
   <a href="game-readmes/README-MobArmyBattle.md">
     <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
