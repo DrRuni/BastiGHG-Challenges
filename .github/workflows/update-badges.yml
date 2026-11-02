@@ -87,7 +87,7 @@ jobs:
 
           # Kleine Badges auf breitem Hintergrund
           canvas = Image.new('RGBA', (1500, 150), (43, 45, 49, 255))
-          gap = 30
+          gap = 28
           target_height = 65
 
           badges = [
