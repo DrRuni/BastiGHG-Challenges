@@ -46,7 +46,7 @@ jobs:
           if not java:
               raise ValueError('Missing properties/java.version in pom.xml')
 
-          output = Path('images/badges')
+          output = Path('docs/images/badges')
           output.mkdir(parents=True, exist_ok=True)
 
           def badge_svg(label, value):
