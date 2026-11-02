@@ -21,24 +21,24 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Create SVG badges from project versions
+      - name: Install image tools
+        run: python3 -m pip install cairosvg pillow pyyaml
+
+      - name: Generate project and game badges
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           from xml.etree import ElementTree as ET
           from html import escape
-          import re
+          from io import BytesIO
+          import cairosvg
+          import yaml
+          from PIL import Image
 
-          plugin = Path('src/main/resources/plugin.yml').read_text(encoding='utf-8')
-          def yaml_scalar(key):
-              match = re.search(r'^' + re.escape(key) + r'\s*:\s*[\'\"]?([^\'\"#\r\n]+)', plugin, re.M)
-              if not match:
-                  raise ValueError(f'Missing {key} in plugin.yml')
-              return match.group(1).strip()
-
-          version = yaml_scalar('version')
-          paper = yaml_scalar('api-version')
+          data = yaml.safe_load(Path('src/main/resources/plugin.yml').read_text(encoding='utf-8'))
+          version = str(data['version'])
+          paper = str(data['api-version'])
           root = ET.parse('pom.xml').getroot()
           ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
           java = root.findtext('m:properties/m:java.version', namespaces=ns)
@@ -47,13 +47,12 @@ jobs:
 
           output = Path('images/badges')
           output.mkdir(parents=True, exist_ok=True)
-          def badge(filename, label, value):
-              # Approximate width for predictable badge sizing without external packages
+
+          def badge_svg(label, value):
               left = max(56, round(len(label) * 7.2 + 20))
               right = max(38, round(len(value) * 7.2 + 20))
               width = left + right
-              l = escape(label)
-              v = escape(value)
+              l, v = escape(label), escape(value)
               svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{l}: {v}">
           <title>{l}: {v}</title>
           <defs><linearGradient id="shine" x2="0" y2="100%"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".5" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient></defs>
@@ -61,59 +60,53 @@ jobs:
           <g clip-path="url(#rounded)"><rect width="{left}" height="22" fill="#30363D"/><rect x="{left}" width="{right}" height="22" fill="#C45BEB"/><rect width="{width}" height="22" fill="url(#shine)"/></g>
           <g font-family="Verdana,Arial,sans-serif" font-size="11" font-weight="bold" text-anchor="middle"><text x="{left/2}" y="15" fill="#fff">{l}</text><text x="{left+right/2}" y="15" fill="#180E20">{v}</text></g>
           </svg>'''
-              (output / filename).write_text(svg + '\n', encoding='utf-8')
+              return svg + '\n'
 
-          badge('version.svg', 'Version', version)
-          badge('paper.svg', 'Paper', paper)
-          badge('java.svg', 'Java', java)
-          print(f'Generated SVGs: Version={version}, Paper={paper}, Java={java}')
-          PY
+          def as_image(label, value):
+              png = cairosvg.svg2png(bytestring=badge_svg(label, value).encode('utf-8'))
+              return Image.open(BytesIO(png)).convert('RGBA')
 
-      - name: Create compact combined PNG for Discord
-        shell: bash
-        run: |
-          python3 -m pip install --user cairosvg pillow
-          python3 - <<'PYCODE'
-          from pathlib import Path
-          from io import BytesIO
-          import cairosvg
-          from PIL import Image
+          for name, label, value in (
+              ('version', 'Version', version),
+              ('paper', 'Paper', paper),
+              ('java', 'Java', java),
+          ):
+              (output / f'{name}.svg').write_text(badge_svg(label, value), encoding='utf-8')
 
-          folder = Path('images/badges')
-          badges = []
-          for name in ('version', 'paper', 'java'):
-              png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=1)
-              badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
-
-          # Kleine Badges auf breitem Hintergrund
-          canvas = Image.new('RGBA', (1800, 140), (43, 45, 49, 255))
-          gap = 35
-          target_height = 55
-
-          badges = [
-              badge.resize(
-                  (
-                      round(badge.width * target_height / badge.height),
-                      target_height
-                  ),
-                  Image.Resampling.LANCZOS
-              )
-              for badge in badges
-          ]
-
+          # Discord Core badge strip (keep these values for consistent layout).
+          badges = [as_image('Version', version), as_image('Paper', paper), as_image('Java', java)]
+          canvas = Image.new('RGBA', (1500, 140), (43, 45, 49, 255))
+          gap = 28
+          target_height = 45
+          badges = [b.resize((round(b.width * target_height / b.height), target_height), Image.Resampling.LANCZOS) for b in badges]
           strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
           x = (canvas.width - strip_width) // 2
-          for badge in badges:
-              y = (canvas.height - badge.height) // 2
-              canvas.alpha_composite(badge, (x, y))
-              x += badge.width + gap
-          canvas.save(folder / 'badges-combined.png')
-
-          # The old separate PNGs are no longer needed.
+          for b in badges:
+              canvas.alpha_composite(b, (x, (canvas.height - b.height) // 2))
+              x += b.width + gap
+          canvas.save(output / 'badges-combined.png')
           for name in ('version.png', 'paper.png', 'java.png'):
-              (folder / name).unlink(missing_ok=True)
-          print('Generated images/badges/badges-combined.png')
-          PYCODE
+              (output / name).unlink(missing_ok=True)
+
+          # Individual game version badges, centrally stored.
+          names = {
+              'mobarmybattle': 'MobArmyBattle',
+              'levelborder': 'LevelBorder',
+              'levelblock': 'LevelBlock',
+              'chunkroulette': 'ChunkRoulette',
+          }
+          game_versions = data.get('game-versions') or {}
+          for key, label in names.items():
+              target = output / f'{key}-version.png'
+              if key not in game_versions:
+                  print(f'Skipping {key}: not present in plugin.yml')
+                  target.unlink(missing_ok=True)
+                  continue
+              image = as_image(label, str(game_versions[key]))
+              image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS).save(target)
+              print(f'Generated {target}')
+          print(f'Updated Core badges: {version}, Paper {paper}, Java {java}')
+          PY
 
       - name: Commit updated badge images
         shell: bash
@@ -123,5 +116,5 @@ jobs:
             echo "No badge changes"
             exit 0
           fi
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update SVG badges and compact Discord PNG'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update core and game version badges'
           git push
