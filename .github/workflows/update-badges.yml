@@ -109,9 +109,9 @@ jobs:
                   continue
               image = as_image(label, str(game_versions[key]))
               # Kleine Game-Version mittig auf breitem Hintergrund
-              canvas = Image.new('RGBA', (1500, 140), (43, 45, 49, 255))
+              canvas = Image.new('RGBA', (1200, 120), (43, 45, 49, 255))
   
-              target_height = 45
+              target_height = 55
               new_width = round(image.width * target_height / image.height)
               image = image.resize((new_width, target_height), Image.Resampling.LANCZOS)
   
