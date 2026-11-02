@@ -117,7 +117,7 @@ jobs:
       - name: Commit updated badge images
         shell: bash
         run: |
-          git add -A images/badges
+          git add -A docs/images/badges
           if git diff --cached --quiet; then
             echo "No badge changes"
             exit 0
