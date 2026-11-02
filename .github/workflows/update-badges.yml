@@ -102,7 +102,6 @@ jobs:
           ]
 
           strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
-          strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
           x = (canvas.width - strip_width) // 2
           for badge in badges:
               y = (canvas.height - badge.height) // 2
