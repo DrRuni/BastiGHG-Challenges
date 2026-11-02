@@ -69,13 +69,28 @@ jobs:
           print(f'Generated SVGs: Version={version}, Paper={paper}, Java={java}')
           PY
 
+      - name: Convert SVG badges to PNG
+        shell: bash
+        run: |
+          python3 -m pip install --user cairosvg
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          import cairosvg
+
+          for name in ('version', 'paper', 'java'):
+              svg = Path('images/badges') / f'{name}.svg'
+              png = svg.with_suffix('.png')
+              cairosvg.svg2png(url=str(svg), write_to=str(png), scale=3)
+              print(f'Generated {png}')
+          PYCODE
+
       - name: Commit updated badge images
         shell: bash
         run: |
-          git add images/badges/*.svg
+          git add images/badges/*.svg images/badges/*.png
           if git diff --cached --quiet; then
             echo "No badge changes"
             exit 0
           fi
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update CurseForge badge images'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update SVG and PNG badge images'
           git push
