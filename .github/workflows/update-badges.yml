@@ -15,33 +15,22 @@ permissions:
 jobs:
   badges:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install Pillow
-        run: pip install pillow
-
-      - name: Create SVG badges and combined PNG
+      - name: Create SVG badges from project versions
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           from xml.etree import ElementTree as ET
           from html import escape
-          from PIL import Image, ImageDraw, ImageFont
           import re
 
           plugin = Path('src/main/resources/plugin.yml').read_text(encoding='utf-8')
-
           def yaml_scalar(key):
               match = re.search(r'^' + re.escape(key) + r'\s*:\s*[\'\"]?([^\'\"#\r\n]+)', plugin, re.M)
               if not match:
@@ -50,7 +39,6 @@ jobs:
 
           version = yaml_scalar('version')
           paper = yaml_scalar('api-version')
-
           root = ET.parse('pom.xml').getroot()
           ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
           java = root.findtext('m:properties/m:java.version', namespaces=ns)
@@ -59,120 +47,60 @@ jobs:
 
           output = Path('images/badges')
           output.mkdir(parents=True, exist_ok=True)
-
-          def badge_dimensions(label, value):
+          def badge(filename, label, value):
+              # Approximate width for predictable badge sizing without external packages
               left = max(56, round(len(label) * 7.2 + 20))
               right = max(38, round(len(value) * 7.2 + 20))
               width = left + right
-              return left, right, width
-
-          def write_svg(filename, label, value):
-              left, right, width = badge_dimensions(label, value)
               l = escape(label)
               v = escape(value)
               svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{l}: {v}">
           <title>{l}: {v}</title>
           <defs><linearGradient id="shine" x2="0" y2="100%"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".5" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient></defs>
           <clipPath id="rounded"><rect width="{width}" height="22" rx="4"/></clipPath>
-          <g clip-path="url(#rounded)">
-            <rect width="{left}" height="22" fill="#30363D"/>
-            <rect x="{left}" width="{right}" height="22" fill="#C45BEB"/>
-            <rect width="{width}" height="22" fill="url(#shine)"/>
-          </g>
-          <g font-family="Verdana,Arial,sans-serif" font-size="11" font-weight="bold" text-anchor="middle">
-            <text x="{left/2}" y="15" fill="#fff">{l}</text>
-            <text x="{left+right/2}" y="15" fill="#180E20">{v}</text>
-          </g>
+          <g clip-path="url(#rounded)"><rect width="{left}" height="22" fill="#30363D"/><rect x="{left}" width="{right}" height="22" fill="#C45BEB"/><rect width="{width}" height="22" fill="url(#shine)"/></g>
+          <g font-family="Verdana,Arial,sans-serif" font-size="11" font-weight="bold" text-anchor="middle"><text x="{left/2}" y="15" fill="#fff">{l}</text><text x="{left+right/2}" y="15" fill="#180E20">{v}</text></g>
           </svg>'''
               (output / filename).write_text(svg + '\n', encoding='utf-8')
 
-          write_svg('version.svg', 'Version', version)
-          write_svg('paper.svg', 'Paper', paper)
-          write_svg('java.svg', 'Java', java)
-
-          # alte Einzel-PNGs entfernen
-          for old_png in ['version.png', 'paper.png', 'java.png']:
-              old_path = output / old_png
-              if old_path.exists():
-                  old_path.unlink()
-
-          # kombiniertes PNG erzeugen
-          badges = [
-              ('Version', version),
-              ('Paper', paper),
-              ('Java', java),
-          ]
-
-          scale = 3
-          badge_height = 22
-          outer_padding = 8
-          gap = 8
-          radius = 4
-
-          font_paths = [
-              '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-              '/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf',
-          ]
-          font_path = None
-          for p in font_paths:
-              if Path(p).exists():
-                  font_path = p
-                  break
-          if not font_path:
-              raise FileNotFoundError('No suitable font found on runner')
-
-          font = ImageFont.truetype(font_path, 11 * scale)
-
-          dims = []
-          total_badge_width = 0
-          for label, value in badges:
-              left, right, width = badge_dimensions(label, value)
-              dims.append((label, value, left, right, width))
-              total_badge_width += width
-
-          total_width = (total_badge_width + gap * (len(badges) - 1) + outer_padding * 2) * scale
-          total_height = (badge_height + outer_padding * 2) * scale
-
-          img = Image.new('RGBA', (total_width, total_height), (0, 0, 0, 0))
-          draw = ImageDraw.Draw(img)
-
-          def rounded_rect(x1, y1, x2, y2, fill):
-              draw.rounded_rectangle([x1, y1, x2, y2], radius=radius * scale, fill=fill)
-
-          x = outer_padding * scale
-          y = outer_padding * scale
-
-          for label, value, left, right, width in dims:
-              h = badge_height * scale
-              left_w = left * scale
-              right_w = right * scale
-              width_s = width * scale
-
-              rounded_rect(x, y, x + width_s, y + h, '#30363D')
-              draw.rectangle([x + radius * scale, y, x + left_w, y + h], fill='#30363D')
-              rounded_rect(x + left_w, y, x + width_s, y + h, '#C45BEB')
-              draw.rectangle([x + left_w, y, x + width_s - radius * scale, y + h], fill='#C45BEB')
-
-              bbox_label = draw.textbbox((0, 0), label, font=font)
-              label_w = bbox_label[2] - bbox_label[0]
-              label_h = bbox_label[3] - bbox_label[1]
-              label_x = x + (left_w - label_w) / 2
-              label_y = y + (h - label_h) / 2 - 2
-
-              bbox_value = draw.textbbox((0, 0), value, font=font)
-              value_w = bbox_value[2] - bbox_value[0]
-              value_h = bbox_value[3] - bbox_value[1]
-              value_x = x + left_w + (right_w - value_w) / 2
-              value_y = y + (h - value_h) / 2 - 2
-
-              draw.text((label_x, label_y), label, font=font, fill='#FFFFFF')
-              draw.text((value_x, value_y), value, font=font, fill='#180E20')
-
-              x += width_s + gap * scale
-
-          img.save(output / 'badges-combined.png')
-          print(f'Generated SVGs and badges-combined.png: Version={version}, Paper={paper}, Java={java}')
+          badge('version.svg', 'Version', version)
+          badge('paper.svg', 'Paper', paper)
+          badge('java.svg', 'Java', java)
+          print(f'Generated SVGs: Version={version}, Paper={paper}, Java={java}')
           PY
+
+      - name: Create compact combined PNG for Discord
+        shell: bash
+        run: |
+          python3 -m pip install --user cairosvg pillow
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          from io import BytesIO
+          import cairosvg
+          from PIL import Image
+
+          folder = Path('images/badges')
+          badges = []
+          for name in ('version', 'paper', 'java'):
+              png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=3)
+              badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
+
+          # Lots of transparent space: Discord displays the actual badges smaller.
+          canvas = Image.new('RGBA', (1800, 240), (0, 0, 0, 0))
+          gap = 28
+          strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
+          x = (canvas.width - strip_width) // 2
+          for badge in badges:
+              y = (canvas.height - badge.height) // 2
+              canvas.alpha_composite(badge, (x, y))
+              x += badge.width + gap
+          canvas.save(folder / 'badges-combined.png')
+
+          # The old separate PNGs are no longer needed.
+          for name in ('version.png', 'paper.png', 'java.png'):
+              (folder / name).unlink(missing_ok=True)
+          print('Generated images/badges/badges-combined.png')
+          PYCODE
 
       - name: Commit updated badge images
         shell: bash
@@ -182,5 +110,5 @@ jobs:
             echo "No badge changes"
             exit 0
           fi
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update badge images'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update SVG badges and compact Discord PNG'
           git push
