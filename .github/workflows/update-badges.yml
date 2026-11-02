@@ -86,7 +86,7 @@ jobs:
               badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
 
            # Kleine Badges auf breitem Hintergrund
-          canvas = Image.new('RGBA', (1800, 300), (43, 45, 49, 255))
+          canvas = Image.new('RGBA', (1200, 300), (43, 45, 49, 255))
           gap = 28
           target_height = 55
 
