@@ -114,6 +114,7 @@ jobs:
           print(f'Updated Core badges: {version}, Paper {paper}, Java {java}')
           PY
 
+
       - name: Commit updated badge images
         shell: bash
         run: |
