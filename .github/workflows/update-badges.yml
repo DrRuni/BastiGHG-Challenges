@@ -82,7 +82,7 @@ jobs:
           folder = Path('images/badges')
           badges = []
           for name in ('version', 'paper', 'java'):
-              png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=2)
+              png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=1)
               badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
 
           # Wide opaque Discord-colored background prevents transparent margins being cropped.
