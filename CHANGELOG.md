@@ -2,9 +2,9 @@
 
 ## Challenge Changelogs
 
-- ⚔️ [MobArmyBattle](game-changelogs/CHANGELOG-MobArmyBattle.md)
-- 🌍 [LevelBorder](game-changelogs/CHANGELOG-LevelBorder.md)
-- 🧩 [LevelBlock](game-changelogs/CHANGELOG-LevelBlock.md)
+- ⚔️ [MobArmyBattle](docs/game-changelogs/CHANGELOG-MobArmyBattle.md)
+- 🌍 [LevelBorder](docs/game-changelogs/CHANGELOG-LevelBorder.md)
+- 🧩 [LevelBlock](docs/game-changelogs/CHANGELOG-LevelBlock.md)
 
 ---
 
