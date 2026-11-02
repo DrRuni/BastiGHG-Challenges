@@ -85,9 +85,23 @@ jobs:
               png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=1)
               badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
 
-          # Wide opaque Discord-colored background prevents transparent margins being cropped.
-          canvas = Image.new('RGBA', (1800, 240), (43, 45, 49, 255))
+           # Kleine Badges auf breitem Hintergrund
+          canvas = Image.new('RGBA', (1800, 300), (43, 45, 49, 255))
           gap = 28
+          target_height = 35
+
+          badges = [
+              badge.resize(
+                  (
+                      round(badge.width * target_height / badge.height),
+                      target_height
+                  ),
+                  Image.Resampling.LANCZOS
+              )
+              for badge in badges
+          ]
+
+          strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
           strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
           x = (canvas.width - strip_width) // 2
           for badge in badges:
