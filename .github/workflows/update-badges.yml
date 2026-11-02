@@ -85,9 +85,9 @@ jobs:
               png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=1)
               badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
 
-           # Kleine Badges auf breitem Hintergrund
-          canvas = Image.new('RGBA', (1800, 180), (43, 45, 49, 255))
-          gap = 28
+          # Kleine Badges auf breitem Hintergrund
+          canvas = Image.new('RGBA', (800, 150), (43, 45, 49, 255))
+          gap = 31
           target_height = 75
 
           badges = [
