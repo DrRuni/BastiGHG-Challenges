@@ -82,11 +82,11 @@ jobs:
           folder = Path('images/badges')
           badges = []
           for name in ('version', 'paper', 'java'):
-              png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=3)
+              png_bytes = cairosvg.svg2png(url=str(folder / f'{name}.svg'), scale=2)
               badges.append(Image.open(BytesIO(png_bytes)).convert('RGBA'))
 
-          # Lots of transparent space: Discord displays the actual badges smaller.
-          canvas = Image.new('RGBA', (1800, 240), (0, 0, 0, 0))
+          # Wide opaque Discord-colored background prevents transparent margins being cropped.
+          canvas = Image.new('RGBA', (1800, 240), (43, 45, 49, 255))
           gap = 28
           strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
           x = (canvas.width - strip_width) // 2
