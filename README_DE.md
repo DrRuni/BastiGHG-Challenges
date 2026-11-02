@@ -1,13 +1,13 @@
 <!-- Project banner -->
 <p align="center">
-  <img src="images/banner.png" alt="BastiGHG Challenges – Fanprojekt" width="758">
+  <img src="docs/images/banner.png" alt="BastiGHG Challenges – Fanprojekt" width="758">
 </p><!-- Automatically generated badges: plugin.yml / pom.xml -->
 <p align="center">
-  <a href="src/main/resources/plugin.yml"><img src="images/badges/version.svg" alt="Plugin Version" width="126" height="22"></a>
+  <a href="src/main/resources/plugin.yml"><img src="docs/images/badges/version.svg" alt="Plugin Version" width="126" height="22"></a>
   &nbsp;&nbsp;&nbsp;
-  <a href="src/main/resources/plugin.yml"><img src="images/badges/paper.svg" alt="Paper Version" width="105" height="22"></a>
+  <a href="src/main/resources/plugin.yml"><img src="docs/images/badges/paper.svg" alt="Paper Version" width="105" height="22"></a>
   &nbsp;&nbsp;&nbsp;
-  <a href="pom.xml"><img src="images/badges/java.svg" alt="Java Version" width="94" height="22"></a>
+  <a href="pom.xml"><img src="docs/images/badges/java.svg" alt="Java Version" width="94" height="22"></a>
 </p><!-- Community and download links -->
 <p align="center">
   <a href="https://discord.gg/t2c98sWr7G">
@@ -29,9 +29,9 @@
 
 <!-- Language selection: both buttons are deliberately retained -->
 <p align="center">
-  <a href="README.md"><img src="images/buttons/english.svg" width="260" alt="English README"></a>
+  <a href="README.md"><img src="docs/images/buttons/english.svg" width="260" alt="English README"></a>
   &nbsp;&nbsp;&nbsp;
-  <a href="README_DE.md"><img src="images/buttons/deutsch.svg" width="260" alt="Deutsche README"></a>
+  <a href="README_DE.md"><img src="docs/images/buttons/deutsch.svg" width="260" alt="Deutsche README"></a>
 </p><div align="center">
   <h3>Ein Plugin. Mehrere Challenges. Eine zentrale Lobby.</h3>
   <p><strong>Ein Minecraft-Paper-Plugin, das mehrere eigenständige Challenge-Spielmodi in einem gemeinsamen System vereint.</strong></p>
@@ -39,7 +39,7 @@
 </div>Hinweis: BastiGHG Challenges ist ein unabhängiges, inoffizielles Fanprojekt, das von Minecraft-Challenges von BastiGHG inspiriert wurde. Es besteht keine offizielle Verbindung, Unterstützung oder Zusammenarbeit mit BastiGHG.
 
 <h2 align="center">
-  <img src="images/buttons/headings/de/included-games.svg"
+  <img src="docs/images/buttons/headings/de/included-games.svg"
        width="550"
        alt="Enthaltene Games">
 </h2><p align="center">
@@ -47,18 +47,18 @@
   Klicke auf ein Game, um die dazugehörige Dokumentation
   mit Details und Anleitungen zu öffnen.
 </p><p align="center">
-  <a href="game-readmes/README-MobArmyBattle.md">
-    <img src="images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
+  <a href="docs/game-readmes/README-MobArmyBattle.md">
+    <img src="docs/images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
   </a>
   &nbsp;&nbsp;
-  <a href="game-readmes/README-LevelBorder.md">
-    <img src="images/buttons/levelborder.svg" width="280" alt="LevelBorder">
+  <a href="docs/game-readmes/README-LevelBorder.md">
+    <img src="docs/images/buttons/levelborder.svg" width="280" alt="LevelBorder">
   </a>
   &nbsp;&nbsp;
-  <a href="game-readmes/README-LevelBlock.md">
-    <img src="images/buttons/levelblock.svg" width="280" alt="LevelBlock">
+  <a href="docs/game-readmes/README-LevelBlock.md">
+    <img src="docs/images/buttons/levelblock.svg" width="280" alt="LevelBlock">
   </a>
-</p><h2 align="center"><img src="images/buttons/headings/de/about-project.svg" width="550" alt="Über das Projekt"></h2><p align="center">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/about-project.svg" width="550" alt="Über das Projekt"></h2><p align="center">
   <strong>BastiGHG Challenges – Fanprojekt</strong> vereint mehrere Minecraft-Challenge-Spielmodi in einem einzigen Paper-Plugin.
 </p><p align="center">
   Anstatt für jede Challenge ein separates Plugin installieren und verwalten zu müssen, können Spieler alle integrierten Games über eine gemeinsame Lobby erreichen.
@@ -68,8 +68,8 @@
   Das Projekt wird kontinuierlich weiterentwickelt. Für zukünftige Versionen sind zusätzliche Challenges, Verbesserungen und neue Funktionen geplant.
 </p><p align="center">
   <strong>Das Ziel: Eine zentrale Plattform für eine stetig wachsende Sammlung von Minecraft-Challenges.</strong>
-</p><h2 align="center"><img src="images/buttons/headings/de/central-lobby.svg" width="550" alt="Zentrale Lobby"></h2><p align="center">
-  <img src="images/lobby.png" alt="Zentrale Lobby" width="1200">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/central-lobby.svg" width="550" alt="Zentrale Lobby"></h2><p align="center">
+  <img src="docs/images/lobby.png" alt="Zentrale Lobby" width="1200">
 </p><p align="center">
   Die zentrale Lobby ist das Herzstück von BastiGHG Challenges.
 </p><p align="center">
@@ -85,7 +85,7 @@
   Eigene Logos, Icons und Oberflächengrafiken
 </p><p align="center">
   Jede Challenge läuft in einer eigenen Umgebung. Dadurch bleiben die Spielmodi voneinander getrennt, während Spieler zwischen ihnen wechseln können.
-</p><h3 align="center"><img src="images/buttons/headings/de/more-challenges.svg" width="450" alt="Weitere Challenges folgen"></h3><p align="center">
+</p><h3 align="center"><img src="docs/images/buttons/headings/de/more-challenges.svg" width="450" alt="Weitere Challenges folgen"></h3><p align="center">
   BastiGHG Challenges ist auf Erweiterbarkeit ausgelegt.
 </p><p align="center">
   Für kommende Versionen sind weitere Spielmodi, neue Mechaniken und zusätzliche Verbesserungen geplant.
@@ -96,7 +96,7 @@
     <a href="https://discord.gg/t2c98sWr7G">Join Discord</a>
   </strong>
 </p><h2 align="center">
-  <img src="images/buttons/headings/de/core-features.svg"
+  <img src="docs/images/buttons/headings/de/core-features.svg"
        width="550" alt="Hauptfunktionen">
 </h2><div align="center">
   <table>
@@ -153,7 +153,7 @@
       <td>Challenges gemeinsam mit Freunden spielen</td>
     </tr>
   </table>
-</div><h2 align="center"><img src="images/buttons/headings/de/installation.svg" width="550" alt="Installation"></h2><h3 align="center">Voraussetzungen</h3><div align="center">
+</div><h2 align="center"><img src="docs/images/buttons/headings/de/installation.svg" width="550" alt="Installation"></h2><h3 align="center">Voraussetzungen</h3><div align="center">
   <table>
     <tr>
       <th>Komponente</th>
@@ -214,7 +214,7 @@
   </table>
 </div><p align="center">
   Je nach Game stehen weitere Info-Befehle und zusätzliche Funktionen zur Verfügung.
-</p><h2 align="center"><img src="images/buttons/headings/de/resource-pack.svg" width="550" alt="Ressourcenpaket"></h2><p align="center">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/resource-pack.svg" width="550" alt="Ressourcenpaket"></h2><p align="center">
   BastiGHG Challenges verwendet ein optionales Ressourcenpaket für die eigenen visuellen Elemente des Plugins.
 </p><p align="center">
   Dazu gehören:
@@ -227,9 +227,9 @@
   Das Ressourcenpaket wird beim Betreten des Servers automatisch angeboten.
 </p><p align="center">
   Ohne das Ressourcenpaket können einige besondere Grafikelemente möglicherweise nicht korrekt angezeigt werden.
-</p><h2 align="center"><img src="images/buttons/headings/de/development-changelog.svg" width="550" alt="Entwicklung und Changelog"></h2><p align="center">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/development-changelog.svg" width="550" alt="Entwicklung und Changelog"></h2><p align="center">
   <strong>Aktuelle Projektversion:</strong>
-  <a href="src/main/resources/plugin.yml"><img src="images/badges/version.svg" alt="Plugin Version" width="126" height="22"></a>
+  <a href="src/main/resources/plugin.yml"><img src="docs/images/badges/version.svg" alt="Plugin Version" width="126" height="22"></a>
 </p><p align="center">
   Die erste stabile Version von BastiGHG Challenges wurde als <code>v1.0.0</code> veröffentlicht.
 </p><p align="center">
@@ -242,7 +242,7 @@
   <strong>
     <a href="https://github.com/DrRuni/BastiGHG-Challenges/releases">📦 GitHub-Releases ansehen</a>
   </strong>
-</p><h2 align="center"><img src="images/buttons/headings/de/community-support.svg" width="550" alt="Community und Support"></h2><p align="center">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/community-support.svg" width="550" alt="Community und Support"></h2><p align="center">
   Feedback, Funktionsvorschläge und Fehlermeldungen sind jederzeit willkommen.
 </p><p align="center">
   Auf dem Discord-Server kannst du:
@@ -256,13 +256,13 @@
   <strong>
     <a href="https://discord.gg/t2c98sWr7G">💬 Discord-Server beitreten</a>
   </strong>
-</p><h2 align="center"><img src="images/buttons/headings/de/development.svg" width="550" alt="Entwicklung"></h2><p align="center">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/development.svg" width="550" alt="Entwicklung"></h2><p align="center">
   BastiGHG Challenges ist ein unabhängig betreutes Fanprojekt, das mit Unterstützung von KI-Werkzeugen entwickelt wird.
 </p><p align="center">
   KI-gestützte Entwicklung wird unter anderem bei der Java-Programmierung, Dokumentation und einzelnen Grafiken eingesetzt.
 </p><p align="center">
   Spielkonzepte, Entwicklungsentscheidungen, Integration, Tests und Projektpflege werden vom Projektersteller gesteuert und verantwortet.
-</p><h2 align="center"><img src="images/buttons/headings/de/license-copyright.svg" width="550" alt="Lizenz und Urheberrecht"></h2><p align="center">
+</p><h2 align="center"><img src="docs/images/buttons/headings/de/license-copyright.svg" width="550" alt="Lizenz und Urheberrecht"></h2><p align="center">
   Copyright © 2026 DrRuni. Alle Rechte vorbehalten.
 </p><p align="center">
   BastiGHG Challenges ist <strong>öffentlich einsehbar (source-available), aber nicht Open Source</strong>.
