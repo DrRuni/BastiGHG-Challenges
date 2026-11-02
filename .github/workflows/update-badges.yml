@@ -39,6 +39,7 @@ jobs:
           data = yaml.safe_load(Path('src/main/resources/plugin.yml').read_text(encoding='utf-8'))
           version = str(data['version'])
           paper = str(data['api-version'])
+
           root = ET.parse('pom.xml').getroot()
           ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
           java = root.findtext('m:properties/m:java.version', namespaces=ns)
@@ -73,30 +74,34 @@ jobs:
           ):
               (output / f'{name}.svg').write_text(badge_svg(label, value), encoding='utf-8')
 
-          # Discord Core badge strip (keep these values for consistent layout).
+          # Discord Core badge strip.
           badges = [as_image('Version', version), as_image('Paper', paper), as_image('Java', java)]
           canvas = Image.new('RGBA', (1500, 140), (43, 45, 49, 255))
           gap = 28
           target_height = 45
-          badges = [b.resize((round(b.width * target_height / b.height), target_height), Image.Resampling.LANCZOS) for b in badges]
+          badges = [
+              b.resize((round(b.width * target_height / b.height), target_height), Image.Resampling.LANCZOS)
+              for b in badges
+          ]
           strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
           x = (canvas.width - strip_width) // 2
-          for b in badges:
-              canvas.alpha_composite(b, (x, (canvas.height - b.height) // 2))
-              x += b.width + gap
+          for badge in badges:
+              canvas.alpha_composite(badge, (x, (canvas.height - badge.height) // 2))
+              x += badge.width + gap
           canvas.save(output / 'badges-combined.png')
+
           for name in ('version.png', 'paper.png', 'java.png'):
               (output / name).unlink(missing_ok=True)
 
           # Individual game version badges, centrally stored.
-          names = {
+          games = {
               'mobarmybattle': 'MobArmyBattle',
               'levelborder': 'LevelBorder',
               'levelblock': 'LevelBlock',
               'chunkroulette': 'ChunkRoulette',
           }
           game_versions = data.get('game-versions') or {}
-          for key, label in names.items():
+          for key, label in games.items():
               target = output / f'{key}-version.png'
               if key not in game_versions:
                   print(f'Skipping {key}: not present in plugin.yml')
@@ -105,6 +110,7 @@ jobs:
               image = as_image(label, str(game_versions[key]))
               image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS).save(target)
               print(f'Generated {target}')
+
           print(f'Updated Core badges: {version}, Paper {paper}, Java {java}')
           PY
 
