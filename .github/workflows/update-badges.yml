@@ -108,12 +108,22 @@ jobs:
                   target.unlink(missing_ok=True)
                   continue
               image = as_image(label, str(game_versions[key]))
-              image.resize((image.width * 3, image.height * 3), Image.Resampling.LANCZOS).save(target)
+              # Kleine Game-Version mittig auf breitem Hintergrund
+              canvas = Image.new('RGBA', (1500, 140), (43, 45, 49, 255))
+  
+              target_height = 45
+              new_width = round(image.width * target_height / image.height)
+              image = image.resize((new_width, target_height), Image.Resampling.LANCZOS)
+  
+              x = (canvas.width - image.width) // 2
+              y = (canvas.height - image.height) // 2
+  
+              canvas.alpha_composite(image, (x, y))
+              canvas.save(target)
               print(f'Generated {target}')
 
           print(f'Updated Core badges: {version}, Paper {paper}, Java {java}')
           PY
-
 
       - name: Commit updated badge images
         shell: bash
