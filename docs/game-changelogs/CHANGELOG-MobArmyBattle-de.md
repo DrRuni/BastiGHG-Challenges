@@ -62,7 +62,6 @@
   - `/reset lobby`
   - `/reset teamworld`
   - `/reset playerdata`
-
 ### Geändert
 - Dateiverwaltung neu strukturiert
 - Nachrichten im Spiel und Konsolenausgaben verbessert
