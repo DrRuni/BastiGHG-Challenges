@@ -1,5 +1,14 @@
 # LevelBlock Changelog
 
+## [0.9.1] - Beta-Fehlerbehebungen
+
+### Geändert
+- Auf Paper/Minecraft 26.3 aktualisiert
+
+### Behoben
+- Fehler behoben, durch den ein vollständiger Reset die spielspezifische Reset-Funktion nicht ausführte
+- Reset-Verarbeitung und Synchronisierung des Spielstatus verbessert
+
 ## [0.9.0] - Beta
 
 ### Hinzugefügt

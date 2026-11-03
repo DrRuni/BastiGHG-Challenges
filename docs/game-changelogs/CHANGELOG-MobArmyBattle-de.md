@@ -1,5 +1,13 @@
-
 # MobArmyBattle Changelog
+
+## [1.7.2] - Fehlerbehebungen
+
+### Geändert
+- Auf Paper/Minecraft 26.3 aktualisiert
+
+### Behoben
+- Fehler behoben, durch den der Spieler-Reset aus der zentralen Lobby nicht funktionierte
+- Verarbeitung des Spieler-Resets über verschiedene Spielwelten hinweg verbessert
 
 ## [1.7.1] - Fehlerbehebungen
 
@@ -23,7 +31,7 @@
 - Probleme beim Arena-Reset während laufender Events behoben
 - Kleinere Platzhalter- und Anzeigeprobleme behoben
 
-## [1.6.0] - Stabile Version
+## [1.6.0]
 
 ### Hinzugefügt
 - Arenaauswahl in den Arena-Einstellungen

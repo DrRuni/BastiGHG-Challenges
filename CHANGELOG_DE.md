@@ -14,6 +14,9 @@
 ### Geändert
 - Aktualisiert auf Paper/Minecraft 26.3
 - Reset-System für alle Challenges überarbeitet
+- Spielerinventare werden beim Zurücksetzen der Spielerdaten geleert
+- Spieler werden beim Betreten einer Challenge oder bei der Rückkehr in die zentrale Lobby automatisch in den Überlebensmodus versetzt
+- Warnhinweise zum Verlust des Inventarinhalts bei Reset-Bestätigungen hinzugefügt
 - Interne Spielversionen aktualisiert:
   - MobArmyBattle v1.7.2 Stable
   - LevelBorder v1.2.1 Stable

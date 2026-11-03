@@ -13,6 +13,9 @@
 ### Changed
 - Updated to Paper/Minecraft 26.3
 - Reworked the reset system across all challenges
+- Player inventories are now cleared during player data resets
+- Players are now switched to Survival Mode when entering a challenge or returning to the central lobby
+- Added inventory deletion warnings to reset confirmation dialogs
 - Updated internal game versions:
     - MobArmyBattle v1.7.2 Stable
     - LevelBorder v1.2.1 Stable

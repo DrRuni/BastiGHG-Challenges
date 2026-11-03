@@ -1,5 +1,21 @@
 # LevelBorder Changelog
 
+## [1.2.1] - Bug Fix Release
+
+### Changed
+- Updated to Paper/Minecraft 26.3
+
+### Changed
+- Scoreboard is now hidden by default when starting the challenge
+- Added an INFO notification to show the scoreboard
+
+### Fixed
+- Fixed WorldBorder expansion not updating smoothly
+- Fixed missing players in the scoreboard when starting the challenge
+- Fixed incorrect starting border size (1×1 instead of 3×3) after a reset
+- Fixed translation errors in reset voting
+- Fixed full reset not executing the game-specific reset functionality
+
 ## [1.2.0]
 
 ### Added

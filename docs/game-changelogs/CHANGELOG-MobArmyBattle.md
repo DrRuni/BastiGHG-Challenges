@@ -1,5 +1,14 @@
 # MobArmyBattle Changelog
 
+## [1.7.2] - Bug Fix Release
+
+### Changed
+- Updated to Paper/Minecraft 26.3
+
+### Fixed
+- Fixed player data reset not working when triggered from the central lobby
+- Improved player reset handling across different game worlds
+
 ## [1.7.1] - Bug Fix Release
 
 ### Fixed
@@ -22,7 +31,7 @@
 - Fixed arena reset issues during active events
 - Fixed minor placeholder and display issues
 
-## [1.6.0] - Stable
+## [1.6.0]
 
 ### Added
 - Arena selection in the arena settings

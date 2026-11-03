@@ -1,5 +1,21 @@
 # LevelBorder Changelog
 
+## [1.2.1] - Fehlerbehebungen
+
+### Geändert
+- Auf Paper/Minecraft 26.3 aktualisiert
+
+### Geändert
+- Das Scoreboard ist beim Start der Challenge jetzt standardmäßig ausgeblendet
+- INFO-Hinweis zum Einblenden des Scoreboards hinzugefügt
+
+### Behoben
+- Fehler bei der flüssigen Erweiterung der Weltgrenze behoben
+- Fehlende Spieler im Scoreboard beim Start der Challenge korrigiert
+- Fehlerhafte Startgröße der Weltgrenze (1×1 statt 3×3) nach einem Reset behoben
+- Übersetzungsfehler bei Reset-Abstimmungen behoben
+- Vollständiger Reset führt jetzt die spielspezifische Reset-Funktion korrekt aus
+
 ## [1.2.0]
 
 ### Hinzugefügt
