@@ -12,12 +12,12 @@
 
 <p align="center">
   <a href="../../README.md">
-    <img src="https://img.shields.io/badge/🏠-Main_README-5865F2?style=for-the-badge"
+    <img src="https://img.shields.io/badge/Main_README-5865F2?style=for-the-badge"
          alt="Main README">
   </a>
   &nbsp;&nbsp;&nbsp;
   <a href="../game-changelogs/CHANGELOG-MobArmyBattle.md">
-    <img src="https://img.shields.io/badge/📜-Changelog-C0392B?style=for-the-badge"
+    <img src="https://img.shields.io/badge/Changelog-C0392B?style=for-the-badge"
          alt="MobArmyBattle Changelog">
   </a>
 </p>
