@@ -1,10 +1,11 @@
 name: BastiGHG-Challenges
-version: '1.0.1'
+version: '1.1.0'
 
 game-versions:
   mobarmybattle: '1.7.2'
   levelborder: '1.2.1'
   levelblock: '0.9.1 Beta'
+  chunkrandomizer: '0.8.0 Beta'
 
 
 main: runi.myddns.challenges.ChallengeMain
@@ -25,6 +26,11 @@ commands:
   lobby:
     description: Teleports players back to the central lobby
     usage: /lobby [all]
+
+  challenge:
+    description: Controls the current challenge
+    usage: /challenge start
+    aliases: [ c, game, g ]
 
   gamesettings:
     description: Opens the settings for the currently loaded game
@@ -95,6 +101,16 @@ commands:
     description: LevelBlock Steuerung
     usage: /levelblock
 
+  # ============================================================
+  # ChunkRandomizer
+  # ============================================================
+
+  chunkrandomizer:
+    description: ChunkRandomizer Steuerung
+    usage: /chunkrandomizer <reset|reset world>
+    permission: chunkrandomizer.admin
+    permission-message: "§cKeine Berechtigung!"
+
 permissions:
 
   # ============================================================
@@ -114,4 +130,12 @@ permissions:
 
   levelborder.admin:
     description: Allows administrative LevelBorder commands
+    default: op
+
+  # ============================================================
+  # ChunkRandomizer
+  # ============================================================
+
+  chunkrandomizer.admin:
+    description: Allows ChunkRandomizer administrative commands
     default: op

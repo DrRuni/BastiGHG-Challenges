@@ -2,10 +2,7 @@ package runi.myddns.challenges;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import runi.myddns.challenges.core.commands.GameSettingsCommand;
-import runi.myddns.challenges.core.commands.InfoCommand;
-import runi.myddns.challenges.core.commands.LanguageCommand;
-import runi.myddns.challenges.core.commands.LobbyCommand;
+import runi.myddns.challenges.core.commands.*;
 import runi.myddns.challenges.core.display.LobbyButtonManager;
 import runi.myddns.challenges.core.display.LobbyDisplayManager;
 import runi.myddns.challenges.core.files.PluginFileManager;
@@ -24,6 +21,7 @@ import runi.myddns.challenges.core.server.ServerIconManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.*;
 import runi.myddns.challenges.core.world.lobby.LobbyWorldManager;
+import runi.myddns.challenges.games.chunkrandomizer.ChunkRandomizerGame;
 import runi.myddns.challenges.games.levelblock.LevelBlockGame;
 import runi.myddns.challenges.games.levelborder.LevelBorderGame;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
@@ -84,6 +82,7 @@ public final class ChallengeMain extends JavaPlugin {
         LobbyButtonManager lobbyButtonManager = new LobbyButtonManager(this, lobbyDisplayManager, gameManager);
 
         playerGameDataManager = new PlayerGameDataManager(this);
+        playerGameDataManager.startAutoSave();
         voteManager = new VoteManager(this);
 
         registerListeners(serverIconManager, lobbyButtonManager);
@@ -120,6 +119,7 @@ public final class ChallengeMain extends JavaPlugin {
         gameManager.registerGame(new MobArmyBattleGame(this, lobbyDisplayManager));
         gameManager.registerGame(new LevelBorderGame(this));
         gameManager.registerGame(new LevelBlockGame(this));
+        gameManager.registerGame(new ChunkRandomizerGame(this));
 
         gameStateManager.resetRuntimeState();
 
@@ -170,6 +170,13 @@ public final class ChallengeMain extends JavaPlugin {
         var language = getCommand("language");
         if (language != null) {
             language.setExecutor(new LanguageCommand(this));
+        }
+
+        var challenge = getCommand("challenge");
+        if (challenge != null) {
+            ChallengeCommand challengeCommand = new ChallengeCommand(this);
+            challenge.setExecutor(challengeCommand);
+            challenge.setTabCompleter(challengeCommand);
         }
 
         var lobby = getCommand("lobby");

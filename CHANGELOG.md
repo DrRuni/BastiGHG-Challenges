@@ -5,8 +5,28 @@
 - ⚔️ [MobArmyBattle](docs/game-changelogs/CHANGELOG-MobArmyBattle.md)
 - 🌍 [LevelBorder](docs/game-changelogs/CHANGELOG-LevelBorder.md)
 - 🧩 [LevelBlock](docs/game-changelogs/CHANGELOG-LevelBlock.md)
+- 🎲 [ChunkRandomizer](docs/game-changelogs/CHANGELOG-ChunkRandomizer.md)
 
 ---
+
+## [1.1.0] - Feature Release
+
+### Added
+- Integrated ChunkRandomizer v0.8 Beta as the fourth challenge game
+- Added automatic player data saving to reduce data loss after server crashes
+- Improved player data recovery after server crashes
+- Added /chunkrandomizer reset and /chunkrandomizer reset world commands
+  Changed
+- Extended central game, world, and reset management for ChunkRandomizer
+- Improved player data saving and game progress restoration
+- Extended world settings and reset voting for ChunkRandomizer
+  Fixed
+- Improved reliability of world and player data resets
+  Included Games
+  - MobArmyBattle v1.7.2
+  - LevelBorder v1.2.1
+  - LevelBlock v0.9.1 Beta
+  - ChunkRandomizer v0.8 Beta
 
 ## [1.0.1] - Stable Release
 

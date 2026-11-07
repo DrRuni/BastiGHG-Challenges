@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import org.bukkit.World;
+import runi.myddns.challenges.games.chunkrandomizer.ChunkRandomizerGame;
 import runi.myddns.challenges.games.levelblock.LevelBlockGame;
 import runi.myddns.challenges.games.levelborder.LevelBorderGame;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
@@ -142,6 +143,10 @@ public class GameResetManager {
             if (game instanceof LevelBlockGame levelBlock) {
                 levelBlock.resetWorldData();
                 levelBlock.getTimerDisplayManager().clearAll();
+            }
+
+            if (game instanceof ChunkRandomizerGame chunkRandomizer) {
+                chunkRandomizer.resetGameData();
             }
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {

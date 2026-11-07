@@ -98,7 +98,7 @@ jobs:
               'mobarmybattle': 'MobArmyBattle',
               'levelborder': 'LevelBorder',
               'levelblock': 'LevelBlock',
-              'chunkroulette': 'ChunkRoulette',
+              'chunkrandomizer': 'ChunkRandomizer',
           }
           game_versions = data.get('game-versions') or {}
           for key, label in games.items():

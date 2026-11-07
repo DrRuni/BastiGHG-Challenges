@@ -780,6 +780,14 @@ public class LobbyDisplayManager {
                     LIME,
                     DARK_GREEN
             );
+
+        } else if (gameName.equalsIgnoreCase("ChunkRandomizer")) {
+            gameText = gradientText(
+                    gameName.toUpperCase(),
+                    ORANGE,
+                    BLOOD_ORANGE
+            );
+
         } else {
             gameText = gradientText(
                     gameName.toUpperCase(),
@@ -919,6 +927,14 @@ public class LobbyDisplayManager {
                     game.getDisplayName().toUpperCase(),
                     LIME,
                     DARK_GREEN
+            );
+
+        } else if (game.getId().equalsIgnoreCase("chunkrandomizer")) {
+
+            gameName = gradientText(
+                    game.getDisplayName().toUpperCase(),
+                    ORANGE,
+                    BLOOD_ORANGE
             );
 
         } else {

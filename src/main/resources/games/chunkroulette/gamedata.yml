@@ -1,0 +1,31 @@
+# data of chunkrandomizer
+
+file-version: 1
+
+game:
+  event-started: false
+  world: ""
+  start-chunk:
+    x: 0
+    z: 0
+
+border:
+  active: false
+  world: ""
+  center:
+    x: 0.0
+    z: 0.0
+  size: 16.0
+
+timer:
+  seconds: 0
+
+mob:
+  active: false
+  uuid: ""
+  type: ""
+
+progress:
+  completed-chunks: 0
+
+chunks: {}

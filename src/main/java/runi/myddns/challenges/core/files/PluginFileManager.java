@@ -69,10 +69,21 @@ public class PluginFileManager {
             List.of()
     );
 
+    private static final GameFiles CHUNK_RANDOMIZER = new GameFiles(
+            "ChunkRandomizer",
+            "games/chunkrandomizer/",
+            "games/chunkrandomizer/",
+            List.of(
+                    "gamedata.yml"
+            ),
+            List.of()
+    );
+
     private static final List<GameFiles> GAMES = List.of(
             MOB_ARMY_BATTLE,
             LEVEL_BORDER,
-            LEVEL_BLOCK
+            LEVEL_BLOCK,
+            CHUNK_RANDOMIZER
     );
 
     private static final List<String> LANGUAGE_GROUPS = List.of(

@@ -70,6 +70,12 @@ public class ResetManagementGUI implements Listener {
                     DARK_GREEN
             );
 
+            case "chunkrandomizer" -> gradientText(
+                    gameName,
+                    ORANGE,
+                    BLOOD_ORANGE
+            );
+
             default -> gradientText(
                     gameName,
                     WHITE,
@@ -111,12 +117,10 @@ public class ResetManagementGUI implements Listener {
             return;
         }
 
-        if (!game.getId()
-                .equalsIgnoreCase("levelborder")
-                && !game.getId()
-                .equalsIgnoreCase("levelblock")
-                && !game.getId()
-                .equalsIgnoreCase("mobarmybattle")) {
+        if (!game.getId().equalsIgnoreCase("levelborder")
+                && !game.getId().equalsIgnoreCase("levelblock")
+                && !game.getId().equalsIgnoreCase("mobarmybattle")
+                && !game.getId().equalsIgnoreCase("chunkrandomizer")) {
 
             player.sendMessage(
                     plugin.getLanguageManager()
@@ -205,7 +209,8 @@ public class ResetManagementGUI implements Listener {
                     plugin.getLanguageManager().get("reset-management.all.line-3")
             ));
 
-        } else if (game.getId().equalsIgnoreCase("levelblock")) {
+        } else if (game.getId().equalsIgnoreCase("levelblock")
+                || game.getId().equalsIgnoreCase("chunkrandomizer")) {
 
             inventory.setItem(11, createItem(
                     Material.REDSTONE,
@@ -327,6 +332,9 @@ public class ResetManagementGUI implements Listener {
 
                 } else if (game.getId().equalsIgnoreCase("levelblock")) {
                     Bukkit.dispatchCommand(player, "levelblock reset");
+
+                } else if (game.getId().equalsIgnoreCase("chunkrandomizer")) {
+                    Bukkit.dispatchCommand(player, "chunkrandomizer reset");
                 }
             }
 
@@ -349,6 +357,9 @@ public class ResetManagementGUI implements Listener {
 
                 } else if (game.getId().equalsIgnoreCase("levelblock")) {
                     Bukkit.dispatchCommand(player, "levelblock reset world");
+
+                } else if (game.getId().equalsIgnoreCase("chunkrandomizer")) {
+                    Bukkit.dispatchCommand(player, "chunkrandomizer reset world");
                 }
             }
 

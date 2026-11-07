@@ -165,6 +165,16 @@ public class PlayerGameDataManager {
         }
     }
 
+    public void startAutoSave() {
+
+        Bukkit.getScheduler().runTaskTimer(
+                plugin,
+                this::saveOnlinePlayers,
+                200L,
+                200L
+        );
+    }
+
     public void saveOnlinePlayers() {
 
         for (Player player

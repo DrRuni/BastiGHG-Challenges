@@ -64,6 +64,12 @@ public class WorldSettingsGUI implements Listener {
                     LIME,
                     DARK_GREEN);
 
+            case "chunkrandomizer" -> gradientText(
+                    gameName,
+                    ORANGE,
+                    BLOOD_ORANGE
+            );
+
             default ->
                     gradientText(
                             gameName,
@@ -174,7 +180,8 @@ public class WorldSettingsGUI implements Listener {
         );
 
         if (game.getId().equalsIgnoreCase("levelborder")
-                || game.getId().equalsIgnoreCase("levelblock")) {
+                || game.getId().equalsIgnoreCase("levelblock")
+                || game.getId().equalsIgnoreCase("chunkrandomizer")) {
 
             inv.setItem(
                     4,
@@ -499,7 +506,8 @@ public class WorldSettingsGUI implements Listener {
             case 4 -> {
 
                 if (!game.getId().equalsIgnoreCase("levelborder")
-                        && !game.getId().equalsIgnoreCase("levelblock")) {
+                        && !game.getId().equalsIgnoreCase("levelblock")
+                        && !game.getId().equalsIgnoreCase("chunkrandomizer")) {
                     return;
                 }
 

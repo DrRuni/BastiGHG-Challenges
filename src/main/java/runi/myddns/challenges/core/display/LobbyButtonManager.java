@@ -465,7 +465,8 @@ public class LobbyButtonManager implements Listener {
             }
 
             if (game.getId().equalsIgnoreCase("levelborder")
-                    || game.getId().equalsIgnoreCase("levelblock")) {
+                    || game.getId().equalsIgnoreCase("levelblock")
+                    || game.getId().equalsIgnoreCase("chunkrandomizer")) {
 
                 plugin.getWorldSettingsGUI().open(player);
             }

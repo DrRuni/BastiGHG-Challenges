@@ -165,6 +165,40 @@ public record GameWorldDefinition(
             null
     );
 
+    // ============================================================
+    // CHUNK RANDOMIZER
+    // ============================================================
+
+    public static final GameWorldDefinition CHUNK_RANDOMIZER_OVERWORLD = new GameWorldDefinition(
+            "chunkrandomizer",
+            "overworld",
+            "world_chunkrandomizer",
+            World.Environment.NORMAL,
+            SourceType.GENERATED,
+            null,
+            null
+    );
+
+    public static final GameWorldDefinition CHUNK_RANDOMIZER_NETHER = new GameWorldDefinition(
+            "chunkrandomizer",
+            "nether",
+            "world_chunkrandomizer_nether",
+            World.Environment.NETHER,
+            SourceType.GENERATED,
+            null,
+            null
+    );
+
+    public static final GameWorldDefinition CHUNK_RANDOMIZER_END = new GameWorldDefinition(
+            "chunkrandomizer",
+            "end",
+            "world_chunkrandomizer_the_end",
+            World.Environment.THE_END,
+            SourceType.GENERATED,
+            null,
+            null
+    );
+
     public static final List<GameWorldDefinition> ALL = List.of(
             LOBBY,
 
@@ -181,7 +215,11 @@ public record GameWorldDefinition(
             MOB_ARMY_ROT,
             MOB_ARMY_ROT_NETHER,
             MOB_ARMY_BLAU,
-            MOB_ARMY_BLAU_NETHER
+            MOB_ARMY_BLAU_NETHER,
+
+            CHUNK_RANDOMIZER_OVERWORLD,
+            CHUNK_RANDOMIZER_NETHER,
+            CHUNK_RANDOMIZER_END
     );
 
     public boolean isGenerated() {
