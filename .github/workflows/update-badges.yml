@@ -7,6 +7,7 @@ on:
     paths:
       - 'src/main/resources/plugin.yml'
       - 'pom.xml'
+      - 'docs/images/buttons/**'
       - '.github/workflows/update-badges.yml'
 
 permissions:
@@ -24,7 +25,7 @@ jobs:
       - name: Install image tools
         run: python3 -m pip install cairosvg pillow pyyaml
 
-      - name: Generate project and game badges
+      - name: Generate SVG badges and Spigot PNG assets
         shell: bash
         run: |
           python3 - <<'PY'
@@ -46,8 +47,13 @@ jobs:
           if not java:
               raise ValueError('Missing properties/java.version in pom.xml')
 
-          output = Path('docs/images/badges')
-          output.mkdir(parents=True, exist_ok=True)
+          badges_dir = Path('docs/images/badges')
+          spigot_dir = Path('docs/images/spigot')
+          spigot_badges = spigot_dir / 'badges'
+          spigot_buttons = spigot_dir / 'buttons'
+          buttons_dir = Path('docs/images/buttons')
+          for directory in (badges_dir, spigot_badges, spigot_buttons):
+              directory.mkdir(parents=True, exist_ok=True)
 
           def badge_svg(label, value):
               left = max(56, round(len(label) * 7.2 + 20))
@@ -63,35 +69,22 @@ jobs:
           </svg>'''
               return svg + '\n'
 
-          def as_image(label, value):
-              png = cairosvg.svg2png(bytestring=badge_svg(label, value).encode('utf-8'))
-              return Image.open(BytesIO(png)).convert('RGBA')
+          def write_badge(name, label, value):
+              svg_path = badges_dir / f'{name}.svg'
+              svg_path.write_text(badge_svg(label, value), encoding='utf-8')
+              # Render at 3x for sharp display on Spigot; transparency retained.
+              cairosvg.svg2png(url=str(svg_path), write_to=str(spigot_badges / f'{name}.png'), scale=3)
+              print(f'Generated {svg_path} and Spigot PNG')
 
+          # README versions stay as scalable SVGs.
           for name, label, value in (
               ('version', 'Version', version),
               ('paper', 'Paper', paper),
               ('java', 'Java', java),
           ):
-              (output / f'{name}.svg').write_text(badge_svg(label, value), encoding='utf-8')
-              as_image(label, value).save(output / f'{name}.png')
+              write_badge(name, label, value)
 
-          # Discord Core badge strip.
-          badges = [as_image('Version', version), as_image('Paper', paper), as_image('Java', java)]
-          canvas = Image.new('RGBA', (1500, 140), (0, 0, 0, 0))
-          gap = 28
-          target_height = round(45 * 1.30)  # 30% larger than before
-          badges = [
-              b.resize((round(b.width * target_height / b.height), target_height), Image.Resampling.LANCZOS)
-              for b in badges
-          ]
-          strip_width = sum(b.width for b in badges) + gap * (len(badges) - 1)
-          x = (canvas.width - strip_width) // 2
-          for badge in badges:
-              canvas.alpha_composite(badge, (x, (canvas.height - badge.height) // 2))
-              x += badge.width + gap
-          canvas.save(output / 'badges-combined.png')
-
-          # Individual game version badges, centrally stored.
+          # Game versions use the same pink badge style, also as SVGs.
           games = {
               'mobarmybattle': 'MobArmyBattle',
               'levelborder': 'LevelBorder',
@@ -100,29 +93,55 @@ jobs:
           }
           game_versions = data.get('game-versions') or {}
           for key, label in games.items():
-              target = output / f'{key}-version.png'
-              if key not in game_versions:
+              if key in game_versions:
+                  write_badge(f'{key}-version', label, str(game_versions[key]))
+              else:
+                  (badges_dir / f'{key}-version.svg').unlink(missing_ok=True)
+                  (spigot_badges / f'{key}-version.png').unlink(missing_ok=True)
                   print(f'Skipping {key}: not present in plugin.yml')
-                  target.unlink(missing_ok=True)
-                  continue
-              image = as_image(label, str(game_versions[key]))
-              # Transparent PNG cropped tightly to the rounded badge.
-              target_height = 55
-              new_width = round(image.width * target_height / image.height)
-              image = image.resize((new_width, target_height), Image.Resampling.LANCZOS)
-              image.save(target)
-              print(f'Generated {target}')
 
-          print(f'Updated Core badges: {version}, Paper {paper}, Java {java}')
+          # Combined core PNG for Spigot/Discord, with 30% larger badges
+          # than the original 45px strip and a transparent background.
+          core_pngs = [Image.open(spigot_badges / f'{name}.png').convert('RGBA')
+                       for name in ('version', 'paper', 'java')]
+          target_height = round(45 * 1.30)
+          core_pngs = [img.resize((round(img.width * target_height / img.height), target_height),
+                                  Image.Resampling.LANCZOS) for img in core_pngs]
+          gap = 28
+          strip_width = sum(img.width for img in core_pngs) + gap * (len(core_pngs) - 1)
+          canvas = Image.new('RGBA', (max(1500, strip_width + 40), 140), (0, 0, 0, 0))
+          x = (canvas.width - strip_width) // 2
+          for img in core_pngs:
+              canvas.alpha_composite(img, (x, (canvas.height - img.height) // 2))
+              x += img.width + gap
+          canvas.save(spigot_badges / 'badges-combined.png')
+
+          # Spigot also needs PNG copies of the existing SVG game buttons.
+          # Convert all SVG buttons, including headings/language buttons,
+          # keeping their relative subfolder structure.
+          if buttons_dir.exists():
+              for svg_path in buttons_dir.rglob('*.svg'):
+                  relative_png = svg_path.relative_to(buttons_dir).with_suffix('.png')
+                  target = spigot_buttons / relative_png
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  cairosvg.svg2png(url=str(svg_path), write_to=str(target), scale=2)
+                  print(f'Converted {svg_path} -> {target}')
+
+          # Remove previously generated PNGs from the SVG-only badge folder.
+          for old_png in badges_dir.glob('*.png'):
+              old_png.unlink()
+              print(f'Removed obsolete {old_png}')
+
+          print(f'Updated badges: Version {version}, Paper {paper}, Java {java}')
           PY
 
-      - name: Commit updated badge images
+      - name: Commit updated badge and Spigot images
         shell: bash
         run: |
-          git add -A docs/images/badges
+          git add -A docs/images/badges docs/images/spigot
           if git diff --cached --quiet; then
             echo "No badge changes"
             exit 0
           fi
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update core and game version badges'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Update SVG badges and Spigot PNG assets'
           git push
