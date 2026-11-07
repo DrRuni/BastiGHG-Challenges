@@ -73,12 +73,13 @@ jobs:
               ('java', 'Java', java),
           ):
               (output / f'{name}.svg').write_text(badge_svg(label, value), encoding='utf-8')
+              as_image(label, value).save(output / f'{name}.png')
 
           # Discord Core badge strip.
           badges = [as_image('Version', version), as_image('Paper', paper), as_image('Java', java)]
-          canvas = Image.new('RGBA', (1500, 140), (43, 45, 49, 255))
+          canvas = Image.new('RGBA', (1500, 140), (0, 0, 0, 0))
           gap = 28
-          target_height = 45
+          target_height = round(45 * 1.30)  # 30% larger than before
           badges = [
               b.resize((round(b.width * target_height / b.height), target_height), Image.Resampling.LANCZOS)
               for b in badges
@@ -89,9 +90,6 @@ jobs:
               canvas.alpha_composite(badge, (x, (canvas.height - badge.height) // 2))
               x += badge.width + gap
           canvas.save(output / 'badges-combined.png')
-
-          for name in ('version.png', 'paper.png', 'java.png'):
-              (output / name).unlink(missing_ok=True)
 
           # Individual game version badges, centrally stored.
           games = {
@@ -108,18 +106,11 @@ jobs:
                   target.unlink(missing_ok=True)
                   continue
               image = as_image(label, str(game_versions[key]))
-              # Kleine Game-Version mittig auf breitem Hintergrund
-              canvas = Image.new('RGBA', (1200, 120), (43, 45, 49, 255))
-  
+              # Transparent PNG cropped tightly to the rounded badge.
               target_height = 55
               new_width = round(image.width * target_height / image.height)
               image = image.resize((new_width, target_height), Image.Resampling.LANCZOS)
-  
-              x = (canvas.width - image.width) // 2
-              y = (canvas.height - image.height) // 2
-  
-              canvas.alpha_composite(image, (x, y))
-              canvas.save(target)
+              image.save(target)
               print(f'Generated {target}')
 
           print(f'Updated Core badges: {version}, Paper {paper}, Java {java}')
