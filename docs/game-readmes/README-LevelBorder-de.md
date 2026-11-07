@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="../images/badges/levelborder-version.png" alt="LevelBorder Version" width="500">
+  <img src="../images/badges/levelborder-version.svg" alt="LevelBorder Version" width="300">
 </p>
 
 <p align="center">

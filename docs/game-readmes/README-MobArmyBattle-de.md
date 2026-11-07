@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="../images/badges/mobarmybattle-version.png" alt="MobArmyBattle Version" width="500">
+  <img src="../images/badges/mobarmybattle-version.svg" alt="MobArmyBattle Version" width="300">
 </p>
 
 <p align="center">

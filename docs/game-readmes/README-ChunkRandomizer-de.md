@@ -1,7 +1,27 @@
 <p align="center">
   <img src="../images/buttons/chunkrandomizer.svg" alt="ChunkRandomizer" width="320">
-</p><p align="center">
-  <img src="../images/games/chunkrandomizer/Minecraft-Chunk-Randomizer.png" alt="ChunkRandomizer Vorschau" width="900">
+</p>
+
+<p align="center">
+  <img src="../images/games/chunkrandomizer/Minecraft-Chunk-Randomizer.png" alt="ChunkRandomizer Preview" width="900">
+</p>
+
+<p align="center">
+  <img src="../images/badges/chunkrandomizer-version.svg" alt="ChunkRandomizer Version" width="300">
+</p>
+
+<p align="center">
+  <a href="../../README.md">
+    <img src="https://img.shields.io/badge/Main_README-5865F2?style=for-the-badge"
+         alt="Main README">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="../game-changelogs/CHANGELOG-ChunkRandomizer.md">
+    <img src="https://img.shields.io/badge/Changelog-FF8C00?style=for-the-badge"
+         alt="ChunkRandomizer Changelog">
+  </a>
+<br>
+
 </p><p align="center">
   Am 11. Januar 2026 spielte BastiGHG eine Minecraft-Challenge,
   bei der jeder Chunk zufällige Blöcke und Monster miteinander kombiniert.
@@ -15,17 +35,10 @@
   <a href="https://www.youtube.com/watch?v=iaAHQPM1AOk">
     Bastis ursprüngliche Challenge auf YouTube ansehen
   </a>
-</p><p align="center">
-  <img src="../images/badges/chunkrandomizer-version.png" alt="ChunkRandomizer Version" width="500">
-</p><p align="center">
-  <a href="../../README_DE.md">
-    <img src="https://img.shields.io/badge/Haupt--README-5865F2?style=for-the-badge" alt="Haupt-README">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  -de
-    <img src="https://img.shields.io/badge/Changelog-FF8C00?style=for-the-badge" alt="ChunkRandomizer Changelog">
-  </a>
-</p>ChunkRandomizer
+<br>
+
+# ChunkRandomizer
+
 ChunkRandomizer ist eine Minecraft-Challenge, die in BastiGHG Challenges – Fanprojekt integriert ist.
 
 Jeder neue Chunk hält eine Überraschung bereit.
@@ -39,7 +52,7 @@ Besiege den Mob, um die Weltgrenze freizuschalten und weiterzuerkunden!
 Jeder Chunk bietet neue Ressourcen, unerwartete Situationen und Herausforderungen.
 Dieses Game ist Teil eines inoffiziellen Fanprojekts, das von BastiGHG inspiriert wurde. Es besteht keine offizielle Verbindung zu BastiGHG.
 
-Funktionen
+## Funktionen
 - Zufällige Blockumwandlung in neu erkundeten Chunks
 - Ein zufällig ausgewählter Blocktyp pro Chunk
 - Ursprüngliche Gelände- und Höhlenstrukturen bleiben erhalten
@@ -57,15 +70,15 @@ Funktionen
 - Integration in die zentrale Challenge-Lobby
 - Zentrale Welteinstellungen
 - Reset-Verwaltung
-  Befehle
-  Hauptbefehle
+##  Befehle
+###  Hauptbefehle
 - /chunkrandomizer
 - /chunkrandomizer info
 - /chunkrandomizer start
 - /chunkrandomizer gamesettings
-  Reset-Befehle
+###  Reset-Befehle
 - Die Reset-Optionen sind über die zentrale Reset-Verwaltung verfügbar.
-  Spielablauf
+##  Spielablauf
 1. Betritt die ChunkRandomizer-Welt.
 2. Starte die Challenge.
 3. Alle teilnehmenden Spieler werden in den Startchunk teleportiert.

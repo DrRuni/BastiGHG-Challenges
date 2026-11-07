@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="../images/badges/levelblock-version.png" alt="LevelBlock Version" width="500">
+  <img src="../images/badges/levelblock-version.svg" alt="LevelBlock Version" width="300">
 </p>
 
 <p align="center">

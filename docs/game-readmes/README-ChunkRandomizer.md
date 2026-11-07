@@ -1,23 +1,16 @@
 <p align="center">
   <img src="../images/buttons/chunkrandomizer.svg" alt="ChunkRandomizer" width="320">
-</p><p align="center">
+</p>
+
+<p align="center">
   <img src="../images/games/chunkrandomizer/Minecraft-Chunk-Randomizer.png" alt="ChunkRandomizer Preview" width="900">
-</p><p align="center">
-  On January 11, 2026, BastiGHG played a Minecraft challenge
-  combining random blocks and random monsters in each chunk.
-</p><p align="center">
-  I really enjoyed this unique challenge and wanted to bring
-  the experience into my own fan project.
-</p><p align="center">
-  This became the fourth challenge game developed for
-  <strong>BastiGHG Challenges – Fan Project</strong>.
-</p><p align="center">
-  <a href="https://www.youtube.com/watch?v=iaAHQPM1AOk">
-    Watch BastiGHG's original challenge on YouTube
-  </a>
-</p><p align="center">
-  <img src="../images/badges/chunkrandomizer-version.png" alt="ChunkRandomizer Version" width="500">
-</p><p align="center">
+</p>
+
+<p align="center">
+  <img src="../images/badges/chunkrandomizer-version.svg" alt="ChunkRandomizer Version" width="300">
+</p>
+
+<p align="center">
   <a href="../../README.md">
     <img src="https://img.shields.io/badge/Main_README-5865F2?style=for-the-badge"
          alt="Main README">
@@ -27,7 +20,35 @@
     <img src="https://img.shields.io/badge/Changelog-FF8C00?style=for-the-badge"
          alt="ChunkRandomizer Changelog">
   </a>
-</p>ChunkRandomizer
+</p>
+<br>
+
+<p align="center">
+  On January 11, 2026, BastiGHG played a Minecraft challenge
+  combining random blocks and random monsters in each chunk.
+</p>
+
+<p align="center">
+  I really enjoyed this unique challenge and wanted to bring
+  the experience into my own fan project.
+</p>
+
+<p align="center">
+  This became the fourth challenge game developed for
+  <strong>BastiGHG Challenges – Fan Project</strong>.
+</p>
+
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=iaAHQPM1AOk">
+    Watch BastiGHG's original challenge on YouTube
+  </a>
+</p>
+
+<br>
+
+
+# ChunkRandomizer
 ChunkRandomizer is a Minecraft challenge game integrated into BastiGHG Challenges – Fan Project.
 
 Every new chunk becomes a surprise.
@@ -41,7 +62,7 @@ Defeat the mob to unlock the border and continue exploring!
 Every chunk brings new resources, unexpected situations and challenges.
 This game is part of an unofficial fan project inspired by BastiGHG and is not affiliated with him.
 
-Features
+## Features
 - Random block transformation for newly explored chunks
 - One randomly selected block type per chunk
 - Original terrain and cave structures are preserved
@@ -59,15 +80,15 @@ Features
 - Integrated into the central challenge lobby
 - Central world settings
 - Reset management system
-  Commands
-  Main Commands
+##  Commands
+###  Main Commands
 - /chunkrandomizer
 - /chunkrandomizer info
 - /chunkrandomizer start
 - /chunkrandomizer gamesettings
-  Reset Commands
+###  Reset Commands
 - Reset options are available through the central reset management system.
-  Gameplay Overview
+##  Gameplay Overview
 1. Enter the ChunkRandomizer world.
 2. Start the challenge.
 3. All participating players are moved to the starting chunk.
