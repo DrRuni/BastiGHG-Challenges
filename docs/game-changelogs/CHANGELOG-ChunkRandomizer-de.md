@@ -14,7 +14,7 @@
 - Integration in die zentrale Lobby, Spielauswahl und Welteinstellungen
 - Datenreset und vollständiger Weltreset über das zentrale Reset-Abstimmungssystem
 - Befehle:
-  - `/chunkrandomizer reset`zum Zurücksetzen des Spielfortschritts
+  - `/chunkrandomizer reset` – zum Zurücksetzen des Spielfortschritts
   - `/chunkrandomizer reset world` zum vollständigen Zurücksetzen der Spielwelten
 
 ### Geändert
