@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="53" role="img" aria-label="MobArmyBattle game documentation">
+<title>MobArmyBattle</title>
+<defs>
+ <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+  <stop offset="0" stop-color="#FF3535"/>
+  <stop offset="1" stop-color="#2255FF"/>
+ </linearGradient>
+ <linearGradient id="shine" x2="0" y2="100%">
+  <stop offset="0" stop-color="#fff" stop-opacity=".24"/>
+  <stop offset=".55" stop-color="#fff" stop-opacity=".02"/>
+  <stop offset="1" stop-color="#000" stop-opacity=".16"/>
+ </linearGradient>
+</defs>
+<rect x="1.5" y="1.5" width="277" height="50" rx="9" fill="#101322"/>
+<rect x="3" y="3" width="274" height="47" rx="7" fill="url(#bg)"/>
+<rect x="3" y="3" width="274" height="47" rx="7" fill="url(#shine)"/>
+<rect x="4.5" y="4.5" width="271" height="44" rx="6" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".9"/>
+<text x="140" y="25" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="bold" text-anchor="middle">MobArmyBattle</text>
+<text x="140" y="40" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-size="9" letter-spacing="1.5" text-anchor="middle">VIEW DOCUMENTATION</text>
+</svg>

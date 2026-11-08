@@ -54,13 +54,13 @@
   <tr>
     <td align="center">
       <a href="docs/game-readmes/README-MobArmyBattle.md">
-        <img src="docs/images/badges/mobarmybattle.svg"
+        <img src="docs/images/gamebuttons/mobarmybattle.svg"
              width="280" alt="MobArmyBattle">
       </a>
     </td>
     <td align="center">
       <a href="docs/game-readmes/README-LevelBorder.md">
-        <img src="docs/images/badges/levelborder.svg"
+        <img src="docs/images/gamebuttons/levelborder.svg"
              width="280" alt="LevelBorder">
       </a>
     </td>
@@ -68,7 +68,7 @@
   <tr>
     <td align="center">
       <a href="docs/game-readmes/README-LevelBlock.md">
-        <img src="docs/images/badges/levelblock.svg"
+        <img src="docs/images/gamebuttons/levelblock.svg"
              width="280" alt="LevelBlock">
       </a>
     </td>
