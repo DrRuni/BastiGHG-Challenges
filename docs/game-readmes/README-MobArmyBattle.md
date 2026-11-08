@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../images/buttons/mobarmybattle.svg" alt="MobArmyBattle" width="320">
+  <img src="../images/badges/mobarmybattle.svg" alt="MobArmyBattle" width="320">
 </p>
 
 <p align="center">

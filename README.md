@@ -45,24 +45,24 @@
   <tr>
     <td align="center">
       <a href="docs/game-readmes/README-MobArmyBattle.md">
-        <img src="docs/images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
+        <img src="docs/images/badges/mobarmybattle.svg" width="280" alt="MobArmyBattle">
       </a>
     </td>
     <td align="center">
       <a href="docs/game-readmes/README-LevelBorder.md">
-        <img src="docs/images/buttons/levelborder.svg" width="280" alt="LevelBorder">
+        <img src="docs/images/badges/levelborder.svg" width="280" alt="LevelBorder">
       </a>
     </td>
   </tr>
   <tr>
     <td align="center">
       <a href="docs/game-readmes/README-LevelBlock.md">
-        <img src="docs/images/buttons/levelblock.svg" width="280" alt="LevelBlock">
+        <img src="docs/images/badges/levelblock.svg" width="280" alt="LevelBlock">
       </a>
     </td>
     <td align="center">
       <a href="docs/game-readmes/README-ChunkRandomizer.md">
-        <img src="docs/images/buttons/chunkrandomizer.svg" width="280" alt="ChunkRandomizer">
+        <img src="docs/images/badges/chunkrandomizer.svg" width="280" alt="ChunkRandomizer">
       </a>
     </td>
   </tr>

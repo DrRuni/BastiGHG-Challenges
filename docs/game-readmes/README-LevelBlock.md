@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="../images/buttons/levelblock.svg" alt="LevelBlock" width="320">
+  <img src="../images/badges/levelblock.svg" alt="LevelBlock" width="320">
 </p>
 
 <p align="center">
