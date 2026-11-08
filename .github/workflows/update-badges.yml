@@ -87,24 +87,6 @@ jobs:
                   path.unlink(missing_ok=True)
                   print(f'Skipped {key}: missing in plugin.yml')
 
-          # Test: generate a compact game button using the same SVG method as the badges.
-          # No viewBox, fixed pixel dimensions, and no changes to existing buttons.
-          test_button = badges_dir / 'chunkrandomizer-button-test.svg'
-          test_button.write_text('''<svg xmlns="http://www.w3.org/2000/svg" width="190" height="36" role="img" aria-label="ChunkRandomizer game documentation">
-          <title>ChunkRandomizer</title>
-          <defs>
-            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0" stop-color="#FFD700"/><stop offset="1" stop-color="#FF2400"/></linearGradient>
-            <linearGradient id="shine" x2="0" y2="100%"><stop offset="0" stop-color="#fff" stop-opacity=".24"/><stop offset=".55" stop-color="#fff" stop-opacity=".02"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>
-          </defs>
-          <rect x="1" y="1" width="188" height="34" rx="6" fill="#101322"/>
-          <rect x="2" y="2" width="186" height="32" rx="5" fill="url(#bg)"/>
-          <rect x="2" y="2" width="186" height="32" rx="5" fill="url(#shine)"/>
-          <rect x="3" y="3" width="184" height="30" rx="4" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>
-          <text x="95" y="17" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-size="13" font-weight="bold" text-anchor="middle">ChunkRandomizer</text>
-          <text x="95" y="27" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-size="6" letter-spacing="1" text-anchor="middle">VIEW DOCUMENTATION</text>
-          </svg>''' + '\n', encoding='utf-8')
-          print(f'Generated test button: {test_button}')
-
           # Only the former generated PNG directories are cleaned.
           # The manually added docs/images/spigot/banner.png and lobby.png remain untouched.
           for directory in (
