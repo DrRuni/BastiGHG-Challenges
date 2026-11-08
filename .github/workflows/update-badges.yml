@@ -88,21 +88,27 @@ jobs:
               'levelblock': 'LevelBlock',
               'chunkrandomizer': 'ChunkRandomizer',
           }
+
           game_versions = data.get('game-versions') or {}
+
           for key, label in games.items():
               path = badges_dir / f'{key}-version.svg'
               png_path = badges_dir / f'{key}-version.png'
-          if key in game_versions:
-              write_badge(f'{key}-version', label, game_versions[key])
 
-              image = badge_png(label, game_versions[key])
-              image = image.resize(
-                  (round(image.width * 0.30), round(image.height * 0.30)),
-                  Image.Resampling.LANCZOS
-              )
-              image.save(png_path)
-              print(f'Generated {png_path}')
-  
+              if key in game_versions:
+                  write_badge(f'{key}-version', label, game_versions[key])
+
+                  image = badge_png(label, game_versions[key])
+                  image = image.resize(
+                      (
+                          round(image.width * 0.30),
+                          round(image.height * 0.30)
+                      ),
+                      Image.Resampling.LANCZOS
+                  )
+                  image.save(png_path)
+                  print(f'Generated {png_path}')
+
               else:
                   path.unlink(missing_ok=True)
                   png_path.unlink(missing_ok=True)
