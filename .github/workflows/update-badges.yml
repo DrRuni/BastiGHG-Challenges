@@ -102,7 +102,7 @@ jobs:
                   image = badge_png(label, game_versions[key])
 
                   # Same badge height as the combined Core image
-                  target_height = 58
+                  target_height = 68
                   image = image.resize(
                       (
                           round(image.width * target_height / image.height),
