@@ -98,27 +98,29 @@ jobs:
               if key in game_versions:
                   write_badge(f'{key}-version', label, game_versions[key])
 
-                   image = badge_png(label, game_versions[key])
+                    image = badge_png(label, game_versions[key])
 
-                  # Badge auf 50 % verkleinern
+                  # Game-Badge verkleinern
                   image = image.resize(
                       (
-                          round(image.width * 0.50),
-                          round(image.height * 0.50)
+                          round(image.width * 0.30),
+                          round(image.height * 0.30)
                       ),
                       Image.Resampling.LANCZOS
                   )
 
-                  # Transparenter Hintergrund, Badge mittig
+                  # Transparente Fläche wie beim Core-Badge
                   canvas = Image.new(
                       'RGBA', (1200, 120), (0, 0, 0, 0)
                   )
 
+                  # Horizontal und vertikal zentrieren
                   x = (canvas.width - image.width) // 2
                   y = (canvas.height - image.height) // 2
 
                   canvas.alpha_composite(image, (x, y))
                   canvas.save(png_path)
+
 
                   print(f'Generated {png_path}')
 
