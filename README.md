@@ -62,7 +62,7 @@
     </td>
     <td align="center">
       <a href="docs/game-readmes/README-ChunkRandomizer.md">
-        <img src="docs/images/Gamebuttons/chunkrandomizer.svg" width="280" alt="ChunkRandomizer">
+        <img src="docs/images/gamebuttons/chunkrandomizer.svg" width="280" alt="ChunkRandomizer">
       </a>
     </td>
   </tr>

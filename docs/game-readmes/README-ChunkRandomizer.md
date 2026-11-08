@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../images/Gamebuttons/chunkrandomizer.svg" alt="ChunkRandomizer" width="320">
+  <img src="../images/gamebuttons/chunkrandomizer.svg" alt="ChunkRandomizer" width="320">
 </p>
 
 <p align="center">
