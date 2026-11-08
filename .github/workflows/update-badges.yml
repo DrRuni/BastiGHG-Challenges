@@ -21,16 +21,19 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Install YAML parser
-        run: python3 -m pip install pyyaml
+      - name: Install image tools
+        run: python3 -m pip install pyyaml cairosvg pillow
 
-      - name: Generate SVG version badges and remove generated PNGs
+      - name: Generate SVG badges and selected PNG version images
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           from xml.etree import ElementTree as ET
           from html import escape
+          from io import BytesIO
+          import cairosvg
+          from PIL import Image
           import yaml
 
           data = yaml.safe_load(Path('src/main/resources/plugin.yml').read_text(encoding='utf-8'))
@@ -60,6 +63,13 @@ jobs:
           </svg>'''
               return svg + '\n'
 
+          def badge_png(label, value, scale=3):
+              png = cairosvg.svg2png(
+                  bytestring=badge_svg(label, str(value)).encode('utf-8'),
+                  scale=scale,
+              )
+              return Image.open(BytesIO(png)).convert('RGBA')
+
           def write_badge(name, label, value):
               path = badges_dir / f'{name}.svg'
               path.write_text(badge_svg(label, str(value)), encoding='utf-8')
@@ -81,28 +91,58 @@ jobs:
           game_versions = data.get('game-versions') or {}
           for key, label in games.items():
               path = badges_dir / f'{key}-version.svg'
+              png_path = badges_dir / f'{key}-version.png'
               if key in game_versions:
                   write_badge(f'{key}-version', label, game_versions[key])
+                  badge_png(label, game_versions[key]).save(png_path)
+                  print(f'Generated {png_path}')
               else:
                   path.unlink(missing_ok=True)
+                  png_path.unlink(missing_ok=True)
                   print(f'Skipped {key}: missing in plugin.yml')
 
-          # Only the former generated PNG directories are cleaned.
-          # The manually added docs/images/spigot/banner.png and lobby.png remain untouched.
+          # Combined Core PNG, transparent, badges 30% larger than the
+          # former 45px-high version. The file itself stays 1500 x 140.
+          core_badges = [badge_png(label, value) for label, value in (
+              ('Version', version), ('Paper', paper), ('Java', java),
+          )]
+          target_height = round(45 * 1.30)
+          core_badges = [
+              img.resize((round(img.width * target_height / img.height), target_height),
+                         Image.Resampling.LANCZOS)
+              for img in core_badges
+          ]
+          gap = 28
+          strip_width = sum(img.width for img in core_badges) + gap * (len(core_badges) - 1)
+          canvas = Image.new('RGBA', (max(1500, strip_width + 40), 140), (0, 0, 0, 0))
+          x = (canvas.width - strip_width) // 2
+          for img in core_badges:
+              canvas.alpha_composite(img, (x, (canvas.height - img.height) // 2))
+              x += img.width + gap
+          combined_path = badges_dir / 'badges-combined.png'
+          canvas.save(combined_path)
+          print(f'Generated {combined_path}')
+
+          # Remove obsolete individual Core PNGs, but retain the requested
+          # combined PNG and four game-version PNGs.
+          for name in ('version.png', 'paper.png', 'java.png'):
+              (badges_dir / name).unlink(missing_ok=True)
+
+          # Previous workflow-generated Spigot PNGs are no longer required.
+          # Manually maintained spigot/banner.png and spigot/lobby.png remain.
           for directory in (
-              badges_dir,
               Path('docs/images/spigot/badges'),
               Path('docs/images/spigot/buttons'),
           ):
               if directory.exists():
                   for png_path in directory.rglob('*.png'):
                       png_path.unlink()
-                      print(f'Removed obsolete generated PNG: {png_path}')
+                      print(f'Removed old Spigot PNG: {png_path}')
 
           print(f'Updated SVG badges: Version {version}, Paper {paper}, Java {java}')
           PY
 
-      - name: Commit updated SVG badges and PNG cleanup
+      - name: Commit updated SVG badges and selected PNG images
         shell: bash
         run: |
           git add -A docs/images/badges docs/images/spigot
@@ -110,5 +150,5 @@ jobs:
             echo "No badge changes"
             exit 0
           fi
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Generate SVG badges only and remove generated PNGs'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Restore combined and game version PNG badges alongside SVGs'
           git push
