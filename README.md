@@ -25,9 +25,7 @@
          alt="CurseForge" height="30">
   </a>
 </p>
-<br><br><br><br>
-
-<!-- Language selection: both buttons are deliberately retained -->
+<br><br><br><br><!-- Language selection: both buttons are deliberately retained -->
 <p align="center">
   <a href="README.md"><img src="docs/images/buttons/english.svg" width="260" alt="English README"></a>
   &nbsp;&nbsp;&nbsp;
@@ -36,28 +34,40 @@
   <h3>One Plugin. Multiple Challenges. One Central Lobby.</h3>
   <p><strong>A Minecraft Paper plugin combining multiple independent challenge games into one unified system.</strong></p>
   <p><em>All your favorite challenges in one place!</em></p>
-</div>Disclaimer: BastiGHG Challenges is an independent, unofficial fan project inspired by Minecraft challenges played by BastiGHG. It is not affiliated with, endorsed by, or officially connected to BastiGHG.
-
-<h2 align="center">
+</div>Disclaimer: BastiGHG Challenges is an independent, unofficial fan project inspired by Minecraft challenges played by BastiGHG. It is not affiliated with, endorsed by, or officially connected to BastiGHG.<h2 align="center">
   <img src="docs/images/buttons/headings/included-games.svg"
        width="550"
        alt="Included Games">
 </h2><p align="center">
   Explore the available challenge games.<br>
   Click on a game to view its dedicated documentation.
-</p><p align="center">
-  <a href="docs/game-readmes/README-MobArmyBattle.md">
-    <img src="docs/images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
-  </a>
-  &nbsp;&nbsp;
-  <a href="docs/game-readmes/README-LevelBorder.md">
-    <img src="docs/images/buttons/levelborder.svg" width="280" alt="LevelBorder">
-  </a>
-  &nbsp;&nbsp;
-  <a href="docs/game-readmes/README-LevelBlock.md">
-    <img src="docs/images/buttons/levelblock.svg" width="280" alt="LevelBlock">
-  </a>
-</p><h2 align="center"><img src="docs/images/buttons/headings/about-project.svg" width="550" alt="About the Project"></h2><p align="center">
+</p><table align="center">
+  <tr>
+    <td align="center">
+      <a href="docs/game-readmes/README-MobArmyBattle.md">
+        <img src="docs/images/buttons/mobarmybattle.svg" width="280" alt="MobArmyBattle">
+      </a>
+    </td>
+    <td align="center">
+      <a href="docs/game-readmes/README-LevelBorder.md">
+        <img src="docs/images/buttons/levelborder.svg" width="280" alt="LevelBorder">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="docs/game-readmes/README-LevelBlock.md">
+        <img src="docs/images/buttons/levelblock.svg" width="280" alt="LevelBlock">
+      </a>
+    </td>
+    <td align="center">
+      <a href="docs/game-readmes/README-ChunkRandomizer.md">
+        <img src="docs/images/buttons/chunkrandomizer.svg" width="280" alt="ChunkRandomizer">
+      </a>
+    </td>
+  </tr>
+</table>
+<h2 align="center"><img src="docs/images/buttons/headings/about-project.svg" width="550" alt="About the Project"></h2><p align="center">
   <strong>BastiGHG Challenges – Fan Project</strong> brings multiple Minecraft challenge game modes together in a single Paper plugin.
 </p><p align="center">
   Instead of installing and managing separate plugins for every challenge, players can access all integrated games through one shared lobby.
@@ -209,6 +219,10 @@
     <tr>
       <td><code>/levelblock</code></td>
       <td>LevelBlock commands</td>
+    </tr>
+    <tr>
+      <td><code>/chunkrandomizer</code></td>
+      <td>ChunkRandomizer commands</td>
     </tr>
   </table>
 </div><p align="center">
