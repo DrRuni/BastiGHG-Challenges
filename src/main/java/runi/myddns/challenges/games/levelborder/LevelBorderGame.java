@@ -436,42 +436,12 @@ public class LevelBorderGame implements ChallengeGame {
         plugin.getPlayerGameDataManager().resetGameExperience(getId());
     }
 
-    public void resetPlayerData() {
-
-        // Alle online befindlichen LevelBorder-Spieler zurücksetzen
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!isLevelBorderPlayer(player)) continue;
-
-            plugin.getPlayerGameDataManager()
-                    .clearPlayerState(player);
-
-            player.updateInventory();
-        }
-
-        // Gespeicherte Daten einschließlich Offline-Spieler zurücksetzen
-        plugin.getPlayerGameDataManager()
-                .resetGamePlayerData(getId());
-
-        // Gespeicherte Positionen entfernen
-        plugin.getPlayerGameDataManager()
-                .clearSavedLocations(getId());
-
-        // Fortschritt, Border, Timer und Scoreboard zurücksetzen
-        scoreboardManager.reset();
-        borderManager.resetBorder(null);
-        timerManager.reset();
-
-        // Welten und Portale bleiben unverändert
-    }
-
     public void resetWorldData() {
 
-        // LevelBorder-Spielzustand vollständig zurücksetzen
         scoreboardManager.reset();
         borderManager.resetBorder(null);
         timerManager.reset();
 
-        // Portaldaten nur beim Welten-Reset löschen
         portalManager.clearPortalWorldData();
     }
 
