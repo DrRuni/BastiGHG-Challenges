@@ -1,6 +1,6 @@
 # Core DE Languages
 
-file-version: 2
+file-version: 3
 
 commands:
   language:
@@ -107,6 +107,15 @@ reset-management:
   back:
     name: "Zurück"
     description: "Zurück zu den WorldSettings."
+  levelblock:
+    player:
+      name: "Spielerdaten zurücksetzen"
+      line-1: "Löscht Inventare, XP und Spielfortschritt."
+      line-2: "Welten bleiben erhalten."
+    world:
+      name: "Alles zurücksetzen"
+      line-1: "Löscht alle Spieler- und Weltdaten."
+      line-2: "Erstellt alle Challenge-Welten neu."
 
 world-settings:
   load-first: "Bitte zuerst ein Game laden."

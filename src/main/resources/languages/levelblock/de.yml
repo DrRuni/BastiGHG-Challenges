@@ -1,6 +1,6 @@
 # LevelBlock DE Language
 
-file-version: 3
+file-version: 4
 
 loading:
   starting: "LevelBlock wird geladen..."
@@ -25,19 +25,6 @@ commands:
     started: "<green>LevelBlock wurde gestartet."
     admin-reset-only: "<red>❌ Nur ein Admin darf LevelBlock zurücksetzen."
     unknown: "<red>Unbekannter Unterbefehl."
-    reset-complete: "<green>✔ LevelBlock wurde zurückgesetzt."
-    player:
-      name: "Spielerdaten zurücksetzen"
-      line-1: "Löscht Inventare, XP und Spielfortschritt."
-      line-2: "Welten und Gebäude bleiben erhalten."
-    world:
-      name: "Alles zurücksetzen"
-      line-1: "Löscht alle Spieler- und Weltdaten."
-      line-2: "Erstellt alle Challenge-Welten neu."
-
-    vote:
-      reset-worlds: "Welten und alle Daten zurücksetzen"
-      reset-progress: "Spielerdaten und Fortschritt zurücksetzen"
 
     help:
       title: "<gold>══════ LevelBlock Befehle ══════"

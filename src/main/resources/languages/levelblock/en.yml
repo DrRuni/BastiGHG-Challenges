@@ -1,6 +1,6 @@
 # LevelBlock EN Language
 
-file-version: 3
+file-version: 4
 
 loading:
   starting: "LevelBlock is loading..."
@@ -25,19 +25,6 @@ commands:
     started: "<green>LevelBlock has been started."
     admin-reset-only: "<red>❌ Only an admin may reset LevelBlock."
     unknown: "<red>Unknown subcommand."
-    reset-complete: "<green>✔ LevelBlock has been reset."
-    player:
-      name: "Reset Player Data"
-      line-1: "Clears inventories, XP and game progress."
-      line-2: "Worlds and buildings are preserved."
-    world:
-      name: "Reset Everything"
-      line-1: "Deletes all player and world data."
-      line-2: "Recreates all challenge worlds."
-
-    vote:
-      reset-worlds: "Reset worlds and all data"
-      reset-progress: "Reset player data and progress"
 
     help:
       title: "<gold>══════ LevelBlock Commands ══════"
