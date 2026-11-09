@@ -281,19 +281,27 @@ public final class PluginFileManager {
 
     private int createPersistentFile(String relativePath) {
         Path file = plugin.getDataFolder().toPath().resolve(relativePath);
+
         if (Files.exists(file)) {
-            if (!Files.isRegularFile(file)) error("Kein regulärer Dateipfad: " + relativePath, null);
+            if (!Files.isRegularFile(file)) {
+                error("Kein regulärer Dateipfad: " + relativePath, null);
+                return 0;
+            }
             return 1;
         }
+
         try {
-            if (!ensureDirectory(file.getParent())) return 1;
+            if (!ensureDirectory(file.getParent())) return 0;
+
             Files.createFile(file);
             created++;
             changes.add("erstellt: " + relativePath);
+            return 1;
+
         } catch (IOException e) {
             error("Konnte Datendatei nicht erstellen: " + relativePath, e);
+            return 0;
         }
-        return 1;
     }
 
     private boolean backup(Path original) {
