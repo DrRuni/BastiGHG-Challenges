@@ -1,413 +1,387 @@
 package runi.myddns.challenges.core.files;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import runi.myddns.challenges.core.utils.ConsoleColor;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.logging.Level;
 
-public class PluginFileManager {
+public final class PluginFileManager {
 
-    private final JavaPlugin plugin;
-
-    private record GameFiles(
-            String gameName,
-            String targetFolder,
-            String resourcePrefix,
-            List<String> yamlFiles,
-            List<String> emptyFiles
-    ) {}
-
-    private static final List<String> ROOT_RESOURCE_FILES = List.of("config.yml");
-    private static final List<String> ROOT_EMPTY_FILES = List.of("game-state.yml");
     private static final String WORLD_SETTINGS_RESOURCE = "core/gamesettings.yml";
+    private static final String MANIFEST_NAME = ".filemanagement.properties";
+    private static final String BASELINE_DIR = ".filemanagement/templates";
+    private static final DateTimeFormatter BACKUP_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
 
-    private static final GameFiles MOB_ARMY_BATTLE = new GameFiles(
-            "MobArmyBattle",
-            "games/mobarmybattle/",
-            "games/mobarmybattle/",
-            List.of(
-                    "arena-koordinaten.yml",
-                    "gamedata.yml",
-                    "spawns.yml",
-                    "team-equipment.yml",
-                    "waves.yml",
-                    "gamesettings.yml"
-            ),
-            List.of(
-                    "mobData.yml",
-                    "scoreboard.yml",
-                    "teams.yml"
-            )
-    );
-
-    private static final GameFiles LEVEL_BORDER = new GameFiles(
-            "LevelBorder",
-            "games/levelborder/",
-            "games/levelborder/",
-            List.of(
-                    "gamedata.yml",
-                    "config.yml"
-            ),
-            List.of()
-    );
-
-    private static final GameFiles LEVEL_BLOCK = new GameFiles(
-            "LevelBlock",
-            "games/levelblock/",
-            "games/levelblock/",
-            List.of(
-                    "gamedata.yml"
-            ),
-            List.of()
-    );
-
-    private static final GameFiles CHUNK_RANDOMIZER = new GameFiles(
-            "ChunkRandomizer",
-            "games/chunkrandomizer/",
-            "games/chunkrandomizer/",
-            List.of(
-                    "gamedata.yml"
-            ),
-            List.of()
-    );
+    private record GameFiles(String name, String folder, List<String> templates,
+                             List<String> persistentFiles, boolean sharedWorldSettings) {}
 
     private static final List<GameFiles> GAMES = List.of(
-            MOB_ARMY_BATTLE,
-            LEVEL_BORDER,
-            LEVEL_BLOCK,
-            CHUNK_RANDOMIZER
+            new GameFiles("MobArmyBattle", "games/mobarmybattle",
+                    List.of("arena-koordinaten.yml", "gamedata.yml", "spawns.yml",
+                            "team-equipment.yml", "waves.yml", "gamesettings.yml"),
+                    List.of("mobData.yml", "scoreboard.yml", "teams.yml"), false),
+            new GameFiles("LevelBorder", "games/levelborder",
+                    List.of("gamedata.yml", "config.yml"), List.of(), true),
+            new GameFiles("LevelBlock", "games/levelblock",
+                    List.of("gamedata.yml"), List.of(), true),
+            new GameFiles("ChunkRandomizer", "games/chunkrandomizer",
+                    List.of("gamedata.yml"), List.of(), true)
     );
 
-    private static final List<String> LANGUAGE_GROUPS = List.of(
-            "core",
-            "mobarmybattle",
-            "levelborder",
-            "levelblock"
+    private static final List<String> LANGUAGES = List.of(
+            "core", "mobarmybattle", "levelborder", "levelblock", "chunkrandomizer"
     );
 
-    private static final List<String> LANGUAGE_FILES = List.of(
-            "de.yml",
-            "en.yml"
-    );
+    private final JavaPlugin plugin;
+    private final Properties manifest = new Properties();
+    private final List<String> changes = new ArrayList<>();
+    private int created;
+    private int updated;
+    private int backups;
+    private int errors;
 
     public PluginFileManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
     public void checkFilesOnStartup() {
-        checkRootFiles();
-        checkLanguageFiles();
+        changes.clear();
+        created = updated = backups = errors = 0;
+        manifest.clear();
+
+        Path dataFolder = plugin.getDataFolder().toPath();
+        if (!ensureDirectory(dataFolder)) return;
+        loadManifest(dataFolder.resolve(MANIFEST_NAME));
+
+        log("");
+        log(ConsoleColor.PURPLE + "                     ◆ BastiGHG Challenges" + ConsoleColor.RESET);
+        log(ConsoleColor.COPPER + "                        FileManagement 2.0" + ConsoleColor.RESET);
+        log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+        int core = 0;
+        core += processTemplate("config.yml", "config.yml", false);
+        core += createPersistentFile("game-state.yml");
+        printGroup("Core", core);
 
         for (GameFiles game : GAMES) {
-            checkGameFiles(game);
-        }
-    }
-
-    private void checkRootFiles() {
-        File targetFolder = plugin.getDataFolder();
-
-        if (!targetFolder.exists() && !targetFolder.mkdirs()) {
-            plugin.getLogger().warning("Plugin-Datenordner konnte nicht erstellt werden: " + targetFolder.getPath());
-            return;
-        }
-
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.PURPLE +
-                        "        Prüfe zentrale Plugin-Dateien..." +
-                        ConsoleColor.RESET
-        );
-        Bukkit.getConsoleSender().sendMessage("");
-
-        for (String fileName : ROOT_RESOURCE_FILES) {
-            checkYamlFile(targetFolder, "", fileName);
-        }
-
-        for (String fileName : ROOT_EMPTY_FILES) {
-            createEmptyFileIfMissing(targetFolder, fileName);
-        }
-
-        Bukkit.getConsoleSender().sendMessage("");
-    }
-
-    private void checkLanguageFiles() {
-
-        File languageRoot = new File(plugin.getDataFolder(), "languages");
-
-        if (!languageRoot.exists() && !languageRoot.mkdirs()) {
-            plugin.getLogger().warning("Sprachordner konnte nicht erstellt werden.");
-            return;
-        }
-
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.PURPLE +
-                        "        Prüfe Sprachdateien..." +
-                        ConsoleColor.RESET
-        );
-        Bukkit.getConsoleSender().sendMessage("");
-
-        for (String group : LANGUAGE_GROUPS) {
-
-            File groupFolder = new File(languageRoot, group);
-
-            if (!groupFolder.exists() && !groupFolder.mkdirs()) {
-                plugin.getLogger().warning(
-                        "Sprachordner konnte nicht erstellt werden: " + groupFolder.getPath()
-                );
-                continue;
+            int inspected = 0;
+            for (String name : game.templates()) {
+                String relative = game.folder() + "/" + name;
+                // gamedata.yml contains live progress: install once, never merge or overwrite.
+                inspected += processTemplate(relative, relative, name.equals("gamedata.yml"));
             }
+            if (game.sharedWorldSettings()) {
+                inspected += processTemplate(WORLD_SETTINGS_RESOURCE,
+                        game.folder() + "/gamesettings.yml", false);
+            }
+            for (String name : game.persistentFiles()) {
+                inspected += createPersistentFile(game.folder() + "/" + name);
+            }
+            printGroup(game.name(), inspected);
+        }
 
-            String resourcePrefix = "languages/" + group + "/";
-
-            for (String fileName : LANGUAGE_FILES) {
-                checkYamlFile(
-                        groupFolder,
-                        resourcePrefix,
-                        fileName
-                );
+        int languageCount = 0;
+        for (String group : LANGUAGES) {
+            for (String lang : List.of("de.yml", "en.yml")) {
+                String path = "languages/" + group + "/" + lang;
+                languageCount += processTemplate(path, path, false);
             }
         }
+        printGroup("Languages (DE / EN)", languageCount);
 
-        Bukkit.getConsoleSender().sendMessage("");
+        // The manifest is written only after all processed resources have been recorded.
+        saveManifest(dataFolder.resolve(MANIFEST_NAME));
+
+        if (!changes.isEmpty()) {
+            log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            log(ConsoleColor.COPPER + "        ↻ " + updated + " aktualisiert, " + created
+                    + " erstellt" + ConsoleColor.RESET);
+            for (String change : changes) {
+                log(ConsoleColor.COPPER + "          ↳ " + change + ConsoleColor.RESET);
+            }
+            if (backups > 0) {
+                log(ConsoleColor.DARK_GOLDEN_LIME + "        ✔ " + backups
+                        + " Backup(s) erstellt" + ConsoleColor.RESET);
+            }
+        }
+        log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        String status = errors == 0 ? "✔ FileManagement bereit — 0 Fehler"
+                : "⚠ FileManagement beendet — " + errors + " Fehler";
+        if (errors == 0) {
+            log(ConsoleColor.DARK_GOLDEN_LIME + "        " + status + ConsoleColor.RESET);
+        } else {
+            log("        " + ConsoleColor.COPPER + "⚠" + ConsoleColor.RESET
+                    + " FileManagement beendet — " + errors + " Fehler");
+        }
+        log("");
     }
 
-    private void checkGameFiles(GameFiles game) {
-        File targetFolder = new File(plugin.getDataFolder(), game.targetFolder());
-        String resourcePrefix = normalizePrefix(game.resourcePrefix());
-
-        createDataFolder(game.gameName(), targetFolder);
-
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.PURPLE +
-                        "        Prüfe " + game.gameName() + "-Dateien..." +
-                        ConsoleColor.RESET
-        );
-        Bukkit.getConsoleSender().sendMessage("");
-
-        for (String file : game.yamlFiles()) {
-            checkYamlFile(targetFolder, resourcePrefix, file);
+    /** Return 1 for a registered/inspected file, even if it needed no changes. */
+    private int processTemplate(String resourcePath, String relativeTarget, boolean persistent) {
+        Path target = plugin.getDataFolder().toPath().resolve(relativeTarget);
+        byte[] resourceBytes;
+        try (InputStream in = plugin.getResource(resourcePath)) {
+            if (in == null) {
+                missingResource(resourcePath);
+                return 0;
+            }
+            resourceBytes = in.readAllBytes();
+        } catch (IOException e) {
+            error("JAR-Resource nicht lesbar: " + resourcePath, e);
+            return 0;
         }
 
-        if (!game.gameName().equals("MobArmyBattle")) {
-            checkWorldSettings(targetFolder);
+        if (Files.notExists(target)) {
+            try {
+                if (!ensureDirectory(target.getParent())) return 1;
+                safeWrite(target, resourceBytes);
+                created++;
+                changes.add("erstellt: " + relativeTarget);
+                if (ensureDirectory(plugin.getDataFolder().toPath().resolve(BASELINE_DIR)
+                        .resolve(relativeTarget).getParent())) {
+                    safeWrite(plugin.getDataFolder().toPath().resolve(BASELINE_DIR)
+                            .resolve(relativeTarget), resourceBytes);
+                }
+                manifest.setProperty(relativeTarget, sha256(resourceBytes));
+            } catch (IOException e) {
+                error("Konnte Datei nicht erstellen: " + relativeTarget, e);
+            }
+            return 1;
         }
 
-        for (String file : game.emptyFiles()) {
-            createEmptyFileIfMissing(targetFolder, file);
+        if (!Files.isRegularFile(target)) {
+            error("Kein regulärer Dateipfad: " + relativeTarget, null);
+            return 1;
         }
 
-        Bukkit.getConsoleSender().sendMessage("");
-    }
-
-    private void createDataFolder(String gameName, File targetFolder) {
-        if (targetFolder.exists()) return;
-
-        if (!targetFolder.mkdirs()) {
-            plugin.getLogger().warning(gameName + "-Datenordner konnte nicht erstellt werden: " + targetFolder.getPath());
-        }
-    }
-
-    private String normalizePrefix(String prefix) {
-        if (prefix == null || prefix.isBlank()) return "";
-        return prefix.endsWith("/") ? prefix : prefix + "/";
-    }
-
-    private void checkYamlFile(File targetFolder, String resourcePrefix, String fileName) {
-        File targetFile = new File(targetFolder, fileName);
-        String resourcePath = resourcePrefix + fileName;
-
-        if (plugin.getResource(resourcePath) == null) {
-            plugin.getLogger().warning("Resource nicht gefunden: " + resourcePath);
-            return;
+        if (persistent) {
+            manifest.setProperty(relativeTarget, sha256(resourceBytes));
+            return 1;
         }
 
-        if (!targetFile.exists()) {
-            copyResource(resourcePath, targetFile);
-            printFileStatus(fileName, "erstellt.");
-            return;
-        }
+        String bundledHash = sha256(resourceBytes);
+        Path baseline = plugin.getDataFolder().toPath().resolve(BASELINE_DIR).resolve(relativeTarget);
 
-        int currentVersion = getFileVersion(targetFile);
-        int newestVersion = getResourceVersion(resourcePrefix, fileName);
-
-        if (newestVersion <= 0) {
-            plugin.getLogger().warning(fileName + " hat in der Plugin-JAR keine gültige file-version.");
-            return;
-        }
-
-        if (currentVersion < newestVersion) {
-            backupFile(targetFolder, targetFile, fileName);
-            overwriteResource(resourcePath, targetFile);
-            printFileStatus(fileName, "aktualisiert.");
-            return;
-        }
-
-        printFileStatus(fileName, "I.O.");
-    }
-
-    private void checkWorldSettings(File targetFolder) {
-        File targetFile = new File(targetFolder, "gamesettings.yml");
-
-        if (plugin.getResource(WORLD_SETTINGS_RESOURCE) == null) {
-            plugin.getLogger().warning(
-                    "Resource nicht gefunden: " + WORLD_SETTINGS_RESOURCE
-            );
-            return;
-        }
-
-        if (!targetFile.exists()) {
-            copyResource(WORLD_SETTINGS_RESOURCE, targetFile);
-            printFileStatus("gamesettings.yml", "erstellt.");
-            return;
-        }
-
-        int currentVersion = getFileVersion(targetFile);
-        int newestVersion = getResourceVersion(
-                "core/",
-                "gamesettings.yml"
-        );
-
-        if (currentVersion < newestVersion) {
-            backupFile(
-                    targetFolder,
-                    targetFile,
-                    "gamesettings.yml"
-            );
-
-            overwriteResource(
-                    WORLD_SETTINGS_RESOURCE,
-                    targetFile
-            );
-
-            printFileStatus(
-                    "gamesettings.yml",
-                    "aktualisiert."
-            );
-
-            return;
-        }
-
-        printFileStatus(
-                "gamesettings.yml",
-                "I.O."
-        );
-    }
-
-    private void createEmptyFileIfMissing(File targetFolder, String fileName) {
         try {
-            File file = new File(targetFolder, fileName);
-            File parent = file.getParentFile();
+            YamlConfiguration latest = parseYaml(new String(resourceBytes, StandardCharsets.UTF_8));
+            YamlConfiguration existing = parseYaml(Files.readString(target, StandardCharsets.UTF_8));
 
-            if (parent != null && !parent.exists() && !parent.mkdirs()) {
-                plugin.getLogger().warning("Ordner konnte nicht erstellt werden: " + parent.getPath());
-                return;
+            YamlConfiguration previous = null;
+            boolean isLanguage = relativeTarget.startsWith("languages/");
+            if (isLanguage && Files.isRegularFile(baseline)) {
+                previous = parseYaml(Files.readString(baseline, StandardCharsets.UTF_8));
             }
 
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    plugin.getLogger().warning("Datei konnte nicht erstellt werden: " + fileName);
-                    return;
+            int changedTranslations = 0;
+            if (isLanguage && previous != null) {
+                for (String path : latest.getKeys(true)) {
+                    if (isLegacyVersionField(path) || latest.isConfigurationSection(path)) continue;
+                    if (!previous.contains(path, true) || !existing.contains(path, true)) continue;
+                    if (existing.isConfigurationSection(path)) continue;
+                    Object oldDefault = previous.get(path);
+                    Object newDefault = latest.get(path);
+                    Object userValue = existing.get(path);
+                    // Preserve custom translations; update only unchanged bundled defaults.
+                    if (Objects.equals(userValue, oldDefault) && !Objects.equals(oldDefault, newDefault)) {
+                        existing.set(path, newDefault);
+                        changedTranslations++;
+                    }
+                }
+            }
+
+            int removedLegacyFields = 0;
+            for (String versionKey : List.of("file-version", "config-version")) {
+                if (!latest.contains(versionKey, true) && existing.contains(versionKey, true)) {
+                    existing.set(versionKey, null);
+                    removedLegacyFields++;
+                }
+            }
+
+            int added = 0;
+            for (String path : latest.getKeys(true)) {
+                if (isLegacyVersionField(path)) continue;
+                if (existing.contains(path, true)) continue;
+                if (hasScalarParent(existing, path)) {
+                    plugin.getLogger().warning("YAML-Strukturkonflikt, vorhandener Wert bleibt: "
+                            + relativeTarget + " / " + path);
+                    continue;
                 }
 
-                printFileStatus(fileName, "erstellt.");
-                return;
+                Object value = latest.get(path);
+                if (value instanceof org.bukkit.configuration.ConfigurationSection section) {
+                    if (section.getKeys(false).isEmpty()) {
+                        existing.createSection(path);
+                        added++;
+                    }
+                } else if (value != null) {
+                    existing.set(path, value);
+                    added++;
+                }
             }
 
-            printFileStatus(fileName, "I.O.");
-
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Fehler beim Erstellen von " + fileName + ".", e);
-        }
-    }
-
-    private int getFileVersion(File file) {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-        if (config.contains("file-version")) return config.getInt("file-version");
-        if (config.contains("config-version")) return config.getInt("config-version");
-
-        return 0;
-    }
-
-    private int getResourceVersion(String resourcePrefix, String fileName) {
-        String resourcePath = resourcePrefix + fileName;
-
-        try (InputStream inputStream = plugin.getResource(resourcePath)) {
-            if (inputStream == null) return 0;
-
-            InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            FileConfiguration config = YamlConfiguration.loadConfiguration(reader);
-
-            if (config.contains("file-version")) return config.getInt("file-version");
-            if (config.contains("config-version")) return config.getInt("config-version");
-
-            return 0;
-
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Fehler beim Lesen der Resource-Version von " + fileName + ".", e);
-            return 0;
-        }
-    }
-
-    private void overwriteResource(String resourcePath, File targetFile) {
-        try {
-            File parent = targetFile.getParentFile();
-
-            if (parent != null && !parent.exists() && !parent.mkdirs()) return;
-
-            try (InputStream inputStream = plugin.getResource(resourcePath)) {
-                if (inputStream == null) return;
-                Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (added > 0 || changedTranslations > 0 || removedLegacyFields > 0) {
+                if (!backup(target)) return 1;
+                safeWrite(target, existing.saveToString().getBytes(StandardCharsets.UTF_8));
+                updated++;
+                changes.add("aktualisiert: " + relativeTarget + " (" + added
+                        + " ergänzt, " + changedTranslations + " Übersetzungen erneuert, "
+                        + removedLegacyFields + " alte Versionsfelder entfernt)");
             }
 
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Fehler beim Aktualisieren von " + resourcePath + ".", e);
+            if (!ensureDirectory(baseline.getParent())) return 1;
+            safeWrite(baseline, resourceBytes);
+            manifest.setProperty(relativeTarget, bundledHash);
+        } catch (IOException | InvalidConfigurationException | IllegalArgumentException e) {
+            error("YAML konnte nicht sicher aktualisiert werden: " + relativeTarget, e);
         }
+        return 1;
     }
 
-    private void copyResource(String resourcePath, File targetFile) {
-        overwriteResource(resourcePath, targetFile);
+    private boolean hasScalarParent(YamlConfiguration config, String path) {
+        int dot = path.indexOf('.');
+        while (dot >= 0) {
+            String parent = path.substring(0, dot);
+            if (config.contains(parent, true) && !config.isConfigurationSection(parent)) {
+                return true;
+            }
+            dot = path.indexOf('.', dot + 1);
+        }
+        return false;
     }
-    
-    private void backupFile(File targetFolder, File file, String fileName) {
+
+    private boolean isLegacyVersionField(String path) {
+        return path.equals("file-version") || path.equals("config-version");
+    }
+
+    private YamlConfiguration parseYaml(String content) throws InvalidConfigurationException {
+        YamlConfiguration configuration = new YamlConfiguration();
+        configuration.options().parseComments(true);
+        configuration.loadFromString(content);
+        return configuration;
+    }
+
+    private int createPersistentFile(String relativePath) {
+        Path file = plugin.getDataFolder().toPath().resolve(relativePath);
+        if (Files.exists(file)) {
+            if (!Files.isRegularFile(file)) error("Kein regulärer Dateipfad: " + relativePath, null);
+            return 1;
+        }
         try {
-            File backupFolder = new File(targetFolder, "backups");
-
-            if (!backupFolder.exists() && !backupFolder.mkdirs()) return;
-
-            long timestamp = System.currentTimeMillis();
-            File backupFile = new File(backupFolder, fileName + ".backup-" + timestamp);
-
-            Files.copy(file.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
+            if (!ensureDirectory(file.getParent())) return 1;
+            Files.createFile(file);
+            created++;
+            changes.add("erstellt: " + relativePath);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Backup für " + fileName + " konnte nicht erstellt werden.", e);
+            error("Konnte Datendatei nicht erstellen: " + relativePath, e);
+        }
+        return 1;
+    }
+
+    private boolean backup(Path original) {
+        Path backupDir = original.getParent().resolve("backups");
+        if (!ensureDirectory(backupDir)) return false;
+        String filename = original.getFileName().toString();
+        Path backup = backupDir.resolve(filename + ".backup-" + BACKUP_DATE.format(LocalDateTime.now()));
+        try {
+            Files.copy(original, backup); // never overwrite an existing backup
+            backups++;
+            return true;
+        } catch (IOException e) {
+            error("Backup fehlgeschlagen; Original bleibt unverändert: " + original, e);
+            return false;
         }
     }
 
-    private void printFileStatus(String fileName, String status) {
-        String namePart = "Datei - '" + fileName + "'";
-        int width = 48;
-        int dots = Math.max(3, width - namePart.length());
+    private void safeWrite(Path destination, byte[] data) throws IOException {
+        Path temp = Files.createTempFile(destination.getParent(), ".filemanagement-", ".tmp");
+        try {
+            Files.write(temp, data);
+            try {
+                Files.move(temp, destination, StandardCopyOption.ATOMIC_MOVE,
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(temp, destination, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } finally {
+            Files.deleteIfExists(temp);
+        }
+    }
 
-        Bukkit.getConsoleSender().sendMessage(
-                ConsoleColor.COPPER +
-                        "        " +
-                        namePart +
-                        ".".repeat(dots) +
-                        ConsoleColor.DARK_GOLDEN_LIME +
-                        status +
-                        ConsoleColor.RESET
-        );
+    private boolean ensureDirectory(Path folder) {
+        try {
+            Files.createDirectories(folder);
+            return true;
+        } catch (IOException e) {
+            error("Ordner konnte nicht erstellt werden: " + folder, e);
+            return false;
+        }
+    }
+
+    private String sha256(byte[] bytes) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 wird von dieser Java-Laufzeit nicht unterstützt", e);
+        }
+    }
+
+    private void loadManifest(Path file) {
+        if (Files.notExists(file)) return;
+        try (InputStream input = Files.newInputStream(file)) {
+            manifest.load(input);
+        } catch (IOException e) {
+            error("Datei-Manifest konnte nicht gelesen werden: " + file, e);
+        }
+    }
+
+    private void saveManifest(Path file) {
+        try {
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            manifest.store(out, "BastiGHG Challenges FileManagement 2.0 - JAR resource SHA-256 hashes");
+            safeWrite(file, out.toByteArray());
+        } catch (IOException e) {
+            error("Datei-Manifest konnte nicht gespeichert werden: " + file, e);
+        }
+    }
+
+    private void printGroup(String group, int count) {
+        log(ConsoleColor.DARK_GOLDEN_LIME + "        ✔ "
+                + String.format("%-23s", group) + count + " Dateien geprüft"
+                + ConsoleColor.RESET);
+    }
+
+    private void missingResource(String path) {
+        errors++;
+        log("        " + ConsoleColor.BLOOD_ORANGE + "⚠ JAR fehlt" + ConsoleColor.RESET
+                + "  " + path);
+    }
+
+    private void error(String message, Exception e) {
+        errors++;
+        if (e == null) plugin.getLogger().severe(message);
+        else plugin.getLogger().log(Level.SEVERE, message, e);
+    }
+
+    private void log(String message) {
+        Bukkit.getConsoleSender().sendMessage(message);
     }
 }
