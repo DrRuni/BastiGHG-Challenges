@@ -562,28 +562,13 @@ public class LevelBlockGame implements ChallengeGame {
 
         if (player == null) return;
 
-        borderManager.removePlayerView(
-                player
-        );
+        borderManager.removePlayerView(player);
 
-        timerManager.clear(
-                player
-        );
+        timerManager.clear(player);
 
         if (!hasOtherPlayers(player)) {
             gameTimerManager.pause();
         }
-
-        World lobby =
-                plugin.getLobbyWorldManager()
-                        .getLobbyWorld();
-
-        if (lobby == null) return;
-
-        player.teleport(
-                plugin.getLobbyWorldManager()
-                        .getSpawn()
-        );
     }
 
     @Override
