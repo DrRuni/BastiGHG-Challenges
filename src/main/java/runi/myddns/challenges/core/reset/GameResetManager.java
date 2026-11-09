@@ -125,9 +125,16 @@ public class GameResetManager {
                     );
                 }
 
-                if (!(game instanceof LevelBorderGame)
-                        && !(game instanceof LevelBlockGame)) {
-                    plugin.getPlayerGameDataManager().clearPlayerState(player);
+                if (game instanceof LevelBorderGame) {
+                    plugin.getPlayerGameDataManager()
+                            .clearPlayerState(player);
+
+                    player.updateInventory();
+
+                } else if (!(game instanceof LevelBlockGame)) {
+                    plugin.getPlayerGameDataManager()
+                            .clearPlayerState(player);
+
                     player.updateInventory();
                 }
             }
@@ -137,7 +144,7 @@ public class GameResetManager {
                     Component.text(game.getDisplayName())));
 
             if (game instanceof LevelBorderGame levelBorder) {
-                levelBorder.resetGameData(null);
+                levelBorder.resetWorldData();
             }
 
             if (game instanceof LevelBlockGame levelBlock) {

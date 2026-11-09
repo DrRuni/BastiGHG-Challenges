@@ -183,15 +183,8 @@ public class ResetManagementGUI implements Listener {
             ));
 
         } else if (game instanceof LevelBorderGame) {
-            inventory.setItem(11, createItem(
-                    Material.REDSTONE,
-                    plugin.getLanguageManager().get("reset-management.data.name"),
-                    NamedTextColor.GOLD,
-                    plugin.getLanguageManager().get("reset-management.data.line-1"),
-                    plugin.getLanguageManager().get("reset-management.data.line-2")
-            ));
 
-            inventory.setItem(13, createItem(
+            inventory.setItem(11, createItem(
                     Material.PLAYER_HEAD,
                     plugin.getLanguageManager().get("reset-management.player.name"),
                     NamedTextColor.AQUA,
@@ -336,18 +329,6 @@ public class ResetManagementGUI implements Listener {
                 } else if (game.getId().equalsIgnoreCase("chunkrandomizer")) {
                     Bukkit.dispatchCommand(player, "chunkrandomizer reset");
                 }
-            }
-
-            case 13 -> {
-                if (!(game instanceof LevelBorderGame levelBorder)) return;
-
-
-                plugin.getVoteManager().startVote(
-                        game.getDisplayName(),
-                        plugin.getLanguageManager()
-                                .get("reset-management.player.name"),
-                        levelBorder::resetPlayerData
-                );
             }
 
             case 15 -> {

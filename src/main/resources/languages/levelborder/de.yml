@@ -1,6 +1,6 @@
 # LevelBorder DE Language
 
-file-version: 2
+file-version: 3
 
 commands:
   levelborder:
@@ -30,7 +30,7 @@ commands:
       load-first: "<red>❌ LevelBorder muss zuerst geladen werden."
       admin-only: "<red>❌ Nur der Admin darf LevelBorder zurücksetzen!"
       vote-worlds: "Welten komplett zurücksetzen"
-      vote-progress: "Spielstand zurücksetzen"
+      vote-progress: "Spielerdaten und Border zurücksetzen"
       success: "<green>✔ LevelBorder wurde zurückgesetzt."
 
     unknown: "<red>Unbekannter Unterbefehl. Nutze /levelborder für Hilfe."
@@ -45,7 +45,7 @@ commands:
       set: "<yellow>/levelborder set <Größe> <gray>- Bordergröße setzen"
       score: "<yellow>/levelborder score <gray>- Scoreboard verwalten"
       settings: "<yellow>/levelborder gamesettings <gray>- Spieleinstellungen öffnen"
-      reset: "<yellow>/levelborder reset <gray>- Spielstand zurücksetzen"
+      reset: "<yellow>/levelborder reset <gray>- Spielerdaten und Border zurücksetzen"
       reset-world: "<yellow>/levelborder reset world <gray>- Welten komplett zurücksetzen"
 
     info:
