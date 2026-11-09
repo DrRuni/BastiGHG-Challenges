@@ -6,7 +6,7 @@
 
     <groupId>runi.myddns</groupId>
     <artifactId>bastighg-challenges</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>bastighg-challenges</name>
@@ -97,7 +97,7 @@
                         <configuration>
                             <target>
                                 <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                      tofile="C:\Users\ronny\Desktop\Server 26.3\plugins\BastiGHG-Challenges-v1.1.1-Paper-26.3.jar"
+                                      tofile="C:\Users\ronny\Desktop\Server 26.3\plugins\BastiGHG-Challenges-v1.1.0-Paper-26.3.jar"
                                       overwrite="true"
                                       failonerror="false" />
                             </target>
