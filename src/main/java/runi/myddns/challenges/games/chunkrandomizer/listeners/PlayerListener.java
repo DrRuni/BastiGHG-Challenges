@@ -17,11 +17,11 @@ import runi.myddns.challenges.games.chunkrandomizer.ChunkRandomizerGame;
 
 import java.time.Duration;
 
-public class ChunkRandomizerPlayerListener implements Listener {
+public class PlayerListener implements Listener {
 
     private final ChunkRandomizerGame game;
 
-    public ChunkRandomizerPlayerListener(ChunkRandomizerGame game) {
+    public PlayerListener(ChunkRandomizerGame game) {
         this.game = game;
     }
 

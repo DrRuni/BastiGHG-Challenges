@@ -12,7 +12,7 @@ import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.chunkrandomizer.commands.ChunkRandomizerCommand;
-import runi.myddns.challenges.games.chunkrandomizer.listeners.ChunkRandomizerPlayerListener;
+import runi.myddns.challenges.games.chunkrandomizer.listeners.PlayerListener;
 import runi.myddns.challenges.games.chunkrandomizer.managers.*;
 
 import java.io.InputStreamReader;
@@ -30,7 +30,7 @@ public class ChunkRandomizerGame implements ChallengeGame {
     private final GameTimerManager timerManager;
     private final TimerManager timerDisplayManager;
     private final ChunkRandomizerMobManager mobManager;
-    private ChunkRandomizerPlayerListener playerListener;
+    private PlayerListener playerListener;
 
     private boolean loaded = false;
     private boolean loading = false;
@@ -226,7 +226,7 @@ public class ChunkRandomizerGame implements ChallengeGame {
                                                                             Bukkit.getPluginManager()
                                                                                     .registerEvents(mobManager, plugin);
 
-                                                                            playerListener = new ChunkRandomizerPlayerListener(this);
+                                                                            playerListener = new PlayerListener(this);
 
                                                                             Bukkit.getPluginManager()
                                                                                     .registerEvents(playerListener, plugin);
