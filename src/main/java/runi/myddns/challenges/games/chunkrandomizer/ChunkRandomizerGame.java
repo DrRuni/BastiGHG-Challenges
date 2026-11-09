@@ -12,6 +12,7 @@ import runi.myddns.challenges.core.utils.ConsoleColor;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.core.world.GameWorldSettingsManager;
 import runi.myddns.challenges.games.chunkrandomizer.commands.ChunkRandomizerCommand;
+import runi.myddns.challenges.games.chunkrandomizer.listeners.ChunkRandomizerPlayerListener;
 import runi.myddns.challenges.games.chunkrandomizer.managers.*;
 
 import java.io.InputStreamReader;
@@ -29,6 +30,7 @@ public class ChunkRandomizerGame implements ChallengeGame {
     private final GameTimerManager timerManager;
     private final TimerManager timerDisplayManager;
     private final ChunkRandomizerMobManager mobManager;
+    private ChunkRandomizerPlayerListener playerListener;
 
     private boolean loaded = false;
     private boolean loading = false;
@@ -224,6 +226,11 @@ public class ChunkRandomizerGame implements ChallengeGame {
                                                                             Bukkit.getPluginManager()
                                                                                     .registerEvents(mobManager, plugin);
 
+                                                                            playerListener = new ChunkRandomizerPlayerListener(this);
+
+                                                                            Bukkit.getPluginManager()
+                                                                                    .registerEvents(playerListener, plugin);
+
                                                                             var command = plugin.getCommand("chunkrandomizer");
 
                                                                             if (command != null) {
@@ -368,6 +375,11 @@ public class ChunkRandomizerGame implements ChallengeGame {
         startManager.stop();
         mobManager.shutdown();
 
+        if (playerListener != null) {
+            HandlerList.unregisterAll(playerListener);
+            playerListener = null;
+        }
+
         HandlerList.unregisterAll(mobManager);
         HandlerList.unregisterAll(randomizerManager);
 
@@ -434,16 +446,6 @@ public class ChunkRandomizerGame implements ChallengeGame {
 
         Location location = initiator.getLocation();
 
-        Location spawnLocation =
-                mobManager.prepareSpawnLocation(location);
-
-        if (spawnLocation == null) {
-            initiator.sendMessage(
-                    "§cKein geeigneter Mob-Spawnplatz in diesem Chunk!"
-            );
-            return false;
-        }
-
         boolean started = startManager.start(initiator);
 
         if (started) {
@@ -451,10 +453,9 @@ public class ChunkRandomizerGame implements ChallengeGame {
             dataManager.saveOriginalBorder(borderManager);
             dataManager.saveGameStart(location);
             dataManager.saveBorder(location.getWorld());
-
             randomizerManager.processChunk(location);
 
-            if (!mobManager.spawnMob(location, spawnLocation)) {
+            if (!mobManager.spawnMob(location)) {
 
                 borderManager.removeBorder();
 
@@ -502,6 +503,10 @@ public class ChunkRandomizerGame implements ChallengeGame {
 
         if (player.teleport(targetLocation)) {
             player.setGameMode(GameMode.SURVIVAL);
+
+            if (playerListener != null) {
+                playerListener.showWelcomeSequence(player);
+            }
         }
     }
 
@@ -598,25 +603,11 @@ public class ChunkRandomizerGame implements ChallengeGame {
 
         if (borderManager.isActive()) return;
 
-        // Spawnplatz im ursprünglichen Gelände suchen
-        Location spawnLocation =
-                mobManager.prepareSpawnLocation(location);
-
-        if (spawnLocation == null) {
-            plugin.getLogger().warning(
-                    "ChunkRandomizer: Kein Mob-Spawnplatz im neuen Chunk."
-            );
-            return;
-        }
-
-        // Border für den neuen Chunk erstellen
         borderManager.createBorder(location);
 
-        // Erst jetzt Blöcke umwandeln
         randomizerManager.processChunk(location);
 
-        // Mob am vorher gefundenen Platz spawnen
-        if (mobManager.spawnMob(location, spawnLocation)) {
+        if (mobManager.spawnMob(location)) {
 
             dataManager.saveBorder(location.getWorld());
 
@@ -631,6 +622,7 @@ public class ChunkRandomizerGame implements ChallengeGame {
 
     public ChunkRandomizerDataManager getDataManager() { return dataManager;}
     public GameTimerManager getTimerManager() { return timerManager;}
+    public ChallengeMain getPlugin() { return plugin;}
 }
 
 

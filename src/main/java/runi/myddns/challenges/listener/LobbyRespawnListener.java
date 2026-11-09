@@ -1,45 +1,51 @@
+
 package runi.myddns.challenges.listener;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.world.lobby.LobbyWorldManager;
 
-public class LobbyRespawnListener
-        implements Listener {
+public class LobbyRespawnListener implements Listener {
 
+    private final ChallengeMain plugin;
     private final LobbyWorldManager lobbyWorldManager;
 
     public LobbyRespawnListener(
+            ChallengeMain plugin,
             LobbyWorldManager lobbyWorldManager
     ) {
-
-        this.lobbyWorldManager =
-                lobbyWorldManager;
+        this.plugin = plugin;
+        this.lobbyWorldManager = lobbyWorldManager;
     }
 
-    @SuppressWarnings("unused")
     @EventHandler
-    public void onRespawn(
-            PlayerRespawnEvent event
-    ) {
+    public void onRespawn(PlayerRespawnEvent event) {
 
-        World lobby =
-                lobbyWorldManager.getLobbyWorld();
-
-        if (lobby == null) {
+        if (plugin.getGameWorldManager().isGameWorld(
+                event.getPlayer().getWorld(),
+                "mobarmybattle"
+        ) || plugin.getGameWorldManager().isGameWorld(
+                event.getPlayer().getWorld(),
+                "levelborder"
+        ) || plugin.getGameWorldManager().isGameWorld(
+                event.getPlayer().getWorld(),
+                "levelblock"
+        ) || plugin.getGameWorldManager().isGameWorld(
+                event.getPlayer().getWorld(),
+                "chunkrandomizer"
+        )) {
             return;
         }
 
+        World lobby = lobbyWorldManager.getLobbyWorld();
+
+        if (lobby == null) return;
+
         event.setRespawnLocation(
-                new Location(
-                        lobby,
-                        0.5,
-                        67.0,
-                        4.5
-                )
+                lobbyWorldManager.getSpawn()
         );
     }
 }

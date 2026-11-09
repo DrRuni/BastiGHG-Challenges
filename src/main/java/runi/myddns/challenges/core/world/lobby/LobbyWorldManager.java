@@ -64,8 +64,11 @@ public class LobbyWorldManager {
         lobbyWorld.setGameRule(GameRules.SPAWN_PATROLS, false);
         lobbyWorld.setGameRule(GameRules.SPAWN_WANDERING_TRADERS, false);
         lobbyWorld.setGameRule(GameRules.SPAWN_PHANTOMS, false);
+        lobbyWorld.setGameRule(GameRules.ADVANCE_TIME, false);
         lobbyWorld.setTime(6000);
+        lobbyWorld.setGameRule(GameRules.ADVANCE_WEATHER, false);
         lobbyWorld.setStorm(false);
+        lobbyWorld.setThundering(false);
     }
 
     private void setSpawn() {

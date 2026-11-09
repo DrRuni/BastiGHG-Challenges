@@ -66,7 +66,7 @@ public final class ChallengeMain extends JavaPlugin {
         WorldProtectionManager worldProtectionManager = new WorldProtectionManager();
 
         getServer().getPluginManager().registerEvents(
-                worldProtectionManager,
+                new LobbyRespawnListener(this, lobbyWorldManager),
                 this
         );
 
@@ -132,7 +132,6 @@ public final class ChallengeMain extends JavaPlugin {
         getServer().getPluginManager().registerEvents(languageSelectionGUI, this);
         getServer().getPluginManager().registerEvents(lobbyButtonManager, this);
         getServer().getPluginManager().registerEvents(worldSettingsGUI, this);
-        getServer().getPluginManager().registerEvents(new LobbyRespawnListener(lobbyWorldManager), this);
         getServer().getPluginManager().registerEvents(serverIconManager, this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerGameDataListener(this), this);

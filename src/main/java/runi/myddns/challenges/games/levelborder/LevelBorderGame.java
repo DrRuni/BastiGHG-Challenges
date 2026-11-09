@@ -43,6 +43,7 @@ public class LevelBorderGame implements ChallengeGame {
     private TimerManager timerManager;
     private PortalManager portalManager;
     private MobSpawnManager mobSpawnManager;
+    private PlayerListener playerListener;
 
     public LevelBorderGame(ChallengeMain plugin) {
         this.plugin = plugin;
@@ -181,7 +182,8 @@ public class LevelBorderGame implements ChallengeGame {
 
     private void registerListeners() {
         registerListener(new PortalListener(this, portalManager, dataManager));
-        registerListener(new PlayerListener(this, borderManager, scoreboardManager));
+        playerListener = new PlayerListener(this, borderManager, scoreboardManager);
+        registerListener(playerListener);
     }
 
     private void finishLoading() {
@@ -347,7 +349,7 @@ public class LevelBorderGame implements ChallengeGame {
 
     @Override
     public void joinActiveGame(Player player) {
-        if (!loaded) return;
+        if (!loaded || player == null) return;
 
         World world = Bukkit.getWorld(
                 GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
@@ -363,15 +365,18 @@ public class LevelBorderGame implements ChallengeGame {
                         );
 
         if (targetLocation == null) {
-            targetLocation =
-                    world.getSpawnLocation();
+            targetLocation = world.getSpawnLocation();
         }
 
         if (player.teleport(targetLocation)) {
             player.setGameMode(GameMode.SURVIVAL);
-            // Auch registrieren, falls der Spieler bereits in derselben Welt war.
+
             dataManager.registerPlayer(player);
             scoreboardManager.addPlayer(player);
+
+            if (playerListener != null) {
+                playerListener.showWelcomeSequence(player);
+            }
         }
     }
 

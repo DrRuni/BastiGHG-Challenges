@@ -33,6 +33,8 @@ public class PlayerRespawnListener implements Listener {
     public void onRespawn(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
 
+        if (!game.isMobArmyPlayer(player)) return;
+
         Bukkit.getScheduler().runTask(
                 game.getPlugin(),
                 () -> game.getWorldSettingsManager()
@@ -51,7 +53,15 @@ public class PlayerRespawnListener implements Listener {
 
             if (lobbySpawn != null) {
                 e.setRespawnLocation(lobbySpawn);
+            } else {
+                World world = Bukkit.getWorld("world_mobarmy_lobby");
+
+                if (world != null) {
+                    e.setRespawnLocation(world.getSpawnLocation());
+                }
             }
+
+            return;
         }
 
         String team = game.getTeamManager().getPlayerTeam(player);

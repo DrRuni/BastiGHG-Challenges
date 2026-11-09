@@ -6,7 +6,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import runi.myddns.challenges.core.utils.ColorUtil;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
@@ -22,10 +21,10 @@ public class PlayerListener implements Listener {
         this.game = game;
     }
 
-    @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event) {
-        Player player = event.getPlayer();
 
+    public void showWelcomeSequence(Player player) {
+
+        if (!player.isOnline()) return;
         if (!game.isLevelBlockPlayer(player)) return;
 
         player.sendMessage("");
@@ -33,9 +32,7 @@ public class PlayerListener implements Listener {
         player.sendMessage(
                 ColorUtil.borderColor(
                         game.getLanguageManager()
-                                .get(
-                                        "player-listener.welcome.name"
-                                )
+                                .get("player-listener.welcome.name")
                 )
         );
 
@@ -43,20 +40,17 @@ public class PlayerListener implements Listener {
 
         player.sendMessage(
                 game.getLanguageManager()
-                        .getComponent(
-                                "player-listener.welcome.settings"
-                        )
+                        .getComponent("player-listener.welcome.settings")
         );
 
         player.sendMessage(
                 game.getLanguageManager()
-                        .getComponent(
-                                "player-listener.welcome.info"
-                        )
+                        .getComponent("player-listener.welcome.info")
         );
 
         player.sendMessage("");
 
+        // Logo nach 40 Ticks anzeigen
         Bukkit.getScheduler().runTaskLater(
                 game.getPlugin(),
                 () -> {
@@ -85,11 +79,11 @@ public class PlayerListener implements Listener {
                                     )
                             )
                     );
-
                 },
                 40L
         );
     }
+
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
@@ -97,16 +91,25 @@ public class PlayerListener implements Listener {
 
         if (!game.isLevelBlockPlayer(player)) return;
 
-        Location bedSpawn = player.getRespawnLocation();
+        Location vanillaRespawn = event.getRespawnLocation();
 
-        if (bedSpawn != null
-                && bedSpawn.getWorld() != null
-                && bedSpawn.getWorld().getName().equalsIgnoreCase(
-                GameWorldDefinition.LEVEL_BLOCK_OVERWORLD.worldName()
-        )) {
+        // Gültiges Bett in der LevelBlock-Overworld
+        // oder Respawnanker im LevelBlock-Nether
+        if (vanillaRespawn.getWorld() != null) {
 
-            event.setRespawnLocation(bedSpawn);
-            return;
+            String worldName = vanillaRespawn.getWorld().getName();
+
+            if (event.isBedSpawn()
+                    && worldName.equalsIgnoreCase(
+                    GameWorldDefinition.LEVEL_BLOCK_OVERWORLD.worldName())) {
+                return;
+            }
+
+            if (event.isAnchorSpawn()
+                    && worldName.equalsIgnoreCase(
+                    GameWorldDefinition.LEVEL_BLOCK_NETHER.worldName())) {
+                return;
+            }
         }
 
         World world = Bukkit.getWorld(
@@ -125,8 +128,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        event.setRespawnLocation(
-                world.getSpawnLocation()
-        );
+        event.setRespawnLocation(world.getSpawnLocation());
     }
+
 }

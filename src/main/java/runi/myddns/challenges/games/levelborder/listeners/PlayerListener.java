@@ -34,68 +34,43 @@ public class PlayerListener implements Listener {
         this.scoreboardManager = scoreboardManager;
     }
 
+
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
-        if (!game.isLevelBorderPlayer(player)) {
+        boolean wasLevelBorder =
+                game.isLevelBorderWorld(event.getFrom());
+
+        boolean isLevelBorder =
+                game.isLevelBorderPlayer(player);
+
+        if (wasLevelBorder && !isLevelBorder) {
             scoreboardManager.removePlayer(player);
+            return;
+        }
+
+        if (!isLevelBorder) {
+            return;
+        }
+
+        if (wasLevelBorder) {
             return;
         }
 
         borderManager.getData().registerPlayer(player);
         scoreboardManager.addPlayer(player);
-        Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-            if (player.isOnline() && game.isLevelBorderPlayer(player)) {
-                scoreboardManager.sendScoreboardHint(player);
-            }
-        }, 20L);
 
-        player.sendMessage("");
-
-        player.sendMessage(
-                ColorUtil.borderColor(
-                        game.getLanguageManager()
-                                .get(
-                                        "player-listener.welcome.name"
-                                )
-                )
+        Bukkit.getScheduler().runTaskLater(
+                game.getPlugin(),
+                () -> {
+                    if (player.isOnline()
+                            && game.isLevelBorderPlayer(player)) {
+                        scoreboardManager.sendScoreboardHint(player);
+                    }
+                },
+                20L
         );
-
-        player.sendMessage("");
-
-        player.sendMessage(
-                game.getLanguageManager()
-                        .getComponent(
-                                "player-listener.welcome.start"
-                        )
-        );
-
-        player.sendMessage("");
-
-        Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
-            if (!player.isOnline()) return;
-            if (!game.isLevelBorderPlayer(player)) return;
-
-            Component titleImage = Component.text("\uE032");
-
-            player.playSound(
-                    player.getLocation(),
-                    Sound.BLOCK_AMETHYST_BLOCK_CHIME,
-                    0.35f,
-                    1.2f
-            );
-
-            player.showTitle(Title.title(
-                    titleImage,
-                    Component.empty(),
-                    Title.Times.times(
-                            Duration.ofMillis(1000),
-                            Duration.ofSeconds(2),
-                            Duration.ofMillis(800)
-                    )
-            ));
-        }, 40L);
     }
 
     @EventHandler
@@ -129,40 +104,52 @@ public class PlayerListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
 
         if (!game.isLevelBorderPlayer(player)) return;
 
-        Location bedSpawn = player.getRespawnLocation();
+        Location vanillaRespawn = event.getRespawnLocation();
 
-        if (bedSpawn != null
-                && bedSpawn.getWorld() != null
-                && bedSpawn.getWorld().getName().equalsIgnoreCase(
-                GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
-        )) {
+        // Gültiges Bett in der LevelBorder-Overworld
+        // oder Respawnanker im LevelBorder-Nether
+        if (vanillaRespawn.getWorld() != null) {
 
-            event.setRespawnLocation(bedSpawn);
-            return;
+            String worldName = vanillaRespawn.getWorld().getName();
+
+            if (event.isBedSpawn()
+                    && worldName.equalsIgnoreCase(
+                    GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName())) {
+                return;
+            }
+
+            if (event.isAnchorSpawn()
+                    && worldName.equalsIgnoreCase(
+                    GameWorldDefinition.LEVEL_BORDER_NETHER.worldName())) {
+                return;
+            }
         }
 
         BorderDataManager data = borderManager.getData();
 
+        // Ohne Bett/Anker und ohne aktive Border:
+        // Normaler LevelBorder-Weltspawn
         if (!data.isActive() || data.getCenter() == null) {
             World world = Bukkit.getWorld(
                     GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
             );
 
             if (world != null) {
-                event.setRespawnLocation(
-                        world.getSpawnLocation()
-                );
+                event.setRespawnLocation(world.getSpawnLocation());
             }
 
             return;
         }
 
+        // Ohne gültigen Spawnpunkt:
+        // Respawn am Border-Mittelpunkt
         Location center = data.getCenter();
         World world = center.getWorld();
 
@@ -180,6 +167,7 @@ public class PlayerListener implements Listener {
         );
     }
 
+
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if (!game.getPlugin().getConfig().getBoolean("mob-spawning.debug.vanilla-spawns", false)) return;
@@ -195,6 +183,62 @@ public class PlayerListener implements Listener {
                         + " Z:" + loc.getBlockZ()
                         + " Welt:" + loc.getWorld().getName()
                         + ConsoleColor.RESET
+        );
+    }
+
+    public void showWelcomeSequence(Player player) {
+
+        if (!player.isOnline()) return;
+        if (!game.isLevelBorderPlayer(player)) return;
+
+        player.sendMessage("");
+
+        player.sendMessage(
+                ColorUtil.borderColor(
+                        game.getLanguageManager()
+                                .get("player-listener.welcome.name")
+                )
+        );
+
+        player.sendMessage("");
+
+        player.sendMessage(
+                game.getLanguageManager()
+                        .getComponent("player-listener.welcome.start")
+        );
+
+        player.sendMessage("");
+
+        Bukkit.getScheduler().runTaskLater(
+                game.getPlugin(),
+                () -> {
+
+                    if (!player.isOnline()) return;
+                    if (!game.isLevelBorderPlayer(player)) return;
+
+                    Component titleImage =
+                            Component.text("\uE032");
+
+                    player.playSound(
+                            player.getLocation(),
+                            Sound.BLOCK_AMETHYST_BLOCK_CHIME,
+                            0.35f,
+                            1.2f
+                    );
+
+                    player.showTitle(
+                            Title.title(
+                                    titleImage,
+                                    Component.empty(),
+                                    Title.Times.times(
+                                            Duration.ofMillis(1000),
+                                            Duration.ofSeconds(2),
+                                            Duration.ofMillis(800)
+                                    )
+                            )
+                    );
+                },
+                40L
         );
     }
 }

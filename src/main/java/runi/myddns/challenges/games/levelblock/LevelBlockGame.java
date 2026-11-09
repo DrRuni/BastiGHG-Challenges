@@ -522,6 +522,10 @@ public class LevelBlockGame implements ChallengeGame {
 
         if (player.teleport(targetLocation)) {
             player.setGameMode(GameMode.SURVIVAL);
+
+            if (playerListener != null) {
+                playerListener.showWelcomeSequence(player);
+            }
         }
 
         if (gameManager.isStarted()) {
