@@ -1,7 +1,5 @@
 # LevelBorder DE Language
 
-file-version: 3
-
 commands:
   levelborder:
     player-only: "<red>Nur Spieler können diesen Befehl nutzen."

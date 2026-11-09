@@ -1,7 +1,5 @@
 # data of chunkrandomizer
 
-file-version: 1
-
 game:
   event-started: false
   world: ""

@@ -1,7 +1,5 @@
 # LevelBlock DE Language
 
-file-version: 4
-
 loading:
   starting: "LevelBlock wird geladen..."
   worlds: "Welten laden..."

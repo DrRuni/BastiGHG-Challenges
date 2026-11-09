@@ -1,7 +1,5 @@
 # Core DE Languages
 
-file-version: 3
-
 commands:
   language:
     player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
