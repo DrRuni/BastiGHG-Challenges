@@ -1,6 +1,6 @@
 # LevelBlock EN Language
 
-file-version: 2
+file-version: 3
 
 loading:
   starting: "LevelBlock is loading..."
@@ -26,6 +26,14 @@ commands:
     admin-reset-only: "<red>❌ Only an admin may reset LevelBlock."
     unknown: "<red>Unknown subcommand."
     reset-complete: "<green>✔ LevelBlock has been reset."
+    player:
+      name: "Reset Player Data"
+      line-1: "Clears inventories, XP and game progress."
+      line-2: "Worlds and buildings are preserved."
+    world:
+      name: "Reset Everything"
+      line-1: "Deletes all player and world data."
+      line-2: "Recreates all challenge worlds."
 
     vote:
       reset-worlds: "Reset worlds and all data"
@@ -49,6 +57,24 @@ commands:
       start-command: "<yellow>/levelblock start <gray>- Start the challenge"
       settings-command: "<yellow>/levelblock gamesettings <gray>- Open settings"
       help-command: "<yellow>/levelblock <gray>- Show all commands"
+
+reset-messages:
+  player:
+    title: "<green>↻ LevelBlock <gray>• <yellow>Player Data Reset"
+    starting: "<gray>Resetting player data and game progress..."
+    finished: "<green>✔ LevelBlock has been reset."
+    details: "<gray>Worlds and buildings are preserved."
+
+  world:
+    title: "<green>↻ LevelBlock <gray>• <gold>Full Reset"
+    starting: "<gray>Resetting all player and world data..."
+    players: "<yellow>⌛ Preparing players..."
+    unloading: "<yellow>⌛ Unloading game worlds..."
+    generating: "<yellow>⌛ Recreating game worlds..."
+    loading: "<yellow>⌛ Loading game worlds..."
+    finished: "<green>✔ LevelBlock has been fully reset."
+    details: "<gray>All challenge worlds have been recreated."
+    failed: "<red>✘ LevelBlock reset failed. Check the console."
 
 move-listener:
   need-level: "<red>You need 1 level!"

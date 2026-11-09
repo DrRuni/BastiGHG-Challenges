@@ -462,9 +462,7 @@ public class VoteManager implements Listener {
                         .decorate(TextDecoration.BOLD)
         );
 
-        meta.lore(List.of(
-                Component.text(description, NamedTextColor.GRAY)
-        ));
+        meta.lore(List.of());
 
         item.setItemMeta(meta);
         return item;

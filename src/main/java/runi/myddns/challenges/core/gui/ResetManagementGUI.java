@@ -202,8 +202,25 @@ public class ResetManagementGUI implements Listener {
                     plugin.getLanguageManager().get("reset-management.all.line-3")
             ));
 
-        } else if (game.getId().equalsIgnoreCase("levelblock")
-                || game.getId().equalsIgnoreCase("chunkrandomizer")) {
+        } else if (game.getId().equalsIgnoreCase("levelblock")) {
+
+            inventory.setItem(11, createItem(
+                    Material.PLAYER_HEAD,
+                    plugin.getLanguageManager().get("reset-management.levelblock.player.name"),
+                    NamedTextColor.AQUA,
+                    plugin.getLanguageManager().get("reset-management.levelblock.player.line-1"),
+                    plugin.getLanguageManager().get("reset-management.levelblock.player.line-2")
+            ));
+
+            inventory.setItem(15, createItem(
+                    Material.TNT,
+                    plugin.getLanguageManager().get("reset-management.levelblock.world.name"),
+                    NamedTextColor.RED,
+                    plugin.getLanguageManager().get("reset-management.levelblock.world.line-1"),
+                    plugin.getLanguageManager().get("reset-management.levelblock.world.line-2")
+            ));
+
+        } else if (game.getId().equalsIgnoreCase("chunkrandomizer")) {
 
             inventory.setItem(11, createItem(
                     Material.REDSTONE,

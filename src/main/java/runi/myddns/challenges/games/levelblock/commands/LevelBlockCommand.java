@@ -1,12 +1,12 @@
 package runi.myddns.challenges.games.levelblock.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.games.levelblock.LevelBlockGame;
 
 import java.util.List;
@@ -148,10 +148,9 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                         .getVoteManager()
                         .startVote(
                                 game.getDisplayName(),
-                                game.getLanguageManager()
-                                        .get(
-                                                "commands.levelblock.vote.reset-worlds"
-                                        ),
+                                game.getPlugin().getLanguageManager()
+                                        .get("reset-management.levelblock.world.name"),
+
                                 () -> game.getPlugin()
                                         .getGameResetManager()
                                         .resetWorlds(game)
@@ -164,19 +163,26 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            game.getLanguageManager()
+                            game.getPlugin().getLanguageManager()
                                     .get(
-                                            "commands.levelblock.vote.reset-progress"
+                                            "reset-management.levelblock.player.name"
                                     ),
                             () -> {
 
+                                var language = game.getLanguageManager();
+
+                                ResetMessageUtil.start(
+                                        language,
+                                        "reset-messages.player.title",
+                                        "reset-messages.player.starting"
+                                );
+
                                 game.resetPlayerData();
 
-                                Bukkit.broadcast(
-                                        game.getLanguageManager()
-                                                .getComponent(
-                                                        "commands.levelblock.reset-complete"
-                                                )
+                                ResetMessageUtil.finish(
+                                        language,
+                                        "reset-messages.player.finished",
+                                        "reset-messages.player.details"
                                 );
                             }
                     );

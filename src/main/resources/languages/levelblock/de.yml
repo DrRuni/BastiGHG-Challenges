@@ -1,6 +1,6 @@
 # LevelBlock DE Language
 
-file-version: 2
+file-version: 3
 
 loading:
   starting: "LevelBlock wird geladen..."
@@ -26,6 +26,14 @@ commands:
     admin-reset-only: "<red>❌ Nur ein Admin darf LevelBlock zurücksetzen."
     unknown: "<red>Unbekannter Unterbefehl."
     reset-complete: "<green>✔ LevelBlock wurde zurückgesetzt."
+    player:
+      name: "Spielerdaten zurücksetzen"
+      line-1: "Löscht Inventare, XP und Spielfortschritt."
+      line-2: "Welten und Gebäude bleiben erhalten."
+    world:
+      name: "Alles zurücksetzen"
+      line-1: "Löscht alle Spieler- und Weltdaten."
+      line-2: "Erstellt alle Challenge-Welten neu."
 
     vote:
       reset-worlds: "Welten und alle Daten zurücksetzen"
@@ -49,6 +57,24 @@ commands:
       start-command: "<yellow>/levelblock start <gray>- Challenge starten"
       settings-command: "<yellow>/levelblock gamesettings <gray>- Einstellungen öffnen"
       help-command: "<yellow>/levelblock <gray>- Alle Befehle anzeigen"
+
+reset-messages:
+  player:
+    title: "<green>↻ LevelBlock <gray>• <yellow>Spielerdaten-Reset"
+    starting: "<gray>Spielerdaten und Fortschritt werden zurückgesetzt..."
+    finished: "<green>✔ LevelBlock wurde zurückgesetzt."
+    details: "<gray>Welten und Gebäude bleiben erhalten."
+
+  world:
+    title: "<green>↻ LevelBlock <gray>• <gold>Vollständiger Reset"
+    starting: "<gray>Alle Spieler- und Weltdaten werden zurückgesetzt..."
+    players: "<yellow>⌛ Spieler werden vorbereitet..."
+    unloading: "<yellow>⌛ Spielwelten werden entladen..."
+    generating: "<yellow>⌛ Spielwelten werden neu erstellt..."
+    loading: "<yellow>⌛ Spielwelten werden geladen..."
+    finished: "<green>✔ LevelBlock wurde vollständig zurückgesetzt."
+    details: "<gray>Alle Challenge-Welten wurden neu erstellt."
+    failed: "<red>✘ LevelBlock-Reset fehlgeschlagen. Konsole prüfen."
 
 move-listener:
   need-level: "<red>Du benötigst 1 Level!"
