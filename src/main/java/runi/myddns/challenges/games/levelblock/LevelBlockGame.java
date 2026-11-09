@@ -639,23 +639,43 @@ public class LevelBlockGame implements ChallengeGame {
         );
     }
 
-    public void resetWorldData() {
-        borderManager.getDataManager().resetAll();
-        gameTimerManager.reset();
-    }
 
-    public void resetGameData() {
-        resetWorldData();
+    public void resetPlayerData() {
+
+        borderManager.getDataManager().resetAll();
+
+        gameTimerManager.reset();
         timerManager.clearAll();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!isLevelBlockPlayer(player)) continue;
 
-            plugin.getPlayerGameDataManager().clearPlayerState(player);
+            plugin.getPlayerGameDataManager()
+                    .clearPlayerState(player);
+
+            World overworld = Bukkit.getWorld(
+                    GameWorldDefinition.LEVEL_BLOCK_OVERWORLD.worldName()
+            );
+
+            if (overworld != null) {
+                player.teleport(overworld.getSpawnLocation());
+            }
+
             player.updateInventory();
         }
 
         plugin.getPlayerGameDataManager().resetGamePlayerData(getId());
+        plugin.getPlayerGameDataManager().clearSavedLocations(getId());
+        borderManager.getLineManager().reset();
+        borderManager.getDisplayManager().refreshAll();
+        borderManager.getLineManager().refreshAll();
+    }
+
+    public void resetWorldData() {
+
+        borderManager.getDataManager().resetAll();
+        gameTimerManager.reset();
+        timerManager.clearAll();
         borderManager.getLineManager().reset();
         borderManager.getDisplayManager().refreshAll();
         borderManager.getLineManager().refreshAll();

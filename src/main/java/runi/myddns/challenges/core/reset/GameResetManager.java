@@ -149,7 +149,6 @@ public class GameResetManager {
 
             if (game instanceof LevelBlockGame levelBlock) {
                 levelBlock.resetWorldData();
-                levelBlock.getTimerDisplayManager().clearAll();
             }
 
             if (game instanceof ChunkRandomizerGame chunkRandomizer) {

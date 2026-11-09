@@ -28,16 +28,16 @@ commands:
     reset-complete: "<green>✔ LevelBlock wurde zurückgesetzt."
 
     vote:
-      reset-worlds: "Welten komplett zurücksetzen"
-      reset-progress: "Spielstand zurücksetzen"
+      reset-worlds: "Welten und alle Daten zurücksetzen"
+      reset-progress: "Spielerdaten und Fortschritt zurücksetzen"
 
     help:
       title: "<gold>══════ LevelBlock Befehle ══════"
       info: "<yellow>/levelblock info <gray>- Spielinfo anzeigen"
       start: "<yellow>/levelblock start <gray>- Challenge starten"
       settings: "<yellow>/levelblock gamesettings <gray>- Spieleinstellungen öffnen"
-      reset: "<yellow>/levelblock reset <gray>- Spielstand zurücksetzen"
-      reset-world: "<yellow>/levelblock reset world <gray>- Welten komplett zurücksetzen"
+      reset: "<yellow>/levelblock reset <gray>- Spielerdaten und Fortschritt zurücksetzen"
+      reset-world: "<yellow>/levelblock reset world <gray>- Alles vollständig zurücksetzen"
 
     info:
       title: "<gold>══════ LevelBlock ══════"

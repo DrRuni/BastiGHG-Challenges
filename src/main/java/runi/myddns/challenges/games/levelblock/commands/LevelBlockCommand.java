@@ -170,7 +170,7 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                                     ),
                             () -> {
 
-                                game.resetGameData();
+                                game.resetPlayerData();
 
                                 Bukkit.broadcast(
                                         game.getLanguageManager()

@@ -28,16 +28,16 @@ commands:
     reset-complete: "<green>✔ LevelBlock has been reset."
 
     vote:
-      reset-worlds: "Completely reset worlds"
-      reset-progress: "Reset game progress"
+      reset-worlds: "Reset worlds and all data"
+      reset-progress: "Reset player data and progress"
 
     help:
       title: "<gold>══════ LevelBlock Commands ══════"
       info: "<yellow>/levelblock info <gray>- Show game information"
       start: "<yellow>/levelblock start <gray>- Start the challenge"
       settings: "<yellow>/levelblock gamesettings <gray>- Open game settings"
-      reset: "<yellow>/levelblock reset <gray>- Reset game progress"
-      reset-world: "<yellow>/levelblock reset world <gray>- Completely reset worlds"
+      reset: "<yellow>/levelblock reset <gray>- Reset player data and progress"
+      reset-world: "<yellow>/levelblock reset world <gray>- Completely reset everything"
 
     info:
       title: "<gold>══════ LevelBlock ══════"
