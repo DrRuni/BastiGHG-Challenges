@@ -87,24 +87,27 @@ reset-management:
     line-1: "Resets all game progress."
     line-2: "Deletes all player data and inventories."
     line-3: "Regenerates all game worlds."
-  mobarmybattle:
-    progress:
-      name: "Reset game progress"
-      description: "Clear game progress and player data. Keep all worlds."
-    teamworlds:
-      name: "Regenerate team worlds"
-      description: "Recreate Red and Blue worlds, including the Nether."
-    arena:
-      name: "Reset arena world"
-      line-1: "The arena world will be recreated."
-      line-2: "Arena progress will be reset."
-      line-3: "WARNING: All building changes will be lost!"
-    all:
-      name: "Full reset"
-      description: "Reset all MAB worlds and game progress."
+
   back:
     name: "Back"
     description: "Back to WorldSettings."
+
+  mobarmybattle:
+    progress:
+      name: "Reset Game Progress"
+      description: "Deletes player and event data, teams and progress. Worlds are preserved."
+    teamworlds:
+      name: "Regenerate Team Worlds"
+      description: "Recreates Red and Blue team worlds. All building changes will be lost."
+    arena:
+      name: "Reset Arena"
+      line-1: "Completely recreates the arena world."
+      line-2: "All building changes will be lost."
+      line-3: ""
+    all:
+      name: "Reset Everything"
+      description: "Deletes all player and world data. Recreates all MobArmyBattle worlds."
+
   levelblock:
     player:
       name: "Reset Player Data"
@@ -114,6 +117,7 @@ reset-management:
       name: "Reset Everything"
       line-1: "Deletes all player and world data."
       line-2: "Recreates all challenge worlds."
+
   levelborder:
     player:
       name: "Reset Player Data"

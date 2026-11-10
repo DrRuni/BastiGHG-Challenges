@@ -102,8 +102,9 @@ public class GameResetManager {
         resetRunning = true;
         final LanguageManager resetLanguage =
                 game instanceof LevelBorderGame border ? border.getLanguageManager()
-                : game instanceof LevelBlockGame block ? block.getLanguageManager()
-                : null;
+                        : game instanceof LevelBlockGame block ? block.getLanguageManager()
+                          : game instanceof MobArmyBattleGame mobArmy ? mobArmy.getLanguageManager()
+                            : null;
         try {
             if (resetLanguage != null) {
                 ResetMessageUtil.start(resetLanguage,

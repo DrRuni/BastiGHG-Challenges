@@ -10,6 +10,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -62,16 +63,19 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            game.getLanguageManager().get("commands.mobarmy-reset.vote.game"),
+                            game.getPlugin().getLanguageManager().get("reset-management.mobarmybattle.progress.name"),
                             () -> {
 
                                 showTitleToAll("commands.mobarmy-reset.progress.game");
 
-                                game.getEventManager().resetGame();
-
-                                Bukkit.broadcast(
-                                        game.getLanguageManager().getComponent("commands.mobarmy-reset.game-complete")
+                                ResetMessageUtil.start(
+                                        game.getLanguageManager(),
+                                        "reset-messages.game.title",
+                                        "reset-messages.game.starting"
                                 );
+
+                                // The EventManager sends the final success message.
+                                game.getEventManager().resetGame();
                             }
                     );
 
@@ -84,7 +88,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            game.getLanguageManager().get("commands.mobarmy-reset.vote.worlds"),
+                            game.getPlugin().getLanguageManager().get("reset-management.mobarmybattle.all.name"),
                             () -> game.getPlugin()
                                     .getGameResetManager()
                                     .resetWorlds(game)
@@ -99,7 +103,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            game.getLanguageManager().get("commands.mobarmy-reset.vote.arena"),
+                            game.getPlugin().getLanguageManager().get("reset-management.mobarmybattle.arena.name"),
                             () -> {
 
                                 if (game.getWorldManager()
@@ -129,7 +133,7 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                     .getVoteManager()
                     .startVote(
                             game.getDisplayName(),
-                            game.getLanguageManager().get("commands.mobarmy-reset.vote.teamworlds"),
+                            game.getPlugin().getLanguageManager().get("reset-management.mobarmybattle.teamworlds.name"),
                             () -> {
 
                                 if (game.getPlugin().getGameResetManager().isResetRunning()) {

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import net.kyori.adventure.text.Component;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 import runi.myddns.challenges.core.utils.ConsoleColor;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 
 import java.time.Duration;
@@ -29,6 +30,12 @@ public class WorldManager {
     public void resetArenaWorld() {
 
         List<Player> players = getPlayersInWorld(WORLD_ARENA);
+        ResetMessageUtil.start(
+                game.getLanguageManager(),
+                "reset-messages.arena.title",
+                "reset-messages.arena.starting"
+        );
+
         game.getArenaManager().resetArena();
 
         for (Player p : players) {
@@ -90,6 +97,11 @@ public class WorldManager {
                                 NamedTextColor.RED
                         );
 
+                        ResetMessageUtil.failed(
+                                game.getLanguageManager(),
+                                "reset-messages.arena.failed"
+                        );
+
                         endWorldReset();
                         return;
                     }
@@ -122,44 +134,11 @@ public class WorldManager {
                                         game.getPlugin(),
                                         () -> {
 
-                                            for (Player player : Bukkit.getOnlinePlayers()) {
-
-                                                player.sendMessage(
-                                                        Component.empty()
-                                                );
-
-                                                player.sendMessage(
-                                                        lang(
-                                                                "world-manager.arena-reset-complete"
-                                                        )
-                                                );
-
-                                                player.sendMessage(
-                                                        Component.empty()
-                                                );
-
-                                                player.sendMessage(
-                                                        lang(
-                                                                "world-manager.progress-still-loaded-1"
-                                                        )
-                                                );
-
-                                                player.sendMessage(
-                                                        lang(
-                                                                "world-manager.progress-still-loaded-2"
-                                                        )
-                                                );
-
-                                                player.sendMessage(
-                                                        lang(
-                                                                "world-manager.progress-still-loaded-3"
-                                                        )
-                                                );
-
-                                                player.sendMessage(
-                                                        Component.empty()
-                                                );
-                                            }
+                                            ResetMessageUtil.finish(
+                                                    game.getLanguageManager(),
+                                                    "reset-messages.arena.finished",
+                                                    "reset-messages.arena.details"
+                                            );
 
                                             Bukkit.getConsoleSender()
                                                     .sendMessage("");
@@ -210,6 +189,12 @@ public class WorldManager {
                 ),
                 () -> {
 
+                    ResetMessageUtil.start(
+                            game.getLanguageManager(),
+                            "reset-messages.teamworlds.title",
+                            "reset-messages.teamworlds.starting"
+                    );
+
                     for (Player p : merge(rotPlayers, blauPlayers)) {
                         if (!p.isOnline()) continue;
                         TeleportManager.teleport(game, p, WORLD_LOBBY);
@@ -229,10 +214,11 @@ public class WorldManager {
                         for (Player p : blauPlayers) {
                             if (p.isOnline()) TeleportManager.teleport(game, p, "world_blau");
                         }
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(Component.empty());
-                            player.sendMessage(lang("world-manager.team-worlds-reset-complete"));
-                        }
+                        ResetMessageUtil.finish(
+                                game.getLanguageManager(),
+                                "reset-messages.teamworlds.finished",
+                                "reset-messages.teamworlds.details"
+                        );
                         Bukkit.getConsoleSender().sendMessage("");
                         Bukkit.getConsoleSender().sendMessage(
                                 ConsoleColor.LIME + "        TEAM-Welten neu erstellt" + ConsoleColor.RESET);

@@ -1,7 +1,5 @@
 # MobArmyBattle DE Language
 
-file-version: 2
-
 commands:
   arena-summary:
     player-only: "<red>Dieser Command ist nur für Spieler."
@@ -45,14 +43,8 @@ commands:
     player-only: "<red>Dieser Befehl kann nur von Spielern verwendet werden."
     no-permission: "<red>Du hast keine Berechtigung dafür."
     game-not-loaded: "<red>MobArmyBattle muss zuerst geladen werden."
-    game-complete: "<green>✔ MobArmyBattle wurde zurückgesetzt."
     world-reset-running: "<red>❌ Es läuft bereits ein Welt-Reset."
     usage: "<red>Nutzung: /mobarmy reset [world|arena|teamwelt]"
-    vote:
-      game: "Spielstand zurücksetzen"
-      worlds: "Alle Welten zurücksetzen"
-      arena: "Arena zurücksetzen"
-      teamworlds: "Teamwelten neu generieren"
   resume:
     player-only: "<red>❌ Nur Spieler können diesen Befehl nutzen!"
     op-only: "<red>❌ Nur OPs dürfen diesen Befehl ausführen!"
@@ -95,6 +87,33 @@ commands:
       join-blue: "<gray>/team join blau"
       leave: "<gray>/team leave"
 
+reset-messages:
+  game:
+    title: "<red>↻ MobArmyBattle <gray>• <yellow>Spielfortschritt-Reset"
+    starting: "<gray>Spieler- und Eventdaten werden zurückgesetzt..."
+    finished: "<green>✔ MobArmyBattle wurde zurückgesetzt."
+    details: "<gray>Spielwelten und Gebäude bleiben erhalten."
+  arena:
+    title: "<red>↻ MobArmyBattle <gray>• <yellow>Arena-Reset"
+    starting: "<gray>Arena-Welt wird neu erstellt..."
+    finished: "<green>✔ Arena-Welt wurde neu erstellt."
+    details: "<gray>Der übrige Spielfortschritt bleibt erhalten."
+    failed: "<red>✘ Arena-Reset fehlgeschlagen. Konsole prüfen."
+  teamworlds:
+    title: "<red>↻ MobArmyBattle <gray>• <yellow>Teamwelten-Reset"
+    starting: "<gray>Teamwelten Rot und Blau werden neu erstellt..."
+    finished: "<green>✔ Teamwelten wurden neu erstellt."
+    details: "<gray>Die übrigen Spielwelten bleiben erhalten."
+  world:
+    title: "<red>↻ MobArmyBattle <gray>• <gold>Vollständiger Reset"
+    starting: "<gray>Alle Spieler- und Weltdaten werden zurückgesetzt..."
+    players: "<yellow>⌛ Spieler werden vorbereitet..."
+    unloading: "<yellow>⌛ Spielwelten werden entladen..."
+    generating: "<yellow>⌛ Spielwelten werden neu erstellt..."
+    loading: "<yellow>⌛ Spielwelten werden geladen..."
+    finished: "<green>✔ MobArmyBattle wurde vollständig zurückgesetzt."
+    details: "<gray>Alle MobArmyBattle-Welten wurden neu erstellt."
+    failed: "<red>✘ MobArmyBattle-Reset fehlgeschlagen. Konsole prüfen."
 
 arena-settings:
   title: "<blue>Arena-Einstellungen"
@@ -550,8 +569,6 @@ event-manager:
     message: "<aqua>  ⚔ Bereite nun die Waves für deinen Gegner vor."
     title: "Vorbereitung"
     subtitle: "<dark_aqua>Bereite dich auf den Kampf vor."
-  reset:
-    complete: "<dark_red>   MobArmyBattle wurde komplett zurückgesetzt!"
 
 mob-save-manager:
   kill: "<white>+%amount% <mob> getötet"
@@ -616,12 +633,7 @@ world-manager:
   lobby-resetting: "<red>⚠ Lobby-Welt wird neu geladen..."
   lobby-reset-complete: "<green>✔ LOBBY-Welt wurde neu geladen!"
   arena-resetting: "<red>⚠ Arena-Welt wird neu geladen..."
-  arena-reset-complete: "<green>✔ ARENA-Welt wurde neu geladen!"
   team-worlds-resetting: "<red>⚠ Team-Welten werden neu generiert..."
-  team-worlds-reset-complete: "<green>✔ TEAM-Welten wurden neu generiert!"
-  progress-still-loaded-1: "<dark_red>Die Spieler- und Eventdaten sind noch geladen,"
-  progress-still-loaded-2: "<dark_red>diese können nur über <gold>Reset Spielfortschritt"
-  progress-still-loaded-3: "<dark_red>zurückgesetzt werden!"
   reset-title:
     title: "MobArmyBattle"
     arena-failed: "Arena-Reset fehlgeschlagen!"

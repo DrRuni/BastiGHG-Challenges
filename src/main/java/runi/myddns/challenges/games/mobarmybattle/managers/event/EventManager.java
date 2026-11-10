@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import runi.myddns.challenges.games.mobarmybattle.managers.world.ResumeManager;
 import runi.myddns.challenges.core.utils.ConsoleColor;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.games.mobarmybattle.utils.Sounds;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 import runi.myddns.challenges.games.mobarmybattle.managers.world.TeleportManager;
@@ -603,20 +604,14 @@ public class EventManager {
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_RED + "   ⚠  MobArmyBattle wurde komplett zurückgesetzt!" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
 
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(online)) continue;
-
-            online.sendMessage(Component.empty());
-            online.sendMessage(Component.empty());
-
-            online.sendMessage(
-                    game.getLanguageManager().getComponent(
-                            "event-manager.reset.complete"
-                    )
+        // For a full world reset, the central GameResetManager announces completion
+        // only after the worlds have been recreated and loaded.
+        if (teleportToMobArmyLobby) {
+            ResetMessageUtil.finish(
+                    game.getLanguageManager(),
+                    "reset-messages.game.finished",
+                    "reset-messages.game.details"
             );
-
-            online.sendMessage(Component.empty());
-            online.sendMessage(Component.empty());
         }
     }
 }

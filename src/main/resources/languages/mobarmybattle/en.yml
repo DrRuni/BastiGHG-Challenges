@@ -1,7 +1,5 @@
 # MobArmyBattle EN Language
 
-file-version: 2
-
 commands:
   arena-summary:
     player-only: "<red>This command can only be used by players."
@@ -45,14 +43,8 @@ commands:
     player-only: "<red>This command can only be used by players."
     no-permission: "<red>You do not have permission."
     game-not-loaded: "<red>MobArmyBattle must be loaded first."
-    game-complete: "<green>✔ MobArmyBattle has been reset."
     world-reset-running: "<red>❌ A world reset is already in progress."
     usage: "<red>Usage: /mobarmy reset [world|arena|teamwelt]"
-    vote:
-      game: "Reset game progress"
-      worlds: "Reset all worlds"
-      arena: "Reset arena"
-      teamworlds: "Regenerate team worlds"
   resume:
     player-only: "<red>❌ Only players can use this command!"
     op-only: "<red>❌ Only operators may use this command!"
@@ -94,6 +86,34 @@ commands:
       join-red: "<gray>/team join red"
       join-blue: "<gray>/team join blue"
       leave: "<gray>/team leave"
+
+reset-messages:
+  game:
+    title: "<red>↻ MobArmyBattle <gray>• <yellow>Game Progress Reset"
+    starting: "<gray>Resetting player and event data..."
+    finished: "<green>✔ MobArmyBattle has been reset."
+    details: "<gray>Game worlds and buildings are preserved."
+  arena:
+    title: "<red>↻ MobArmyBattle <gray>• <yellow>Arena Reset"
+    starting: "<gray>Recreating the arena world..."
+    finished: "<green>✔ Arena world has been recreated."
+    details: "<gray>Other game progress is preserved."
+    failed: "<red>✘ Arena reset failed. Check the console."
+  teamworlds:
+    title: "<red>↻ MobArmyBattle <gray>• <yellow>Team Worlds Reset"
+    starting: "<gray>Recreating the Red and Blue team worlds..."
+    finished: "<green>✔ Team worlds have been recreated."
+    details: "<gray>Other game worlds are preserved."
+  world:
+    title: "<red>↻ MobArmyBattle <gray>• <gold>Complete Reset"
+    starting: "<gray>Resetting all player and world data..."
+    players: "<yellow>⌛ Preparing players..."
+    unloading: "<yellow>⌛ Unloading game worlds..."
+    generating: "<yellow>⌛ Recreating game worlds..."
+    loading: "<yellow>⌛ Loading game worlds..."
+    finished: "<green>✔ MobArmyBattle has been completely reset."
+    details: "<gray>All MobArmyBattle worlds have been recreated."
+    failed: "<red>✘ MobArmyBattle reset failed. Check the console."
 
 arena-settings:
   title: "<blue>Arena Settings"
@@ -548,8 +568,6 @@ event-manager:
     message: "<aqua>  ⚔ Prepare the waves for your opponent."
     title: "Preparation"
     subtitle: "<dark_aqua>Prepare for battle."
-  reset:
-    complete: "<dark_red>   MobArmyBattle has been completely reset!"
 
 mob-save-manager:
   kill: "<white>+%amount% <mob> killed"
@@ -614,12 +632,7 @@ world-manager:
   lobby-resetting: "<red>⚠ Lobby world is being reloaded..."
   lobby-reset-complete: "<green>✔ LOBBY world has been reloaded!"
   arena-resetting: "<red>⚠ Arena world is being reloaded..."
-  arena-reset-complete: "<green>✔ ARENA world has been reloaded!"
   team-worlds-resetting: "<red>⚠ Team worlds are being regenerated..."
-  team-worlds-reset-complete: "<green>✔ TEAM worlds have been regenerated!"
-  progress-still-loaded-1: "<dark_red>Player and event data is still loaded,"
-  progress-still-loaded-2: "<dark_red>it can only be cleared using <gold>Reset Progress"
-  progress-still-loaded-3: "<dark_red>!"
   reset-title:
     title: "MobArmyBattle"
     arena-failed: "Arena reset failed!"
