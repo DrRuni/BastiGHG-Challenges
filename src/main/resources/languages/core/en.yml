@@ -114,6 +114,15 @@ reset-management:
       name: "Reset Everything"
       line-1: "Deletes all player and world data."
       line-2: "Recreates all challenge worlds."
+  levelborder:
+    player:
+      name: "Reset Player Data"
+      line-1: "Clears inventories, XP and game progress."
+      line-2: "Resets the border. Worlds are preserved."
+    world:
+      name: "Reset Everything"
+      line-1: "Deletes all player and world data."
+      line-2: "Recreates all challenge worlds."
 
 world-settings:
   load-first: "Please load a game first."

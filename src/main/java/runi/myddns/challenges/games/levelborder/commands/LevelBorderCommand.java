@@ -11,6 +11,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import runi.myddns.challenges.games.levelborder.LevelBorderGame;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.games.levelborder.manager.BorderDataManager;
 import runi.myddns.challenges.games.levelborder.manager.LevelBorderManager;
 import runi.myddns.challenges.games.levelborder.manager.PortalManager;
@@ -334,70 +335,39 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
             }
 
             case "reset" -> {
-
                 if (!game.isLoaded()) {
-
-                    player.sendMessage(
-                            game.getLanguageManager()
-                                    .getComponent(
-                                            "commands.levelborder.reset.load-first"
-                                    )
-                    );
-
+                    player.sendMessage(game.getLanguageManager().getComponent(
+                            "commands.levelborder.reset.load-first"));
                     return true;
                 }
-
                 if (!isAdmin) {
-
-                    player.sendMessage(
-                            game.getLanguageManager()
-                                    .getComponent(
-                                            "commands.levelborder.reset.admin-only"
-                                    )
+                    player.sendMessage(game.getLanguageManager().getComponent(
+                            "commands.levelborder.reset.admin-only"));
+                    return true;
+                }
+                if (args.length >= 2 && args[1].equalsIgnoreCase("world")) {
+                    game.getPlugin().getVoteManager().startVote(
+                            game.getDisplayName(),
+                            game.getPlugin().getLanguageManager().get(
+                                    "reset-management.levelborder.world.name"),
+                            () -> game.getPlugin().getGameResetManager().resetWorlds(game)
                     );
-
                     return true;
                 }
 
-                if (args.length >= 2
-                        && args[1].equalsIgnoreCase("world")) {
-
-                    game.getPlugin()
-                            .getVoteManager()
-                            .startVote(
-                                    game.getDisplayName(),
-                                    game.getLanguageManager()
-                                            .get(
-                                                    "commands.levelborder.reset.vote-worlds"
-                                            ),
-                                    () -> game.getPlugin()
-                                            .getGameResetManager()
-                                            .resetWorlds(game)
-                            );
-
-                    return true;
-                }
-
-                game.getPlugin()
-                        .getVoteManager()
-                        .startVote(
-                                game.getDisplayName(),
-                                game.getLanguageManager()
-                                        .get(
-                                                "commands.levelborder.reset.vote-progress"
-                                        ),
-                                () -> {
-
-                                    game.resetGameData(player);
-
-                                    Bukkit.broadcast(
-                                            game.getLanguageManager()
-                                                    .getComponent(
-                                                            "commands.levelborder.reset.success"
-                                                    )
-                                    );
-                                }
-                        );
+                game.getPlugin().getVoteManager().startVote(
+                        game.getDisplayName(),
+                        game.getPlugin().getLanguageManager().get(
+                                "reset-management.levelborder.player.name"),
+                        () -> {
+                            var language = game.getLanguageManager();
+                            ResetMessageUtil.start(language,
+                                    "reset-messages.player.title", "reset-messages.player.starting");
+                            game.resetPlayerData();
+                            ResetMessageUtil.finish(language,
+                                    "reset-messages.player.finished", "reset-messages.player.details");
+                        }
+                );
             }
 
             default ->

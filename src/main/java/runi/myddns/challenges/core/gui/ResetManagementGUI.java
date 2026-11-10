@@ -186,20 +186,18 @@ public class ResetManagementGUI implements Listener {
 
             inventory.setItem(11, createItem(
                     Material.PLAYER_HEAD,
-                    plugin.getLanguageManager().get("reset-management.player.name"),
+                    plugin.getLanguageManager().get("reset-management.levelborder.player.name"),
                     NamedTextColor.AQUA,
-                    plugin.getLanguageManager().get("reset-management.player.line-1"),
-                    plugin.getLanguageManager().get("reset-management.player.line-2"),
-                    plugin.getLanguageManager().get("reset-management.player.line-3")
+                    plugin.getLanguageManager().get("reset-management.levelborder.player.line-1"),
+                    plugin.getLanguageManager().get("reset-management.levelborder.player.line-2")
             ));
 
             inventory.setItem(15, createItem(
                     Material.TNT,
-                    plugin.getLanguageManager().get("reset-management.all.name"),
+                    plugin.getLanguageManager().get("reset-management.levelborder.world.name"),
                     NamedTextColor.RED,
-                    plugin.getLanguageManager().get("reset-management.all.line-1"),
-                    plugin.getLanguageManager().get("reset-management.all.line-2"),
-                    plugin.getLanguageManager().get("reset-management.all.line-3")
+                    plugin.getLanguageManager().get("reset-management.levelborder.world.line-1"),
+                    plugin.getLanguageManager().get("reset-management.levelborder.world.line-2")
             ));
 
         } else if (game.getId().equalsIgnoreCase("levelblock")) {

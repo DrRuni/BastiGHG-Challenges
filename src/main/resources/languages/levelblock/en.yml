@@ -1,5 +1,7 @@
 # LevelBlock EN Language
 
+file-version: 3
+
 loading:
   starting: "LevelBlock is loading..."
   worlds: "Loading worlds..."
@@ -23,6 +25,11 @@ commands:
     started: "<green>LevelBlock has been started."
     admin-reset-only: "<red>❌ Only an admin may reset LevelBlock."
     unknown: "<red>Unknown subcommand."
+    reset-complete: "<green>✔ LevelBlock has been reset."
+
+    vote:
+      reset-worlds: "Reset worlds and all data"
+      reset-progress: "Reset player data and progress"
 
     help:
       title: "<gold>══════ LevelBlock Commands ══════"

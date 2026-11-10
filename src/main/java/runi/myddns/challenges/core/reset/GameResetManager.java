@@ -9,6 +9,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import runi.myddns.challenges.ChallengeMain;
 import runi.myddns.challenges.core.game.ChallengeGame;
+import runi.myddns.challenges.core.language.LanguageManager;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.core.world.GameWorldDefinition;
 
 import java.time.Duration;
@@ -98,7 +100,17 @@ public class GameResetManager {
         }
 
         resetRunning = true;
+        final LanguageManager resetLanguage =
+                game instanceof LevelBorderGame border ? border.getLanguageManager()
+                : game instanceof LevelBlockGame block ? block.getLanguageManager()
+                : null;
         try {
+            if (resetLanguage != null) {
+                ResetMessageUtil.start(resetLanguage,
+                        "reset-messages.world.title", "reset-messages.world.starting");
+                ResetMessageUtil.phase(resetLanguage, "reset-messages.world.players");
+            }
+
             showTitleToAll(game.getDisplayName(),
                     plugin.getLanguageManager().get(
                             "game-reset.worlds.resetting",
@@ -125,23 +137,15 @@ public class GameResetManager {
                     );
                 }
 
-                if (game instanceof LevelBorderGame) {
-                    plugin.getPlayerGameDataManager()
-                            .clearPlayerState(player);
-
-                    player.updateInventory();
-
-                } else if (!(game instanceof LevelBlockGame)) {
-                    plugin.getPlayerGameDataManager()
-                            .clearPlayerState(player);
-
-                    player.updateInventory();
-                }
+                plugin.getPlayerGameDataManager().clearPlayerState(player);
+                player.updateInventory();
             }
 
-            Bukkit.broadcast(plugin.getLanguageManager().getComponent(
-                    "game-reset.worlds.broadcast-resetting", "game",
-                    Component.text(game.getDisplayName())));
+            if (resetLanguage == null) {
+                Bukkit.broadcast(plugin.getLanguageManager().getComponent(
+                        "game-reset.worlds.broadcast-resetting", "game",
+                        Component.text(game.getDisplayName())));
+            }
 
             if (game instanceof LevelBorderGame levelBorder) {
                 levelBorder.resetWorldData();
@@ -157,6 +161,9 @@ public class GameResetManager {
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 try {
+                    if (resetLanguage != null) {
+                        ResetMessageUtil.phase(resetLanguage, "reset-messages.world.unloading");
+                    }
 
                     plugin.getPlayerGameDataManager()
                             .deleteGamePlayerData(game.getId());
@@ -177,6 +184,9 @@ public class GameResetManager {
                             ),
                             NamedTextColor.YELLOW);
 
+                    if (resetLanguage != null) {
+                        ResetMessageUtil.phase(resetLanguage, "reset-messages.world.generating");
+                    }
                     long seed = new Random().nextLong();
                     for (GameWorldDefinition definition : definitions) {
                         boolean ok = definition.isGenerated()
@@ -186,6 +196,9 @@ public class GameResetManager {
                                 "Could not recreate " + definition.worldName());
                     }
 
+                    if (resetLanguage != null) {
+                        ResetMessageUtil.phase(resetLanguage, "reset-messages.world.loading");
+                    }
                     for (GameWorldDefinition definition : definitions) {
                         World world = plugin.getGameWorldManager().loadWorld(definition);
                         if (world == null) throw new IllegalStateException(
@@ -205,9 +218,14 @@ public class GameResetManager {
                             ),
                             NamedTextColor.GREEN);
 
-                    Bukkit.broadcast(plugin.getLanguageManager().getComponent(
-                            "game-reset.worlds.broadcast-finished", "game",
-                            Component.text(game.getDisplayName())));
+                    if (resetLanguage != null) {
+                        ResetMessageUtil.finish(resetLanguage,
+                                "reset-messages.world.finished", "reset-messages.world.details");
+                    } else {
+                        Bukkit.broadcast(plugin.getLanguageManager().getComponent(
+                                "game-reset.worlds.broadcast-finished", "game",
+                                Component.text(game.getDisplayName())));
+                    }
                 } catch (Exception ex) {
                     plugin.getLogger().log(java.util.logging.Level.SEVERE,
                             "Complete world reset failed for " + game.getId(), ex);
@@ -219,9 +237,13 @@ public class GameResetManager {
                             ),
                             NamedTextColor.RED);
 
-                    Bukkit.broadcast(plugin.getLanguageManager().getComponent(
-                            "game-reset.worlds.broadcast-failed", "game",
-                            Component.text(game.getDisplayName())));
+                    if (resetLanguage != null) {
+                        ResetMessageUtil.failed(resetLanguage, "reset-messages.world.failed");
+                    } else {
+                        Bukkit.broadcast(plugin.getLanguageManager().getComponent(
+                                "game-reset.worlds.broadcast-failed", "game",
+                                Component.text(game.getDisplayName())));
+                    }
                 } finally {
                     resetRunning = false;
                 }
@@ -229,6 +251,9 @@ public class GameResetManager {
         } catch (Exception ex) {
             plugin.getLogger().log(java.util.logging.Level.SEVERE,
                     "Could not start complete reset for " + game.getId(), ex);
+            if (resetLanguage != null) {
+                ResetMessageUtil.failed(resetLanguage, "reset-messages.world.failed");
+            }
             resetRunning = false;
         }
     }

@@ -27,9 +27,6 @@ commands:
     reset:
       load-first: "<red>❌ LevelBorder muss zuerst geladen werden."
       admin-only: "<red>❌ Nur der Admin darf LevelBorder zurücksetzen!"
-      vote-worlds: "Welten komplett zurücksetzen"
-      vote-progress: "Spielerdaten und Border zurücksetzen"
-      success: "<green>✔ LevelBorder wurde zurückgesetzt."
 
     unknown: "<red>Unbekannter Unterbefehl. Nutze /levelborder für Hilfe."
 
@@ -107,3 +104,20 @@ loading:
   commands: "Befehle registrieren..."
   prepare: "LevelBorder vorbereiten..."
   error: "FEHLER: %status%"
+
+reset-messages:
+  player:
+    title: "<aqua>↻ LevelBorder <gray>• <yellow>Spielerdaten-Reset"
+    starting: "<gray>Spielerdaten, Border und Fortschritt werden zurückgesetzt..."
+    finished: "<green>✔ LevelBorder wurde zurückgesetzt."
+    details: "<gray>Welten, Gebäude und Portale bleiben erhalten."
+  world:
+    title: "<aqua>↻ LevelBorder <gray>• <gold>Vollständiger Reset"
+    starting: "<gray>Alle Spieler- und Weltdaten werden zurückgesetzt..."
+    players: "<yellow>⌛ Spieler werden vorbereitet..."
+    unloading: "<yellow>⌛ Spielwelten werden entladen..."
+    generating: "<yellow>⌛ Spielwelten werden neu erstellt..."
+    loading: "<yellow>⌛ Spielwelten werden geladen..."
+    finished: "<green>✔ LevelBorder wurde vollständig zurückgesetzt."
+    details: "<gray>Alle Challenge-Welten wurden neu erstellt."
+    failed: "<red>✘ LevelBorder-Reset fehlgeschlagen. Konsole prüfen."

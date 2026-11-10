@@ -87,6 +87,10 @@ reset-management:
     line-1: "Setzt sämtliche Spieldaten zurück."
     line-2: "Löscht alle Spielerstände und Inventare."
     line-3: "Generiert alle Spielwelten neu."
+  back:
+    name: "Zurück"
+    description: "Zurück zu den WorldSettings."
+
   mobarmybattle:
     progress:
       name: "Spielfortschritt zurücksetzen"
@@ -102,9 +106,7 @@ reset-management:
     all:
       name: "Komplett-Reset"
       description: "Alle MAB-Welten und Spielstände zurücksetzen."
-  back:
-    name: "Zurück"
-    description: "Zurück zu den WorldSettings."
+
   levelblock:
     player:
       name: "Spielerdaten zurücksetzen"
@@ -113,6 +115,16 @@ reset-management:
     world:
       name: "Alles zurücksetzen"
       line-1: "Löscht alle Spieler- und Weltdaten."
+      line-2: "Erstellt alle Challenge-Welten neu."
+
+  levelborder:
+    player:
+      name: "Spielerdaten zurücksetzen"
+      line-1: "Löscht Inventare, XP und Spielfortschritt."
+      line-2: "Setzt die Border zurück. Welten bleiben erhalten."
+    world:
+      name: "Alles zurücksetzen"
+      line-1: "Löscht sämtliche Spieler- und Weltdaten."
       line-2: "Erstellt alle Challenge-Welten neu."
 
 world-settings:

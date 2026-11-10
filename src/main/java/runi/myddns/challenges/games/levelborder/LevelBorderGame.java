@@ -427,21 +427,25 @@ public class LevelBorderGame implements ChallengeGame {
         return plugin.getGameWorldManager().isGamePlayer(player, getId());
     }
 
-    public void resetGameData(Player initiator) {
+    public void resetPlayerData() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isLevelBorderPlayer(player)) continue;
+            plugin.getPlayerGameDataManager().clearPlayerState(player);
+            player.updateInventory();
+        }
 
-        scoreboardManager.reset();
-        borderManager.resetBorder(initiator);
-        timerManager.reset();
-        portalManager.clearPortalWorldData();
-        plugin.getPlayerGameDataManager().resetGameExperience(getId());
-    }
-
-    public void resetWorldData() {
-
+        plugin.getPlayerGameDataManager().resetGamePlayerData(getId());
+        plugin.getPlayerGameDataManager().clearSavedLocations(getId());
         scoreboardManager.reset();
         borderManager.resetBorder(null);
         timerManager.reset();
+        // Portal files and blocks must remain intact.
+    }
 
+    public void resetWorldData() {
+        scoreboardManager.reset();
+        borderManager.resetBorder(null);
+        timerManager.reset();
         portalManager.clearPortalWorldData();
     }
 

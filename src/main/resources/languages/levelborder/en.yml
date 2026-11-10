@@ -27,9 +27,6 @@ commands:
     reset:
       load-first: "<red>❌ LevelBorder must be loaded first."
       admin-only: "<red>❌ Only an admin may reset LevelBorder!"
-      vote-worlds: "Completely reset worlds"
-      vote-progress: "Reset player data and border"
-      success: "<green>✔ LevelBorder has been reset."
 
     unknown: "<red>Unknown subcommand. Use /levelborder for help."
 
@@ -107,3 +104,20 @@ loading:
   commands: "Registering commands..."
   prepare: "Preparing LevelBorder..."
   error: "ERROR: %status%"
+
+reset-messages:
+  player:
+    title: "<aqua>↻ LevelBorder <gray>• <yellow>Player Data Reset"
+    starting: "<gray>Resetting player data, border and progress..."
+    finished: "<green>✔ LevelBorder has been reset."
+    details: "<gray>Worlds, buildings and portals are preserved."
+  world:
+    title: "<aqua>↻ LevelBorder <gray>• <gold>Full Reset"
+    starting: "<gray>Resetting all player and world data..."
+    players: "<yellow>⌛ Preparing players..."
+    unloading: "<yellow>⌛ Unloading game worlds..."
+    generating: "<yellow>⌛ Recreating game worlds..."
+    loading: "<yellow>⌛ Loading game worlds..."
+    finished: "<green>✔ LevelBorder has been fully reset."
+    details: "<gray>All challenge worlds have been recreated."
+    failed: "<red>✘ LevelBorder reset failed. Check the console."
