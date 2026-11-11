@@ -186,7 +186,7 @@ public class WorldSettingsGUI implements Listener {
             inv.setItem(
                     4,
                     createItem(
-                            Material.GRASS_BLOCK,
+                            Material.REDSTONE_BLOCK,
                             Component.text(
                                     plugin.getLanguageManager()
                                             .get("world-settings.reset.name"),

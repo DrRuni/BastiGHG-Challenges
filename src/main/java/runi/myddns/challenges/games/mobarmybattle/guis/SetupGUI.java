@@ -41,7 +41,7 @@ public class SetupGUI implements Listener {
         ));
 
         inv.setItem(10, createItem(
-                Material.GRASS_BLOCK,
+                Material.REDSTONE_BLOCK,
                 lang("setup-gui.world-settings.name"),
                 Component.empty(),
                 lang("setup-gui.world-settings.description")

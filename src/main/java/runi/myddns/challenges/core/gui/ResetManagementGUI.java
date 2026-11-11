@@ -20,6 +20,7 @@ import runi.myddns.challenges.core.world.GameWorldDefinition;
 import runi.myddns.challenges.games.levelborder.LevelBorderGame;
 import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Locale;
@@ -381,6 +382,8 @@ public class ResetManagementGUI implements Listener {
         event.setCancelled(true);
     }
 
+    private static final int MAX_LORE_LINE_LENGTH = 42;
+
     private ItemStack createItem(
             Material material,
             String name,
@@ -409,19 +412,43 @@ public class ResetManagementGUI implements Listener {
                 )
         );
 
-        meta.lore(
-                java.util.Arrays.stream(lore)
-                        .map(line ->
-                                Component.text(
-                                        line,
-                                        NamedTextColor.GRAY
-                                )
-                        )
-                        .toList()
-        );
+        // Wrap lore for all challenge games without changing language files.
+        List<Component> wrappedLore = new ArrayList<>();
+        for (String line : lore) {
+            addWrappedLore(wrappedLore, line);
+        }
+        meta.lore(wrappedLore);
 
         item.setItemMeta(meta);
 
         return item;
     }
+
+    private void addWrappedLore(List<Component> output, String text) {
+        if (text == null || text.isBlank()) {
+            output.add(Component.empty());
+            return;
+        }
+
+        for (String paragraph : text.split("\n", -1)) {
+            if (paragraph.isBlank()) {
+                output.add(Component.empty());
+                continue;
+            }
+
+            StringBuilder line = new StringBuilder();
+            for (String word : paragraph.trim().split("\\s+")) {
+                if (!line.isEmpty() && line.length() + 1 + word.length() > MAX_LORE_LINE_LENGTH) {
+                    output.add(Component.text(line.toString(), NamedTextColor.GRAY));
+                    line.setLength(0);
+                }
+                if (!line.isEmpty()) line.append(' ');
+                line.append(word);
+            }
+            if (!line.isEmpty()) {
+                output.add(Component.text(line.toString(), NamedTextColor.GRAY));
+            }
+        }
+    }
+
 }
