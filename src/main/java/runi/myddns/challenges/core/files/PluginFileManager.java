@@ -29,10 +29,13 @@ public final class PluginFileManager {
     private static final String WORLD_SETTINGS_RESOURCE = "core/gamesettings.yml";
     private static final String MANIFEST_NAME = ".filemanagement.properties";
     private static final String BASELINE_DIR = ".filemanagement/templates";
-    private static final DateTimeFormatter BACKUP_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
+    private static final DateTimeFormatter BACKUP_DATE =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
 
     private record GameFiles(String name, String folder, List<String> templates,
                              List<String> persistentFiles, boolean sharedWorldSettings) {}
+
+    private record Change(String path, boolean created) {}
 
     private static final List<GameFiles> GAMES = List.of(
             new GameFiles("MobArmyBattle", "games/mobarmybattle",
@@ -53,7 +56,7 @@ public final class PluginFileManager {
 
     private final JavaPlugin plugin;
     private final Properties manifest = new Properties();
-    private final List<String> changes = new ArrayList<>();
+    private final List<Change> changes = new ArrayList<>();
     private int created;
     private int updated;
     private int backups;
@@ -74,71 +77,95 @@ public final class PluginFileManager {
 
         log("");
         log(ConsoleColor.PURPLE + "                   ◆ BastiGHG Challenges" + ConsoleColor.RESET);
-        log(ConsoleColor.COPPER + "                     FileManagement 2.0" + ConsoleColor.RESET);
+        log(ConsoleColor.ORANGE + "                     FileManagement 2.0" + ConsoleColor.RESET);
         log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-        int core = 0;
-        core += processTemplate("config.yml", "config.yml", false);
+        int firstChange = changes.size();
+        int core = processTemplate("config.yml", "config.yml");
         core += createPersistentFile("game-state.yml");
-        printGroup("Core", core);
+        printGroup("Core", core, firstChange);
 
         for (GameFiles game : GAMES) {
+            firstChange = changes.size();
             int inspected = 0;
+
             for (String name : game.templates()) {
                 String relative = game.folder() + "/" + name;
-                // gamedata.yml contains live progress: install once, never merge or overwrite.
-                inspected += processTemplate(relative, relative, name.equals("gamedata.yml"));
+                inspected += processTemplate(relative, relative);
             }
+
             if (game.sharedWorldSettings()) {
                 inspected += processTemplate(WORLD_SETTINGS_RESOURCE,
-                        game.folder() + "/gamesettings.yml", false);
+                        game.folder() + "/gamesettings.yml");
             }
+
             for (String name : game.persistentFiles()) {
                 inspected += createPersistentFile(game.folder() + "/" + name);
             }
-            printGroup(game.name(), inspected);
+
+            printGroup(game.name(), inspected, firstChange);
         }
 
+        firstChange = changes.size();
         int languageCount = 0;
         for (String group : LANGUAGES) {
             for (String lang : List.of("de.yml", "en.yml")) {
-                String path = "languages/" + group + "/" + lang;
-                languageCount += processTemplate(path, path, false);
+                String relative = "languages/" + group + "/" + lang;
+                languageCount += processTemplate(relative, relative);
             }
         }
-        printGroup("Languages (DE / EN)", languageCount);
+        printGroup("Languages (DE / EN)", languageCount, firstChange);
 
-        // The manifest is written only after all processed resources have been recorded.
         saveManifest(dataFolder.resolve(MANIFEST_NAME));
 
-        if (!changes.isEmpty()) {
-            log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            log(ConsoleColor.COPPER + "        ↻ " + updated + " aktualisiert, " + created
-                    + " erstellt" + ConsoleColor.RESET);
-            for (String change : changes) {
-                log(ConsoleColor.COPPER + "          ↳ " + change + ConsoleColor.RESET);
-            }
-            if (backups > 0) {
-                log(ConsoleColor.DARK_GOLDEN_LIME + "        ✔ " + backups
-                        + " Backup(s) erstellt" + ConsoleColor.RESET);
-            }
-        }
         log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        String status = errors == 0 ? "✔ FileManagement bereit — 0 Fehler"
-                : "⚠ FileManagement beendet — " + errors + " Fehler";
+
+        if (updated > 0 || created > 0) {
+            StringBuilder summary = new StringBuilder("        ↻ ");
+
+            if (updated > 0) {
+                summary.append(ConsoleColor.ORANGE)
+                        .append(updated).append(" aktualisiert")
+                        .append(ConsoleColor.RESET);
+            }
+
+            if (created > 0) {
+                if (updated > 0) summary.append("  ·  ");
+
+                summary.append(ConsoleColor.BLOOD_ORANGE)
+                        .append(created).append(" erstellt")
+                        .append(ConsoleColor.RESET);
+            }
+
+            log(summary.toString());
+        }
+
+        if (backups > 0) {
+            log(ConsoleColor.DARK_GOLDEN_LIME + "        ✔ " + backups
+                    + " Backup(s) erstellt" + ConsoleColor.RESET);
+        }
+
         if (errors == 0) {
-            log(ConsoleColor.DARK_GOLDEN_LIME + "        " + status + ConsoleColor.RESET);
+            log(ConsoleColor.DARK_GOLDEN_LIME
+                    + "        ✔ FileManagement bereit — 0 Fehler" + ConsoleColor.RESET);
         } else {
-            log("        " + ConsoleColor.COPPER + "⚠" + ConsoleColor.RESET
-                    + " FileManagement beendet — " + errors + " Fehler");
+            log(ConsoleColor.BLOOD_ORANGE
+                    + "        ⚠ FileManagement beendet — " + errors + " Fehler"
+                    + ConsoleColor.RESET);
         }
         log("");
     }
 
-    /** Return 1 for a registered/inspected file, even if it needed no changes. */
-    private int processTemplate(String resourcePath, String relativeTarget, boolean persistent) {
+    /**
+     * Verarbeitungsregeln:
+     * - Spielstände/Konfigurationen: vorhandene Werte behalten, neue Schlüssel ergänzen.
+     * - Sprachdateien: eigene Übersetzungen behalten; unveränderte Defaults aktualisieren.
+     * - Übrige Vorlagen: bei geänderter JAR-Vorlage vollständig ersetzen.
+     */
+    private int processTemplate(String resourcePath, String relativeTarget) {
         Path target = plugin.getDataFolder().toPath().resolve(relativeTarget);
         byte[] resourceBytes;
+
         try (InputStream in = plugin.getResource(resourcePath)) {
             if (in == null) {
                 missingResource(resourcePath);
@@ -150,110 +177,113 @@ public final class PluginFileManager {
             return 0;
         }
 
-        if (Files.notExists(target)) {
-            try {
+        String bundledHash = sha256(resourceBytes);
+        Path baseline = plugin.getDataFolder().toPath()
+                .resolve(BASELINE_DIR).resolve(relativeTarget);
+        boolean protectedValues = isProtectedFile(relativeTarget);
+        boolean language = relativeTarget.startsWith("languages/");
+
+        try {
+            if (Files.notExists(target)) {
                 if (!ensureDirectory(target.getParent())) return 1;
                 safeWrite(target, resourceBytes);
                 created++;
-                changes.add("erstellt: " + relativeTarget);
-                if (ensureDirectory(plugin.getDataFolder().toPath().resolve(BASELINE_DIR)
-                        .resolve(relativeTarget).getParent())) {
-                    safeWrite(plugin.getDataFolder().toPath().resolve(BASELINE_DIR)
-                            .resolve(relativeTarget), resourceBytes);
+                changes.add(new Change(relativeTarget, true));
+            } else {
+                if (!Files.isRegularFile(target)) {
+                    error("Kein regulärer Dateipfad: " + relativeTarget, null);
+                    return 1;
                 }
-                manifest.setProperty(relativeTarget, sha256(resourceBytes));
-            } catch (IOException e) {
-                error("Konnte Datei nicht erstellen: " + relativeTarget, e);
-            }
-            return 1;
-        }
 
-        if (!Files.isRegularFile(target)) {
-            error("Kein regulärer Dateipfad: " + relativeTarget, null);
-            return 1;
-        }
-
-        if (persistent) {
-            manifest.setProperty(relativeTarget, sha256(resourceBytes));
-            return 1;
-        }
-
-        String bundledHash = sha256(resourceBytes);
-        Path baseline = plugin.getDataFolder().toPath().resolve(BASELINE_DIR).resolve(relativeTarget);
-
-        try {
-            YamlConfiguration latest = parseYaml(new String(resourceBytes, StandardCharsets.UTF_8));
-            YamlConfiguration existing = parseYaml(Files.readString(target, StandardCharsets.UTF_8));
-
-            YamlConfiguration previous = null;
-            boolean isLanguage = relativeTarget.startsWith("languages/");
-            if (isLanguage && Files.isRegularFile(baseline)) {
-                previous = parseYaml(Files.readString(baseline, StandardCharsets.UTF_8));
-            }
-
-            int changedTranslations = 0;
-            if (isLanguage && previous != null) {
-                for (String path : latest.getKeys(true)) {
-                    if (isLegacyVersionField(path) || latest.isConfigurationSection(path)) continue;
-                    if (!previous.contains(path, true) || !existing.contains(path, true)) continue;
-                    if (existing.isConfigurationSection(path)) continue;
-                    Object oldDefault = previous.get(path);
-                    Object newDefault = latest.get(path);
-                    Object userValue = existing.get(path);
-                    // Preserve custom translations; update only unchanged bundled defaults.
-                    if (Objects.equals(userValue, oldDefault) && !Objects.equals(oldDefault, newDefault)) {
-                        existing.set(path, newDefault);
-                        changedTranslations++;
+                if (protectedValues || language) {
+                    if (!mergeYaml(target, baseline, resourceBytes, language, relativeTarget)) return 1;
+                } else if (!bundledHash.equals(manifest.getProperty(relativeTarget))) {
+                    // Keine unnötigen Backups, falls die Datei bereits der JAR entspricht.
+                    if (!sha256(Files.readAllBytes(target)).equals(bundledHash)) {
+                        if (!backup(target)) return 1;
+                        safeWrite(target, resourceBytes);
+                        updated++;
+                        changes.add(new Change(relativeTarget, false));
                     }
                 }
             }
 
-            int removedLegacyFields = 0;
-            for (String versionKey : List.of("file-version", "config-version")) {
-                if (!latest.contains(versionKey, true) && existing.contains(versionKey, true)) {
-                    existing.set(versionKey, null);
-                    removedLegacyFields++;
-                }
-            }
-
-            int added = 0;
-            for (String path : latest.getKeys(true)) {
-                if (isLegacyVersionField(path)) continue;
-                if (existing.contains(path, true)) continue;
-                if (hasScalarParent(existing, path)) {
-                    plugin.getLogger().warning("YAML-Strukturkonflikt, vorhandener Wert bleibt: "
-                            + relativeTarget + " / " + path);
-                    continue;
-                }
-
-                Object value = latest.get(path);
-                if (value instanceof org.bukkit.configuration.ConfigurationSection section) {
-                    if (section.getKeys(false).isEmpty()) {
-                        existing.createSection(path);
-                        added++;
-                    }
-                } else if (value != null) {
-                    existing.set(path, value);
-                    added++;
-                }
-            }
-
-            if (added > 0 || changedTranslations > 0 || removedLegacyFields > 0) {
-                if (!backup(target)) return 1;
-                safeWrite(target, existing.saveToString().getBytes(StandardCharsets.UTF_8));
-                updated++;
-                changes.add("aktualisiert: " + relativeTarget + " (" + added
-                        + " ergänzt, " + changedTranslations + " Übersetzungen erneuert, "
-                        + removedLegacyFields + " alte Versionsfelder entfernt)");
-            }
-
+            // Beibehalten: Vorlage und Prüfsumme als Basis für spätere Updates.
             if (!ensureDirectory(baseline.getParent())) return 1;
             safeWrite(baseline, resourceBytes);
             manifest.setProperty(relativeTarget, bundledHash);
+
         } catch (IOException | InvalidConfigurationException | IllegalArgumentException e) {
-            error("YAML konnte nicht sicher aktualisiert werden: " + relativeTarget, e);
+            error("Datei konnte nicht aktualisiert werden: " + relativeTarget, e);
         }
         return 1;
+    }
+
+    private boolean isProtectedFile(String relative) {
+        if (relative.equals("config.yml")) return true;
+        if (!relative.startsWith("games/")) return false;
+
+        String fileName = relative.substring(relative.lastIndexOf('/') + 1);
+        if (fileName.equals("gamedata.yml") || fileName.equals("gamesettings.yml")) {
+            return true;
+        }
+        if (relative.equals("games/mobarmybattle/team-equipment.yml")
+                || relative.equals("games/mobarmybattle/waves.yml")) {
+            return true;
+        }
+        return relative.equals("games/levelborder/config.yml");
+    }
+
+    private boolean mergeYaml(Path target, Path baseline, byte[] resourceBytes,
+                              boolean language, String relativeTarget)
+            throws IOException, InvalidConfigurationException {
+
+        YamlConfiguration latest = parseYaml(new String(resourceBytes, StandardCharsets.UTF_8));
+        YamlConfiguration existing = parseYaml(Files.readString(target, StandardCharsets.UTF_8));
+        YamlConfiguration previous = language && Files.isRegularFile(baseline)
+                ? parseYaml(Files.readString(baseline, StandardCharsets.UTF_8)) : null;
+
+        boolean changed = false;
+        for (String path : latest.getKeys(true)) {
+            if (latest.isConfigurationSection(path)) {
+                // Eine leere neue Sektion ebenfalls übernehmen.
+                if (!existing.contains(path, true) && latest.getConfigurationSection(path)
+                        .getKeys(false).isEmpty() && !hasScalarParent(existing, path)) {
+                    existing.createSection(path);
+                    changed = true;
+                }
+                continue;
+            }
+
+            if (hasScalarParent(existing, path)) {
+                plugin.getLogger().warning("YAML-Strukturkonflikt; Wert bleibt erhalten: "
+                        + relativeTarget + " / " + path);
+                continue;
+            }
+
+            if (!existing.contains(path, true)) {
+                existing.set(path, latest.get(path));
+                changed = true;
+                continue;
+            }
+
+            // Nur Sprachdateien: alte, nicht angepasste Standardtexte erneuern.
+            if (language && previous != null && previous.contains(path, true)
+                    && !previous.isConfigurationSection(path)
+                    && !existing.isConfigurationSection(path)
+                    && Objects.equals(existing.get(path), previous.get(path))
+                    && !Objects.equals(previous.get(path), latest.get(path))) {
+                existing.set(path, latest.get(path));
+                changed = true;
+            }
+        }
+
+        if (!changed) return true;
+        if (!backup(target)) return false;
+        safeWrite(target, existing.saveToString().getBytes(StandardCharsets.UTF_8));
+        updated++;
+        changes.add(new Change(relativeTarget, false));
+        return true;
     }
 
     private boolean hasScalarParent(YamlConfiguration config, String path) {
@@ -268,10 +298,6 @@ public final class PluginFileManager {
         return false;
     }
 
-    private boolean isLegacyVersionField(String path) {
-        return path.equals("file-version") || path.equals("config-version");
-    }
-
     private YamlConfiguration parseYaml(String content) throws InvalidConfigurationException {
         YamlConfiguration configuration = new YamlConfiguration();
         configuration.options().parseComments(true);
@@ -281,7 +307,6 @@ public final class PluginFileManager {
 
     private int createPersistentFile(String relativePath) {
         Path file = plugin.getDataFolder().toPath().resolve(relativePath);
-
         if (Files.exists(file)) {
             if (!Files.isRegularFile(file)) {
                 error("Kein regulärer Dateipfad: " + relativePath, null);
@@ -292,25 +317,22 @@ public final class PluginFileManager {
 
         try {
             if (!ensureDirectory(file.getParent())) return 0;
-
             Files.createFile(file);
             created++;
-            changes.add("erstellt: " + relativePath);
-            return 1;
-
+            changes.add(new Change(relativePath, true));
         } catch (IOException e) {
             error("Konnte Datendatei nicht erstellen: " + relativePath, e);
-            return 0;
         }
+        return 1;
     }
 
     private boolean backup(Path original) {
         Path backupDir = original.getParent().resolve("backups");
         if (!ensureDirectory(backupDir)) return false;
-        String filename = original.getFileName().toString();
-        Path backup = backupDir.resolve(filename + ".backup-" + BACKUP_DATE.format(LocalDateTime.now()));
+        Path backupFile = backupDir.resolve(original.getFileName()
+                + ".backup-" + BACKUP_DATE.format(LocalDateTime.now()));
         try {
-            Files.copy(original, backup); // never overwrite an existing backup
+            Files.copy(original, backupFile);
             backups++;
             return true;
         } catch (IOException e) {
@@ -346,9 +368,10 @@ public final class PluginFileManager {
 
     private String sha256(byte[] bytes) {
         try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
+            return HexFormat.of().formatHex(
+                    MessageDigest.getInstance("SHA-256").digest(bytes));
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 wird von dieser Java-Laufzeit nicht unterstützt", e);
+            throw new IllegalStateException("SHA-256 wird nicht unterstützt", e);
         }
     }
 
@@ -364,17 +387,25 @@ public final class PluginFileManager {
     private void saveManifest(Path file) {
         try {
             java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-            manifest.store(out, "BastiGHG Challenges FileManagement 2.0 - JAR resource SHA-256 hashes");
+            manifest.store(out, "BastiGHG Challenges FileManagement 2.1 - JAR resource SHA-256 hashes");
             safeWrite(file, out.toByteArray());
         } catch (IOException e) {
             error("Datei-Manifest konnte nicht gespeichert werden: " + file, e);
         }
     }
 
-    private void printGroup(String group, int count) {
+    private void printGroup(String group, int count, int firstChange) {
         log(ConsoleColor.DARK_GOLDEN_LIME + "        ✔ "
-                + String.format("%-23s", group) + count + " Dateien geprüft"
-                + ConsoleColor.RESET);
+                + String.format("%-23s", group) + ConsoleColor.RESET
+                + count + " Dateien geprüft");
+
+        for (int i = firstChange; i < changes.size(); i++) {
+            Change change = changes.get(i);
+            String color = change.created() ? ConsoleColor.BLOOD_ORANGE : ConsoleColor.ORANGE;
+            String action = change.created() ? "erstellt" : "aktualisiert";
+            log("          " + color + "↳ " + action + ": "
+                    + change.path() + ConsoleColor.RESET);
+        }
     }
 
     private void missingResource(String path) {

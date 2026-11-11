@@ -20,10 +20,10 @@ wave-auswahl:
   description: "MobWellen Konfiguration"
   world: "world_mobarmy_lobby"
   rot:
-    corner1: [100, 78, -100]
-    corner2: [106, 74, -94]
+    corner1: [99, 78, -103]
+    corner2: [107, 73, -94]
     teamspawn: [104, 75, -98, 0, 27]
   blau:
-    corner1: [71, 78, -100]
-    corner2: [77, 74, -94]
+    corner1: [70, 78, -103]
+    corner2: [78, 73, -94]
     teamspawn: [75, 75, -98, 0, 27]
