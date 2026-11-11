@@ -156,12 +156,6 @@ public final class PluginFileManager {
         log("");
     }
 
-    /**
-     * Verarbeitungsregeln:
-     * - Spielstände/Konfigurationen: vorhandene Werte behalten, neue Schlüssel ergänzen.
-     * - Sprachdateien: eigene Übersetzungen behalten; unveränderte Defaults aktualisieren.
-     * - Übrige Vorlagen: bei geänderter JAR-Vorlage vollständig ersetzen.
-     */
     private int processTemplate(String resourcePath, String relativeTarget) {
         Path target = plugin.getDataFolder().toPath().resolve(relativeTarget);
         byte[] resourceBytes;
@@ -198,7 +192,7 @@ public final class PluginFileManager {
                 if (protectedValues || language) {
                     if (!mergeYaml(target, baseline, resourceBytes, language, relativeTarget)) return 1;
                 } else if (!bundledHash.equals(manifest.getProperty(relativeTarget))) {
-                    // Keine unnötigen Backups, falls die Datei bereits der JAR entspricht.
+
                     if (!sha256(Files.readAllBytes(target)).equals(bundledHash)) {
                         if (!backup(target)) return 1;
                         safeWrite(target, resourceBytes);
@@ -208,7 +202,6 @@ public final class PluginFileManager {
                 }
             }
 
-            // Beibehalten: Vorlage und Prüfsumme als Basis für spätere Updates.
             if (!ensureDirectory(baseline.getParent())) return 1;
             safeWrite(baseline, resourceBytes);
             manifest.setProperty(relativeTarget, bundledHash);
@@ -246,7 +239,7 @@ public final class PluginFileManager {
         boolean changed = false;
         for (String path : latest.getKeys(true)) {
             if (latest.isConfigurationSection(path)) {
-                // Eine leere neue Sektion ebenfalls übernehmen.
+
                 if (!existing.contains(path, true) && latest.getConfigurationSection(path)
                         .getKeys(false).isEmpty() && !hasScalarParent(existing, path)) {
                     existing.createSection(path);
@@ -267,7 +260,6 @@ public final class PluginFileManager {
                 continue;
             }
 
-            // Nur Sprachdateien: alte, nicht angepasste Standardtexte erneuern.
             if (language && previous != null && previous.contains(path, true)
                     && !previous.isConfigurationSection(path)
                     && !existing.isConfigurationSection(path)

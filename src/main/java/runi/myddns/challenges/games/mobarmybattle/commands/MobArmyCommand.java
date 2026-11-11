@@ -49,11 +49,6 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-
-        /*
-         * /mobarmy info
-         * /mobarmy help
-         */
         if (args[0].equalsIgnoreCase("info")
                 || args[0].equalsIgnoreCase("help")) {
 
@@ -136,13 +131,6 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-
-    /*
-     * =========================================================
-     * /MOBARMY
-     * =========================================================
-     */
-
     private void sendCommandOverview(
             Player player
     ) {
@@ -209,13 +197,6 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
                 Component.empty()
         );
     }
-
-
-    /*
-     * =========================================================
-     * /MOBARMY INFO / HELP
-     * =========================================================
-     */
 
     private void sendInfo(
             Player player

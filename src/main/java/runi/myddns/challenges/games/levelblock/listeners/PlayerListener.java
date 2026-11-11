@@ -50,7 +50,6 @@ public class PlayerListener implements Listener {
 
         player.sendMessage("");
 
-        // Logo nach 40 Ticks anzeigen
         Bukkit.getScheduler().runTaskLater(
                 game.getPlugin(),
                 () -> {
@@ -93,8 +92,6 @@ public class PlayerListener implements Listener {
 
         Location vanillaRespawn = event.getRespawnLocation();
 
-        // Gültiges Bett in der LevelBlock-Overworld
-        // oder Respawnanker im LevelBlock-Nether
         if (vanillaRespawn.getWorld() != null) {
 
             String worldName = vanillaRespawn.getWorld().getName();

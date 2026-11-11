@@ -428,14 +428,9 @@ public class ChunkRandomizerMobManager implements Listener {
 
     public void shutdown() {
 
-        // Mob NICHT löschen!
-        // Es bleibt in der Welt gespeichert.
         activeMobId = null;
     }
 
-    /**
-     * Entfernt das aktive Challenge-Mob beim vollständigen Game-Reset.
-     */
     public void reset() {
 
         if (activeMobId != null) {

@@ -68,9 +68,6 @@ public class MobStatusCommand implements CommandExecutor, TabCompleter {
 
         String team = teamManager.getPlayerTeam(player);
 
-        /*
-         * Null zusätzlich absichern.
-         */
         if (team == null
                 || team.equalsIgnoreCase("Kein Team")) {
 

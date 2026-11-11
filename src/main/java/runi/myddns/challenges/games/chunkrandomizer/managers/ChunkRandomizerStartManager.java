@@ -23,10 +23,6 @@ public class ChunkRandomizerStartManager {
         this.borderManager = borderManager;
     }
 
-    /**
-     * Startet ChunkRandomizer in dem Chunk,
-     * in dem sich der ausführende Spieler befindet.
-     */
     public boolean start(Player initiator) {
 
         if (initiator == null || !initiator.isOnline()) {
@@ -40,7 +36,6 @@ public class ChunkRandomizerStartManager {
             return false;
         }
 
-        // Prüfen, ob der Spieler in einer ChunkRandomizer-Welt ist
         if (!plugin.getGameWorldManager()
                 .isGameWorld(initiator.getWorld(), "chunkrandomizer")) {
 
@@ -50,17 +45,14 @@ public class ChunkRandomizerStartManager {
             return false;
         }
 
-        // Position des ausführenden Spielers merken
         Location startLocation = initiator.getLocation().clone();
 
-        // WorldBorder um den aktuellen Chunk erstellen
         borderManager.createBorder(initiator);
 
         started = true;
 
         int teleported = 0;
 
-        // Alle anderen ChunkRandomizer-Spieler zusammenführen
         for (Player player : Bukkit.getOnlinePlayers()) {
 
             if (player.equals(initiator)) {
@@ -141,7 +133,6 @@ public class ChunkRandomizerStartManager {
             }
         }
 
-        // Event bleibt gestartet, auch wenn die Border frei ist
         started = true;
         plugin.getGameStateManager().setStarted(true);
 

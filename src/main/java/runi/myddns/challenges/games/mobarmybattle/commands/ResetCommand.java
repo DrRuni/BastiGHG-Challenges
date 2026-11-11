@@ -47,9 +47,6 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        /*
-         * /mobarmy reset
-         */
         if (args.length == 0) {
 
             game.getPlugin()
@@ -67,7 +64,6 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
                                         "reset-messages.game.starting"
                                 );
 
-                                // The EventManager sends the final success message.
                                 game.getEventManager().resetGame();
                             }
                     );

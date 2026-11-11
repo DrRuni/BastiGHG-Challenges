@@ -101,14 +101,6 @@ public class TeamManager implements Listener {
                 playerNames.put(uuid, name);
 
             } catch (IllegalArgumentException ignored) {
-
-                /*
-                 * Alter Eintrag mit Spielername.
-                 * Wird ignoriert.
-                 *
-                 * Für den ersten Test am besten
-                 * die alte teams.yml löschen.
-                 */
             }
         }
     }
@@ -138,12 +130,6 @@ public class TeamManager implements Listener {
         );
     }
 
-    /*
-     * Wichtig für unsere spätere Abstimmung:
-     *
-     * true = Spieler steht bereits in teams.yml
-     * und gehört damit schon zum Match.
-     */
     public boolean isRegisteredParticipant(Player player) {
 
         return playerTeams.containsKey(

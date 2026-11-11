@@ -412,7 +412,6 @@ public class ResetManagementGUI implements Listener {
                 )
         );
 
-        // Wrap lore for all challenge games without changing language files.
         List<Component> wrappedLore = new ArrayList<>();
         for (String line : lore) {
             addWrappedLore(wrappedLore, line);

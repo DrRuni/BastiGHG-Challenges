@@ -46,7 +46,6 @@ public class ResetShortcutCommand implements CommandExecutor, TabCompleter {
         var language = plugin.getLanguageManager();
         String gameId = game.getId();
 
-        // /reset -> Befehlsübersicht
         if (args.length == 0) {
             player.sendMessage(Component.empty());
             player.sendMessage(language.getComponent(
@@ -55,7 +54,6 @@ public class ResetShortcutCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(language.getComponent("reset-shortcut.gamedata"));
             player.sendMessage(language.getComponent("reset-shortcut.world"));
 
-            // Nur MobArmyBattle hat diese beiden Reset-Arten
             if (gameId.equalsIgnoreCase("mobarmybattle")) {
                 player.sendMessage(language.getComponent("reset-shortcut.arena"));
                 player.sendMessage(language.getComponent("reset-shortcut.teamwelt"));

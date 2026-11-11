@@ -132,10 +132,6 @@ public class TeamSelectionGUI implements Listener {
             String team
     ) {
 
-        /*
-         * Event noch nicht gestartet:
-         * normale Teamwahl.
-         */
         if (!game.getEventResume().isEventStarted()) {
 
             assignTeam(
@@ -146,10 +142,6 @@ public class TeamSelectionGUI implements Listener {
             return;
         }
 
-        /*
-         * Spieler gehört bereits zum laufenden Match.
-         * Team darf jetzt nicht mehr gewechselt werden.
-         */
         if (teamManager.isRegisteredParticipant(player)) {
 
             player.closeInventory();

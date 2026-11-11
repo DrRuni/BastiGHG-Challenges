@@ -437,7 +437,6 @@ public class LevelBorderGame implements ChallengeGame {
         scoreboardManager.reset();
         borderManager.resetBorder(null);
         timerManager.reset();
-        // Portal files and blocks must remain intact.
     }
 
     public void resetWorldData() {

@@ -306,7 +306,6 @@ public class PlayerGameDataManager {
             YamlConfiguration config =
                     YamlConfiguration.loadConfiguration(file);
 
-            // Inventare und Enderchest leeren.
             config.set("inventory.contents",
                     java.util.Arrays.asList(new ItemStack[36]));
             config.set("inventory.armor",
@@ -315,7 +314,6 @@ public class PlayerGameDataManager {
             config.set("enderchest",
                     java.util.Arrays.asList(new ItemStack[27]));
 
-            // Erfahrung und Spielerzustand zurücksetzen.
             config.set("experience.level", 0);
             config.set("experience.exp", 0.0);
             config.set("experience.total", 0);
@@ -558,13 +556,6 @@ public class PlayerGameDataManager {
 
         return items;
     }
-
-
-    /*
-     * =========================================================
-     * SPIELERZUSTAND LEEREN
-     * =========================================================
-     */
 
     public void clearPlayerState(
             Player player

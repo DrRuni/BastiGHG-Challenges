@@ -261,9 +261,6 @@ public class PortalListener implements Listener {
             ).setType(Material.OBSIDIAN, false);
         }
 
-        /*
-         * Portalfläche.
-         */
         for (int dx = 0; dx <= 1; dx++) {
 
             for (int dy = 1; dy <= 3; dy++) {

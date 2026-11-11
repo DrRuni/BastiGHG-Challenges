@@ -405,9 +405,6 @@ public class ArenaSettingsGUI implements Listener {
                 game.getArenaConfig()
                         .getActiveArenaId();
 
-        /*
-         * Bereits aktive Arena angeklickt
-         */
         if (arenaId.equalsIgnoreCase(activeArenaId)) {
 
             Sounds.playClick(player);
@@ -423,9 +420,6 @@ public class ArenaSettingsGUI implements Listener {
                 game.getEventResume()
                         .loadPhase();
 
-        /*
-         * Arena-Wechsel nur bis zur Wave-Auswahl.
-         */
         if (phase > ResumeManager.PHASE_WAVEAUSWAHL) {
 
             Sounds.playDanger(player);
@@ -487,18 +481,12 @@ public class ArenaSettingsGUI implements Listener {
         );
     }
 
-    /*
-     * Sprachtext ohne Platzhalter
-     */
     private Component lang(String path) {
 
         return game.getLanguageManager()
                 .getComponent(path);
     }
 
-    /*
-     * Sprachtext mit einem Platzhalter
-     */
     private Component langArena(
             String path,
             Object value

@@ -45,17 +45,11 @@ public class BorderManager {
         int centerZ =
                 location.getBlockZ();
 
-        /*
-         * Startpunkt dieser Dimension speichern.
-         */
         dataManager.saveStartLocation(
                 world,
                 location
         );
 
-        /*
-         * 3x3 Bereich um das Portal kostenlos freischalten.
-         */
         for (
                 int x = centerX - 1;
                 x <= centerX + 1;
@@ -76,9 +70,6 @@ public class BorderManager {
             }
         }
 
-        /*
-         * Border-Anzeige neu aufbauen.
-         */
         lineManager.reset();
 
         for (
@@ -285,18 +276,10 @@ public class BorderManager {
         int z =
                 location.getBlockZ();
 
-
-        /*
-         * Alte Daten dieser Welt entfernen.
-         */
         dataManager.resetWorld(
                 world
         );
 
-
-        /*
-         * Startpunkt speichern.
-         */
         dataManager.saveStartLocation(
                 world,
                 location

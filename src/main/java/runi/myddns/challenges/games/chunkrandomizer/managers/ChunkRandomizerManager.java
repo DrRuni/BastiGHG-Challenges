@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 public class ChunkRandomizerManager implements Listener {
 
     private static final Set<Material> EXCLUDED_BLOCKS = Set.of(
-            // Unzerstörbare und technische Blöcke
             Material.BEDROCK,
             Material.BARRIER,
             Material.LIGHT,

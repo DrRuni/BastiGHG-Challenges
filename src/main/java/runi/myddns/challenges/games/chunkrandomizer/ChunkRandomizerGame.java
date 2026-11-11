@@ -197,9 +197,6 @@ public class ChunkRandomizerGame implements ChallengeGame {
                                                                     if (restored) {
 
                                                                         dataManager.restoreOriginalBorder(borderManager);
-
-                                                                        // Alte Challenge-Border nach einem Crash entfernen,
-                                                                        // falls das Mob bereits besiegt wurde.
                                                                         dataManager.restoreInactiveBorder();
 
                                                                         if (dataManager.getData()

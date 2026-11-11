@@ -192,10 +192,7 @@ public class ChunkRandomizerDataManager {
     public void restoreInactiveBorder() {
 
         if (data == null || !isStarted()) return;
-
-        // Nur wenn die Challenge-Border nicht mehr aktiv sein soll
         if (data.getBoolean("border.active", false)) return;
-
         if (!data.contains("border.original.size")) return;
 
         String worldName = data.getString("border.world", "");

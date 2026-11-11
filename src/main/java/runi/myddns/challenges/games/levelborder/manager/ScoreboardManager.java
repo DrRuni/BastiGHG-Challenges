@@ -108,14 +108,12 @@ public class ScoreboardManager {
                         data.getAllPlayerLevels()
                 );
 
-        // Einträge für aktive Spieler auch ohne gespeicherten Level berücksichtigen.
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (game.isLevelBorderPlayer(online)) {
                 allPlayers.putIfAbsent(online.getName(), online.getLevel());
             }
         }
 
-        // Die Sidebar hat maximal 15 Zeilen; 5 sind für Überschriften/Abstände reserviert.
         allPlayers.entrySet().stream()
                 .sorted(
                         Map.Entry.comparingByKey(

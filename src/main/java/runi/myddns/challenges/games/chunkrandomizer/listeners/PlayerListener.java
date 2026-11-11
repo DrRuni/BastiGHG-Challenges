@@ -83,8 +83,6 @@ public class PlayerListener implements Listener {
 
         if (!isGamePlayer(player)) return;
 
-        // Vanilla-Respawn bevorzugen:
-        // Bett oder gültiger Nether-Respawnanker.
         Location vanillaRespawn = event.getRespawnLocation();
 
         if (vanillaRespawn.getWorld() != null
@@ -93,7 +91,6 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        // Fallback: ChunkRandomizer-Overworld.
         World world = Bukkit.getWorld(
                 GameWorldDefinition.CHUNK_RANDOMIZER_OVERWORLD.worldName()
         );

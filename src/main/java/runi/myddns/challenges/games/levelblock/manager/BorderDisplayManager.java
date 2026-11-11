@@ -178,10 +178,6 @@ public class BorderDisplayManager {
         ItemDisplay existing =
                 displays.get(key);
 
-        /*
-         * Block selbst ist nicht freigeschaltet.
-         * Eventuell vorhandene Border entfernen.
-         */
         if (!borderManager.isUnlocked(
                 world,
                 blockX,
@@ -244,10 +240,6 @@ public class BorderDisplayManager {
                         player.getLocation().getBlockY()
                 );
 
-        /*
-         * Keine passende Oberfläche
-         * in der Nähe der Spielerhöhe.
-         */
         if (y == null) {
 
             if (existing != null) {
@@ -305,11 +297,6 @@ public class BorderDisplayManager {
                             );
                 };
 
-        /*
-         * Display existiert bereits.
-         * Nur verschieben, falls sich die passende
-         * Höhe geändert hat.
-         */
         if (existing != null
                 && existing.isValid()) {
 
@@ -413,9 +400,6 @@ public class BorderDisplayManager {
                     continue;
                 }
 
-                /*
-                 * NORTH
-                 */
                 if (!borderManager.isUnlocked(
                         world,
                         x,
@@ -442,9 +426,6 @@ public class BorderDisplayManager {
                     );
                 }
 
-                /*
-                 * SOUTH
-                 */
                 if (!borderManager.isUnlocked(
                         world,
                         x,
@@ -471,9 +452,6 @@ public class BorderDisplayManager {
                     );
                 }
 
-                /*
-                 * WEST
-                 */
                 if (!borderManager.isUnlocked(
                         world,
                         x - 1,
@@ -528,10 +506,6 @@ public class BorderDisplayManager {
             }
         }
 
-        /*
-         * Displays entfernen, die nicht mehr
-         * zur aktuellen Ansicht gehören.
-         */
         Iterator<Map.Entry<String, ItemDisplay>> iterator =
                 displays.entrySet().iterator();
 
@@ -559,10 +533,6 @@ public class BorderDisplayManager {
         }
     }
 
-    /*
-     * Sucht bevorzugt eine Oberfläche
-     * in unmittelbarer Nähe der Spielerhöhe.
-     */
     private Integer findBorderY(
             World world,
             int x,

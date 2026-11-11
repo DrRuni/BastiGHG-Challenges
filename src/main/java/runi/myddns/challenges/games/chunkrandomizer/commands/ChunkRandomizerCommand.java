@@ -58,7 +58,6 @@ public class ChunkRandomizerCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Vollständiger Weltenreset
         if (args.length == 2) {
 
             if (!args[1].equalsIgnoreCase("world")) {
@@ -77,7 +76,6 @@ public class ChunkRandomizerCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Nur Eventdaten zurücksetzen
         plugin.getVoteManager().startVote(
                 game.getDisplayName(),
                 plugin.getLanguageManager()
