@@ -73,8 +73,8 @@ public final class PluginFileManager {
         loadManifest(dataFolder.resolve(MANIFEST_NAME));
 
         log("");
-        log(ConsoleColor.PURPLE + "                     ◆ BastiGHG Challenges" + ConsoleColor.RESET);
-        log(ConsoleColor.COPPER + "                        FileManagement 2.0" + ConsoleColor.RESET);
+        log(ConsoleColor.PURPLE + "                   ◆ BastiGHG Challenges" + ConsoleColor.RESET);
+        log(ConsoleColor.COPPER + "                     FileManagement 2.0" + ConsoleColor.RESET);
         log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         int core = 0;
