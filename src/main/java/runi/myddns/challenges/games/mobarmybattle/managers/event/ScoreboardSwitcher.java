@@ -29,14 +29,14 @@ public class ScoreboardSwitcher {
     }
 
     public void switchToTeam(Player player) {
-        if (getActiveBoard(player) == BoardType.TEAM) return;
+        if (player == null) return;
 
         teamBoardManager.setBoard(player);
         activeBoards.put(player, BoardType.TEAM);
     }
 
     public void switchToArena(Player player) {
-        if (getActiveBoard(player) == BoardType.ARENA) return;
+        if (player == null) return;
 
         arenaBoardManager.setBoard(player);
         activeBoards.put(player, BoardType.ARENA);
@@ -66,5 +66,29 @@ public class ScoreboardSwitcher {
             teamBoardManager.setBoard(player);
             activeBoards.put(player, BoardType.TEAM);
         }
+    }
+
+    public void refreshScoreboard(Player player) {
+        if (player == null || !player.isOnline()) return;
+
+        String world = player.getWorld().getName();
+
+        if (world.equalsIgnoreCase("world_mobarmy_arena")) {
+            switchToArena(player);
+            return;
+        }
+
+        if (world.equalsIgnoreCase("world_mobarmy_lobby")
+                || world.equalsIgnoreCase("world_rot")
+                || world.equalsIgnoreCase("world_blau")
+                || world.equalsIgnoreCase("world_rot_nether")
+                || world.equalsIgnoreCase("world_blau_nether")) {
+
+            teamBoardManager.updateBoard();
+            switchToTeam(player);
+            return;
+        }
+
+        removePlayer(player);
     }
 }

@@ -578,24 +578,12 @@ public class MobArmyBattleGame implements ChallengeGame {
                                 plugin,
                                 () -> {
 
-                                    if (!player.isOnline()) {
-                                        return;
-                                    }
+                                    if (!player.isOnline() || !isMobArmyPlayer(player)) return;
 
-                                    timerManager
-                                            .ensureBossBarExists();
-
-                                    timerManager
-                                            .addPlayerToBossBar(player);
-
-                                    timerManager
-                                            .updatePauseState();
-
-                                    teamScoreboardManager
-                                            .updateBoard();
-
-                                    scoreboardSwitcher
-                                            .switchToTeam(player);
+                                    timerManager.ensureBossBarExists();
+                                    timerManager.addPlayerToBossBar(player);
+                                    timerManager.updatePauseState();
+                                    scoreboardSwitcher.refreshScoreboard(player);
                                 },
                                 20L * 7
                         )
