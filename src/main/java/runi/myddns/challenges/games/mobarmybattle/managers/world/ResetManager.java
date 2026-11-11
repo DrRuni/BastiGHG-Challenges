@@ -20,10 +20,6 @@ public class ResetManager {
         this.game = game;
     }
 
-    /**
-     * Leert die Kisten in beiden Waveauswahl-Zonen.
-     * Kistenblöcke und andere Blöcke bleiben unverändert.
-     */
     public void clearWaveSelectionChests() {
 
         File file = new File(game.getDataFolder(), "spawns.yml");
@@ -56,15 +52,8 @@ public class ResetManager {
             return;
         }
 
-        int cleared = 0;
-
-        cleared += clearChestsInZone(world, config, "wave-auswahl.rot");
-        cleared += clearChestsInZone(world, config, "wave-auswahl.blau");
-
-        game.getPlugin().getLogger().info(
-                "MobArmyBattle Reset: " + cleared
-                        + " Kisteninventare in der Waveauswahl geleert."
-        );
+        clearChestsInZone(world, config, "wave-auswahl.rot");
+        clearChestsInZone(world, config, "wave-auswahl.blau");
     }
 
     private int clearChestsInZone(
