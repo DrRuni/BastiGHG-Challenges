@@ -127,6 +127,16 @@ reset-management:
       line-1: "Löscht sämtliche Spieler- und Weltdaten."
       line-2: "Erstellt alle Challenge-Welten neu."
 
+reset-shortcut:
+  title: "<gold>══════ %game% Reset ══════</gold>"
+  gamedata: "<yellow>/reset gamedata</yellow> <gray>- Spielerdaten und Fortschritt zurücksetzen"
+  world: "<yellow>/reset world</yellow> <gray>- Alle Welten und Daten zurücksetzen"
+  arena: "<yellow>/reset arena</yellow> <gray>- Arena zurücksetzen"
+  teamwelt: "<yellow>/reset teamwelt</yellow> <gray>- Teamwelten zurücksetzen"
+  usage: "<red>Verwendung: /reset [gamedata|world]"
+  unknown: "<red>Unbekannter Reset-Befehl. Nutze /reset für die Übersicht."
+  game-world-only: "<red>Dieser Befehl funktioniert nur in einer Challenge-Welt."
+
 world-settings:
   load-first: "Bitte zuerst ein Game laden."
   title-prefix: "Settings » "

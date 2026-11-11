@@ -40,13 +40,6 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!player.isOp()) {
-            player.sendMessage(
-                    game.getLanguageManager().getComponent("commands.mobarmy-reset.no-permission")
-            );
-            return true;
-        }
-
         if (!game.isLoaded()) {
             player.sendMessage(
                     game.getLanguageManager().getComponent("commands.mobarmy-reset.game-not-loaded")
@@ -193,10 +186,6 @@ public class ResetCommand implements CommandExecutor, TabCompleter {
     ) {
 
         if (!(sender instanceof Player player)) {
-            return Collections.emptyList();
-        }
-
-        if (!player.isOp()) {
             return Collections.emptyList();
         }
 

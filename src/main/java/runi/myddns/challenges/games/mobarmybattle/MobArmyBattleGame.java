@@ -32,6 +32,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     private final LanguageManager languageManager;
 
     private WorldManager worldManager;
+    private ResetManager resetManager;
     public TimerManager timerManager;
     public TeamManager teamManager;
     public BlockRandomizerManager blockRandomizerManager;
@@ -225,6 +226,7 @@ public class MobArmyBattleGame implements ChallengeGame {
     }
 
     private void initializeMobArmyBattle() {
+        resetManager = new ResetManager(this);
         blockRandomizerManager = new BlockRandomizerManager(this);
         eventResume = new ResumeManager(this);
         arenaConfig = new ArenaConfig(this);
@@ -813,8 +815,10 @@ public class MobArmyBattleGame implements ChallengeGame {
     public TeamSettingsGUI getTeamSettingsGUI() { return teamSettingsGUI; }
     public TeamEquipmentManager getTeamEquipmentManager() { return teamEquipmentManager; }
     public TeamEquipmentGUI getTeamEquipmentGUI() { return teamEquipmentGUI; }
-    @SuppressWarnings("unused")
-    public PlayerListener getPlayerJoinListener() { return playerListener; }
     public LanguageManager getLanguageManager() {return languageManager;}
     public ButtonManager getButtonManager() {return buttonManager;}
+    public ResetManager getResetManager() { return resetManager;}
+    @SuppressWarnings("unused")
+    public PlayerListener getPlayerJoinListener() { return playerListener; }
+
 }

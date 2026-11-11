@@ -536,6 +536,8 @@ public class EventManager {
 
     public void resetGame(boolean teleportToMobArmyLobby) {
 
+        game.getResetManager().clearWaveSelectionChests();
+
         ResumeManager resume = game.getEventResume();
 
         resume.beginBatch();

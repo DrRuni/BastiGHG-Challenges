@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.games.levelblock.LevelBlockGame;
 
 import java.util.List;
@@ -119,75 +120,62 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("reset")) {
 
             if (!game.isLoaded()) {
-                player.sendMessage(
-                        game.getLanguageManager()
-                                .getComponent(
-                                        "commands.levelblock.load-first"
-                                )
+                player.sendMessage(game.getLanguageManager().getComponent(
+                        "commands.levelblock.load-first"));
+                return true;
+            }
+
+            if (args.length == 1) {
+                player.performCommand("reset");
+                return true;
+            }
+
+            if (args.length != 2) {
+                player.sendMessage(game.getPlugin().getLanguageManager()
+                        .getComponent("reset-shortcut.usage"));
+                return true;
+            }
+
+            if (args[1].equalsIgnoreCase("world")) {
+                game.getPlugin().getVoteManager().startVote(
+                        game.getDisplayName(),
+                        game.getPlugin().getLanguageManager().get(
+                                "reset-management.levelblock.world.name"),
+                        () -> game.getPlugin().getGameResetManager().resetWorlds(game)
                 );
-
                 return true;
             }
 
-            if (!isAdmin) {
-                player.sendMessage(
-                        game.getLanguageManager()
-                                .getComponent(
-                                        "commands.levelblock.admin-reset-only"
-                                )
+            if (args[1].equalsIgnoreCase("gamedata")) {
+                game.getPlugin().getVoteManager().startVote(
+                        game.getDisplayName(),
+                        game.getPlugin().getLanguageManager().get(
+                                "reset-management.levelblock.player.name"),
+                        () -> {
+                            var language = game.getLanguageManager();
+
+                            ResetMessageUtil.start(language,
+                                    "reset-messages.player.title",
+                                    "reset-messages.player.starting");
+
+                            game.resetPlayerData();
+
+                            ResetMessageUtil.finish(language,
+                                    "reset-messages.player.finished",
+                                    "reset-messages.player.details");
+                        }
                 );
-
                 return true;
             }
 
-            if (args.length >= 2
-                    && args[1].equalsIgnoreCase("world")) {
-
-                game.getPlugin()
-                        .getVoteManager()
-                        .startVote(
-                                game.getDisplayName(),
-                                game.getPlugin().getLanguageManager()
-                                        .get(
-                                                "reset-management.levelblock.world.name"
-                                        ),
-                                () -> game.getPlugin()
-                                        .getGameResetManager()
-                                        .resetWorlds(game)
-                        );
-
-                return true;
-            }
-
-            game.getPlugin()
-                    .getVoteManager()
-                    .startVote(
-                            game.getDisplayName(),
-                            game.getLanguageManager()
-                                    .get(
-                                            "reset-management.levelblock.player.name"
-                                    ),
-                            () -> {
-
-                                game.resetPlayerData();
-
-                                Bukkit.broadcast(
-                                        game.getLanguageManager()
-                                                .getComponent(
-                                                        "commands.levelblock.reset-complete"
-                                                )
-                                );
-                            }
-                    );
+            player.sendMessage(game.getPlugin().getLanguageManager()
+                    .getComponent("reset-shortcut.unknown"));
 
             return true;
         }
 
         player.sendMessage(
-                game.getLanguageManager()
-                        .getComponent(
-                                "commands.levelblock.unknown"
-                        )
+                game.getLanguageManager().getComponent("commands.levelblock.unknown")
         );
 
         return true;
@@ -335,6 +323,7 @@ public class LevelBlockCommand implements CommandExecutor, TabCompleter {
                 && args[0].equalsIgnoreCase("reset")) {
 
             return List.of(
+                    "gamedata",
                     "world"
             );
         }

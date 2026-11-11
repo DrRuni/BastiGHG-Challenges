@@ -210,9 +210,7 @@ public class LevelBorderGame implements ChallengeGame {
                 new LevelBorderCommand(
                         this,
                         borderManager,
-                        scoreboardManager,
-                        timerManager,
-                        portalManager
+                        scoreboardManager
                 );
 
         var levelBorderCmd = plugin.getCommand("levelborder");

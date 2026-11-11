@@ -1,7 +1,5 @@
 # Gamesettings
 
-file-version: 1
-
 world-settings:
   keep-inventory: true
   night-vision-enabled: false

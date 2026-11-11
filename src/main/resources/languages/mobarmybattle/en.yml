@@ -252,6 +252,15 @@ setup-gui:
   reset-management:
     name: "<red>Reset Management"
     description: "<gray>Reset game progress and worlds"
+  reset-shortcut:
+    title: "<gold>══════ %game% Reset ══════</gold>"
+    gamedata: "<yellow>/reset gamedata</yellow> <gray>- Reset player data and progress"
+    world: "<yellow>/reset world</yellow> <gray>- Reset all worlds and data"
+    arena: "<yellow>/reset arena</yellow> <gray>- Reset arena"
+    teamwelt: "<yellow>/reset teamwelt</yellow> <gray>- Reset team worlds"
+    usage: "<red>Usage: /reset <gamedata|world>"
+    unknown: "<red>Unknown reset command. Use /reset for an overview."
+    game-world-only: "<red>This command only works in a challenge world."
 
 team-equipment-gui:
   title: "<blue>Team Equipment Settings"

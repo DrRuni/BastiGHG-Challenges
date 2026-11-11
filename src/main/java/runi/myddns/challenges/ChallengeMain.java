@@ -199,6 +199,14 @@ public final class ChallengeMain extends JavaPlugin {
         if (resetVote != null) {
             resetVote.setExecutor(new ResetVoteCommand(this));
         }
+
+        var reset = getCommand("reset");
+
+        if (reset != null) {
+            ResetShortcutCommand resetCommand = new ResetShortcutCommand(this);
+            reset.setExecutor(resetCommand);
+            reset.setTabCompleter(resetCommand);
+        }
     }
 
     @Override

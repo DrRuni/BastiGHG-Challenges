@@ -113,8 +113,6 @@ public class PlayerListener implements Listener {
 
         Location vanillaRespawn = event.getRespawnLocation();
 
-        // Gültiges Bett in der LevelBorder-Overworld
-        // oder Respawnanker im LevelBorder-Nether
         if (vanillaRespawn.getWorld() != null) {
 
             String worldName = vanillaRespawn.getWorld().getName();
@@ -134,8 +132,6 @@ public class PlayerListener implements Listener {
 
         BorderDataManager data = borderManager.getData();
 
-        // Ohne Bett/Anker und ohne aktive Border:
-        // Normaler LevelBorder-Weltspawn
         if (!data.isActive() || data.getCenter() == null) {
             World world = Bukkit.getWorld(
                     GameWorldDefinition.LEVEL_BORDER_OVERWORLD.worldName()
@@ -148,8 +144,6 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        // Ohne gültigen Spawnpunkt:
-        // Respawn am Border-Mittelpunkt
         Location center = data.getCenter();
         World world = center.getWorld();
 
@@ -166,7 +160,6 @@ public class PlayerListener implements Listener {
                 )
         );
     }
-
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {

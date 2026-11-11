@@ -40,21 +40,6 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!player.isOp()) {
-
-            player.sendMessage(
-                    Component.text(
-                            "Du hast keine Berechtigung dafür."
-                    )
-            );
-
-            return true;
-        }
-
-
-        /*
-         * /mobarmy
-         */
         if (args.length == 0) {
 
             sendCommandOverview(
@@ -76,6 +61,14 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
                     player
             );
 
+            return true;
+        }
+
+        if (!player.isOp()
+                && !args[0].equalsIgnoreCase("reset")
+                && !args[0].equalsIgnoreCase("gamereset")) {
+
+            player.sendMessage(Component.text("Du hast keine Berechtigung dafür."));
             return true;
         }
 
@@ -106,6 +99,11 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
             );
 
             return true;
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("gamereset")) {
+            ResetCommand resetCommand = new ResetCommand(game);
+            return resetCommand.onCommand(sender, command, label, new String[0]);
         }
 
         if (args[0].equalsIgnoreCase("reset")) {
@@ -319,6 +317,7 @@ public class MobArmyCommand implements CommandExecutor, TabCompleter {
                     "help",
                     "resume",
                     "gamesettings",
+                    "gamereset",
                     "reset"
             );
         }

@@ -5,8 +5,6 @@
 # timer: Saved time and counting direction
 # players: Saved player positions and resume data
 
-file-version: 1
-
 event:
   started: false
   paused: true

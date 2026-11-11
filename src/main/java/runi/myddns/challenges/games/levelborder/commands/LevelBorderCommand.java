@@ -14,9 +14,7 @@ import runi.myddns.challenges.games.levelborder.LevelBorderGame;
 import runi.myddns.challenges.core.utils.ResetMessageUtil;
 import runi.myddns.challenges.games.levelborder.manager.BorderDataManager;
 import runi.myddns.challenges.games.levelborder.manager.LevelBorderManager;
-import runi.myddns.challenges.games.levelborder.manager.PortalManager;
 import runi.myddns.challenges.games.levelborder.manager.ScoreboardManager;
-import runi.myddns.challenges.games.levelborder.manager.TimerManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,21 +25,15 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
     private final LevelBorderGame game;
     private final LevelBorderManager borderManager;
     private final ScoreboardManager scoreboardManager;
-    private final TimerManager timerManager;
-    private final PortalManager portalManager;
 
     public LevelBorderCommand(
             LevelBorderGame game,
             LevelBorderManager borderManager,
-            ScoreboardManager scoreboardManager,
-            TimerManager timerManager,
-            PortalManager portalManager
+            ScoreboardManager scoreboardManager
     ) {
         this.game = game;
         this.borderManager = borderManager;
         this.scoreboardManager = scoreboardManager;
-        this.timerManager = timerManager;
-        this.portalManager = portalManager;
     }
 
     @Override
@@ -340,12 +332,19 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                             "commands.levelborder.reset.load-first"));
                     return true;
                 }
-                if (!isAdmin) {
-                    player.sendMessage(game.getLanguageManager().getComponent(
-                            "commands.levelborder.reset.admin-only"));
+
+                if (args.length == 1) {
+                    player.performCommand("reset");
                     return true;
                 }
-                if (args.length >= 2 && args[1].equalsIgnoreCase("world")) {
+
+                if (args.length != 2) {
+                    player.sendMessage(game.getPlugin().getLanguageManager()
+                            .getComponent("reset-shortcut.usage"));
+                    return true;
+                }
+
+                if (args[1].equalsIgnoreCase("world")) {
                     game.getPlugin().getVoteManager().startVote(
                             game.getDisplayName(),
                             game.getPlugin().getLanguageManager().get(
@@ -355,19 +354,30 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                game.getPlugin().getVoteManager().startVote(
-                        game.getDisplayName(),
-                        game.getPlugin().getLanguageManager().get(
-                                "reset-management.levelborder.player.name"),
-                        () -> {
-                            var language = game.getLanguageManager();
-                            ResetMessageUtil.start(language,
-                                    "reset-messages.player.title", "reset-messages.player.starting");
-                            game.resetPlayerData();
-                            ResetMessageUtil.finish(language,
-                                    "reset-messages.player.finished", "reset-messages.player.details");
-                        }
-                );
+                if (args[1].equalsIgnoreCase("gamedata")) {
+                    game.getPlugin().getVoteManager().startVote(
+                            game.getDisplayName(),
+                            game.getPlugin().getLanguageManager().get(
+                                    "reset-management.levelborder.player.name"),
+                            () -> {
+                                var language = game.getLanguageManager();
+
+                                ResetMessageUtil.start(language,
+                                        "reset-messages.player.title",
+                                        "reset-messages.player.starting");
+
+                                game.resetPlayerData();
+
+                                ResetMessageUtil.finish(language,
+                                        "reset-messages.player.finished",
+                                        "reset-messages.player.details");
+                            }
+                    );
+                    return true;
+                }
+
+                player.sendMessage(game.getPlugin().getLanguageManager()
+                        .getComponent("reset-shortcut.unknown"));
             }
 
             default ->
@@ -687,7 +697,7 @@ public class LevelBorderCommand implements CommandExecutor, TabCompleter {
         } else if (args.length == 2
                 && args[0].equalsIgnoreCase("reset")) {
 
-            list.add("world");
+            list.addAll(List.of("gamedata", "world"));
         }
 
         return list;

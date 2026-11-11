@@ -37,6 +37,10 @@ commands:
     usage: /gamesettings
     aliases: [ settings, options ]
 
+  reset:
+    description: Zeigt Reset-Befehle für die aktuelle Challenge
+    usage: /reset [gamedata|world|arena|teamwelt]
+
   info:
     description: Zeigt Informationen zu einem Challenge-Game
     usage: /info [game]
@@ -56,8 +60,6 @@ commands:
     description: Main command for MobArmyBattle
     usage: /mobarmy <info|resume|gamesettings|reset>
     aliases: [ ma ]
-    permission: mobarmybattle.admin
-    permission-message: "§c❌ You do not have permission!"
 
   mobstatus:
     description: Shows saved mobs for MobArmyBattle
