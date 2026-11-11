@@ -20,6 +20,7 @@ import runi.myddns.challenges.games.mobarmybattle.MobArmyBattleGame;
 import runi.myddns.challenges.games.mobarmybattle.managers.world.TeleportManager;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Locale;
 
 public class EventManager {
@@ -548,22 +549,40 @@ public class EventManager {
         }
         Bukkit.getBossBars().forEachRemaining(BossBar::removeAll);
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(p)) continue;
-            resetPlayerState(p);
+        List<Player> players = new java.util.ArrayList<>(
+                Bukkit.getOnlinePlayers().stream()
+                        .filter(game::isMobArmyPlayer)
+                        .toList()
+        );
+
+        for (Player p : players) {
+            game.getPlugin().getPlayerGameDataManager().clearPlayerState(p);
+
             p.setRespawnLocation(null, true);
             p.setGameMode(GameMode.SURVIVAL);
+            p.setInvulnerable(false);
 
             if (teleportToMobArmyLobby) {
                 TeleportManager.teleport(game, p, "world_mobarmy_lobby");
             }
 
+            AttributeInstance maxHealth = p.getAttribute(Attribute.MAX_HEALTH);
+
+            if (maxHealth != null) {
+                p.setHealth(maxHealth.getValue());
+            }
+
+            p.updateInventory();
+
             Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {
                 if (!p.isOnline()) return;
-
                 Sounds.playReset(p);
             }, 3L);
         }
+
+        game.getPlugin()
+                .getPlayerGameDataManager()
+                .deleteGamePlayerData(game.getId());
 
         TimerManager timerManager = game.getTimerManager();
         timerManager.stopTimer();
@@ -583,8 +602,7 @@ public class EventManager {
         resetEventState();
         game.getEventResume().reseteventdaten();
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(p)) continue;
+        for (Player p : players) {
             game.getScoreboardSwitcher().removePlayer(p);
         }
 
@@ -592,8 +610,7 @@ public class EventManager {
         game.getTeamScoreboardManager().rebuildBoard();
         game.getTeamEquipmentManager().resetAllEquipment();
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!game.isMobArmyPlayer(p)) continue;
+        for (Player p : players) {
             game.getScoreboardSwitcher().switchToTeam(p);
         }
 
@@ -606,8 +623,6 @@ public class EventManager {
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_RED + "   ⚠  MobArmyBattle wurde komplett zurückgesetzt!" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
 
-        // For a full world reset, the central GameResetManager announces completion
-        // only after the worlds have been recreated and loaded.
         if (teleportToMobArmyLobby) {
             ResetMessageUtil.finish(
                     game.getLanguageManager(),
