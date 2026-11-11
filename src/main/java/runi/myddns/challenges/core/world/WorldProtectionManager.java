@@ -13,6 +13,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
 import java.util.Set;
@@ -172,6 +173,14 @@ public class WorldProtectionManager implements Listener {
     public void onFireSpread(BlockSpreadEvent event) {
 
         if (isProtectedLobby(event.getBlock().getWorld())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onWeatherChange(WeatherChangeEvent event) {
+        if (event.getWorld().getName().equalsIgnoreCase(CENTRAL_LOBBY)
+                && event.toWeatherState()) {
             event.setCancelled(true);
         }
     }
