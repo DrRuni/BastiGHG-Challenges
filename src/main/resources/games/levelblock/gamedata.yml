@@ -1,7 +1,5 @@
 # Unlocked Blocks
 
-file-version: 1
-
 event-started: false
 
 timer:
@@ -20,3 +18,5 @@ worlds:
   world_levelblock_the_end:
     start: {}
     unlocked: []
+
+    test:

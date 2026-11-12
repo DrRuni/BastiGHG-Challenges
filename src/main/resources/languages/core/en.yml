@@ -1,5 +1,8 @@
 # Core EN Languages
 
+filemanagement.locked: false
+filemanagement.protect-values: false
+
 commands:
   language:
     player-only: "<red>This command can only be used by players."

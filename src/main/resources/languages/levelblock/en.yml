@@ -1,5 +1,8 @@
 # LevelBlock EN Language
 
+filemanagement.locked: false
+filemanagement.protect-values: false
+
 loading:
   starting: "LevelBlock is loading..."
   worlds: "Loading worlds..."

@@ -1,3 +1,6 @@
 # Challenge Config
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 language:

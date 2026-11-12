@@ -1,5 +1,8 @@
 # LevelBorder DE Language
 
+filemanagement.locked: false
+filemanagement.protect-values: false
+
 commands:
   levelborder:
     player-only: "<red>Nur Spieler können diesen Befehl nutzen."

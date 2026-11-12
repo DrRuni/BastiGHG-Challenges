@@ -5,6 +5,9 @@
 # timer: Saved time and counting direction
 # players: Saved player positions and resume data
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 event:
   started: false
   paused: true

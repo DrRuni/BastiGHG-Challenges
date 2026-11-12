@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -29,6 +31,15 @@ public final class PluginFileManager {
     private static final String WORLD_SETTINGS_RESOURCE = "core/gamesettings.yml";
     private static final String MANIFEST_NAME = ".filemanagement.properties";
     private static final String BASELINE_DIR = ".filemanagement/templates";
+    private static final String LOCK_KEY = "# filemanagement.locked:";
+    private static final String VALUES_KEY = "# filemanagement.protect-values:";
+    private static final Pattern CONTROL_LINE = Pattern.compile(
+            "(?m)^[ \\t]*#[ \\t]*filemanagement\\.(locked|protect-values)[ \\t]*:[ \\t]*(true|false)[ \\t]*(?:\\r?\\n|$)",
+            Pattern.CASE_INSENSITIVE);
+
+    private record Protection(boolean locked, boolean protectValues,
+                              boolean hasHeader, String header) {}
+
     private static final DateTimeFormatter BACKUP_DATE =
             DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
 
@@ -171,16 +182,18 @@ public final class PluginFileManager {
             return 0;
         }
 
-        String bundledHash = sha256(resourceBytes);
+        String bundledContent = stripControlLines(new String(resourceBytes, StandardCharsets.UTF_8));
+        byte[] canonicalBytes = bundledContent.getBytes(StandardCharsets.UTF_8);
+        String bundledHash = sha256(canonicalBytes);
         Path baseline = plugin.getDataFolder().toPath()
                 .resolve(BASELINE_DIR).resolve(relativeTarget);
-        boolean protectedValues = isProtectedFile(relativeTarget);
-        boolean language = relativeTarget.startsWith("languages/");
+        boolean jarChanged = !bundledHash.equals(manifest.getProperty(relativeTarget));
 
         try {
             if (Files.notExists(target)) {
                 if (!ensureDirectory(target.getParent())) return 1;
-                safeWrite(target, resourceBytes);
+                Protection defaults = defaultProtection(relativeTarget);
+                safeWrite(target, withHeader(defaults.header(), bundledContent).getBytes(StandardCharsets.UTF_8));
                 created++;
                 changes.add(new Change(relativeTarget, true));
             } else {
@@ -189,13 +202,33 @@ public final class PluginFileManager {
                     return 1;
                 }
 
-                if (protectedValues || language) {
-                    if (!mergeYaml(target, baseline, resourceBytes, language, relativeTarget)) return 1;
-                } else if (!bundledHash.equals(manifest.getProperty(relativeTarget))) {
+                String serverContent = Files.readString(target, StandardCharsets.UTF_8);
+                Protection protection = readProtection(serverContent, relativeTarget);
+                String serverBody = stripControlLines(serverContent);
 
-                    if (!sha256(Files.readAllBytes(target)).equals(bundledHash)) {
+                if (protection.locked()) {
+                    if (jarChanged && !serverBody.equals(bundledContent)) {
+                        blocked(relativeTarget, "Schreibschutz aktiviert");
+                    }
+                } else if (protection.protectValues()) {
+                    MergeResult result = mergeYaml(serverBody, bundledContent);
+                    if (result.changed()) {
                         if (!backup(target)) return 1;
-                        safeWrite(target, resourceBytes);
+                        String merged = withHeader(protection.header(), result.content());
+                        safeWrite(target, merged.getBytes(StandardCharsets.UTF_8));
+                        updated++;
+                        changes.add(new Change(relativeTarget, false));
+                    }
+                    if (jarChanged && result.conflictingValues()) {
+                        blocked(relativeTarget, "Werteschutz aktiv; bestehende Werte erhalten");
+                    }
+                } else {
+                    // Ohne Schutz zählt der tatsächliche Dateivergleich,
+                    // nicht ausschließlich der zuletzt gespeicherte JAR-Hash.
+                    if (!serverBody.equals(bundledContent)) {
+                        if (!backup(target)) return 1;
+                        String replacement = withHeader(protection.header(), bundledContent);
+                        safeWrite(target, replacement.getBytes(StandardCharsets.UTF_8));
                         updated++;
                         changes.add(new Change(relativeTarget, false));
                     }
@@ -203,45 +236,28 @@ public final class PluginFileManager {
             }
 
             if (!ensureDirectory(baseline.getParent())) return 1;
-            safeWrite(baseline, resourceBytes);
+            safeWrite(baseline, canonicalBytes);
             manifest.setProperty(relativeTarget, bundledHash);
-
         } catch (IOException | InvalidConfigurationException | IllegalArgumentException e) {
             error("Datei konnte nicht aktualisiert werden: " + relativeTarget, e);
         }
         return 1;
     }
 
-    private boolean isProtectedFile(String relative) {
-        if (relative.equals("config.yml")) return true;
-        if (!relative.startsWith("games/")) return false;
+    private record MergeResult(String content, boolean changed, boolean conflictingValues) {}
 
-        String fileName = relative.substring(relative.lastIndexOf('/') + 1);
-        if (fileName.equals("gamedata.yml") || fileName.equals("gamesettings.yml")) {
-            return true;
-        }
-        if (relative.equals("games/mobarmybattle/team-equipment.yml")
-                || relative.equals("games/mobarmybattle/waves.yml")) {
-            return true;
-        }
-        return relative.equals("games/levelborder/config.yml");
-    }
-
-    private boolean mergeYaml(Path target, Path baseline, byte[] resourceBytes,
-                              boolean language, String relativeTarget)
-            throws IOException, InvalidConfigurationException {
-
-        YamlConfiguration latest = parseYaml(new String(resourceBytes, StandardCharsets.UTF_8));
-        YamlConfiguration existing = parseYaml(Files.readString(target, StandardCharsets.UTF_8));
-        YamlConfiguration previous = language && Files.isRegularFile(baseline)
-                ? parseYaml(Files.readString(baseline, StandardCharsets.UTF_8)) : null;
-
+    private MergeResult mergeYaml(String serverContent, String jarContent)
+            throws InvalidConfigurationException {
+        YamlConfiguration latest = parseYaml(jarContent);
+        YamlConfiguration existing = parseYaml(serverContent);
         boolean changed = false;
+        boolean conflicting = false;
+
         for (String path : latest.getKeys(true)) {
             if (latest.isConfigurationSection(path)) {
-
-                if (!existing.contains(path, true) && latest.getConfigurationSection(path)
-                        .getKeys(false).isEmpty() && !hasScalarParent(existing, path)) {
+                if (!existing.contains(path, true)
+                        && latest.getConfigurationSection(path).getKeys(false).isEmpty()
+                        && !hasScalarParent(existing, path)) {
                     existing.createSection(path);
                     changed = true;
                 }
@@ -249,33 +265,73 @@ public final class PluginFileManager {
             }
 
             if (hasScalarParent(existing, path)) {
-                plugin.getLogger().warning("YAML-Strukturkonflikt; Wert bleibt erhalten: "
-                        + relativeTarget + " / " + path);
+                conflicting = true;
                 continue;
             }
-
             if (!existing.contains(path, true)) {
                 existing.set(path, latest.get(path));
                 changed = true;
-                continue;
-            }
-
-            if (language && previous != null && previous.contains(path, true)
-                    && !previous.isConfigurationSection(path)
-                    && !existing.isConfigurationSection(path)
-                    && Objects.equals(existing.get(path), previous.get(path))
-                    && !Objects.equals(previous.get(path), latest.get(path))) {
-                existing.set(path, latest.get(path));
-                changed = true;
+            } else if (existing.isConfigurationSection(path)
+                    || !Objects.equals(existing.get(path), latest.get(path))) {
+                conflicting = true;
             }
         }
+        return new MergeResult(changed ? existing.saveToString() : serverContent,
+                changed, conflicting);
+    }
 
-        if (!changed) return true;
-        if (!backup(target)) return false;
-        safeWrite(target, existing.saveToString().getBytes(StandardCharsets.UTF_8));
-        updated++;
-        changes.add(new Change(relativeTarget, false));
-        return true;
+    private boolean isProtectedFile(String relative) {
+        if (relative.equals("config.yml") || relative.startsWith("languages/")) return true;
+        if (!relative.startsWith("games/")) return false;
+
+        String fileName = relative.substring(relative.lastIndexOf('/') + 1);
+        if (fileName.equals("gamedata.yml") || fileName.equals("gamesettings.yml")) return true;
+        if (relative.equals("games/mobarmybattle/team-equipment.yml")
+                || relative.equals("games/mobarmybattle/waves.yml")) return true;
+        return relative.equals("games/levelborder/config.yml");
+    }
+
+    private Protection defaultProtection(String relative) {
+        boolean protectValues = isProtectedFile(relative);
+        return new Protection(false, protectValues, false,
+                LOCK_KEY + " false\n" + VALUES_KEY + " " + protectValues + "\n");
+    }
+
+    private Protection readProtection(String text, String relative) {
+        Protection fallback = defaultProtection(relative);
+        boolean locked = fallback.locked();
+        boolean values = fallback.protectValues();
+        boolean hasHeader = false;
+
+        Matcher m = CONTROL_LINE.matcher(text);
+        while (m.find()) {
+            hasHeader = true;
+            boolean v = Boolean.parseBoolean(m.group(2).toLowerCase(java.util.Locale.ROOT));
+            if (m.group(1).equalsIgnoreCase("locked")) locked = v;
+            else values = v;
+        }
+        // Fehlende Kopfzeilen nicht ungefragt in bestehende Serverdateien einfügen.
+        // Sind Steuerzeilen vorhanden, werden beide beim Schreiben erhalten/normalisiert.
+        String header = hasHeader
+                ? LOCK_KEY + " " + locked + "\n" + VALUES_KEY + " " + values + "\n"
+                : "";
+        return new Protection(locked, values, hasHeader, header);
+    }
+
+    private String stripControlLines(String text) {
+        // Entfernt ausschließlich unsere beiden Steuerkommentare, keine normalen YAML-Kommentare.
+        return CONTROL_LINE.matcher(text).replaceAll("");
+    }
+
+    private String withHeader(String header, String body) {
+        if (header.isEmpty()) return body;
+        // Kontrollzeilen werden beim Überschreiben immer beibehalten.
+        return header + stripControlLines(body).stripLeading();
+    }
+
+    private void blocked(String relative, String why) {
+        log(ConsoleColor.ORANGE + "          ⚠ Update zurückgestellt: " + relative
+                + " (" + why + ")" + ConsoleColor.RESET);
     }
 
     private boolean hasScalarParent(YamlConfiguration config, String path) {

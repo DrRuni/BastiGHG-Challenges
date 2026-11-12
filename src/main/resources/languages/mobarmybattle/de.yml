@@ -1,5 +1,8 @@
 # MobArmyBattle DE Language
 
+filemanagement.locked: false
+filemanagement.protect-values: false
+
 commands:
   arena-summary:
     player-only: "<red>Dieser Command ist nur für Spieler."

@@ -1,5 +1,8 @@
 # Save for Wave Configuration
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 waves:
   Blau:
     wave0: []

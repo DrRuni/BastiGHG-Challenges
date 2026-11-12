@@ -1,5 +1,8 @@
 # Lobby Spawn
 
+filemanagement.locked: false
+filemanagement.protect-values: false
+
 lobbyspawn:
   world: world_mobarmy_lobby
   min:

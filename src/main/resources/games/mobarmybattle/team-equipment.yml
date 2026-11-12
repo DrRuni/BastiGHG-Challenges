@@ -1,5 +1,8 @@
 # Team Equipment
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 team-equipment:
   blue:
     helmet: 0

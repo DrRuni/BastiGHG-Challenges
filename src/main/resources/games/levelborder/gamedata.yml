@@ -1,7 +1,5 @@
 # Levelborder Data
 
-file-version: 1
-
 border:
   world: null
   center: null

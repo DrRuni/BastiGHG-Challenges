@@ -1,5 +1,8 @@
 # Arena Data
 
+filemanagement.locked: false
+filemanagement.protect-values: false
+
 arenas:
   japanisches-dorf:
     name:

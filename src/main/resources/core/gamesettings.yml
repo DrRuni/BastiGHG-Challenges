@@ -1,6 +1,4 @@
-# Worldsettings
-
-file-version: 1
+# Gamesettings
 
 world-settings:
   keep-inventory: true
@@ -11,3 +9,5 @@ world-settings:
   world-time: 6000
 
 game-settings:
+
+  test:

@@ -1,5 +1,8 @@
 # Gamesettings
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 world-settings:
   keep-inventory: true
   night-vision-enabled: false
