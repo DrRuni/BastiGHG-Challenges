@@ -1,5 +1,8 @@
 # Unlocked Blocks
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 event-started: false
 
 timer:

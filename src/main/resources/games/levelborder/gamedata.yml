@@ -1,5 +1,8 @@
 # Levelborder Data
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 border:
   world: null
   center: null

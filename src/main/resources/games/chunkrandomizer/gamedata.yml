@@ -1,5 +1,8 @@
 # Data of ChunkRandomizer
 
+filemanagement.locked: false
+filemanagement.protect-values: true
+
 game:
   event-started: false
   world: ""
