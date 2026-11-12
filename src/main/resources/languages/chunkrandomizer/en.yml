@@ -1,0 +1,7 @@
+# FileManagement Settings
+
+filemanagement:
+  locked: false
+  protect-values: false
+
+# Chunkroulette EN Languages

@@ -61,6 +61,7 @@ public class ConsoleColor {
     public static final String CHARCOAL   = "\u001B[38;2;54;69;79m";
     public static final String GRAPHITE   = "\u001B[38;2;65;74;76m";
     public static final String MUTED_BLUE = "\u001B[38;2;120;144;156m";
+    public static final String SOFT_BLUE = "\u001B[38;2;150;200;245m";
 
     // 🌿 Naturfarben
     public static final String FOREST_GREEN = "\u001B[38;2;34;139;34m";
@@ -78,6 +79,7 @@ public class ConsoleColor {
     public static final String MAHOGANY  = "\u001B[38;2;192;64;0m";
     public static final String BLOOD_ORANGE = "\u001B[38;2;255;69;0m";
     public static final String SOFT_LIME = "\u001B[38;2;183;229;106m";
+    public static final String SOFT_ORANGE = "\u001B[38;2;255;190;120m";
 
     // 💎 Neon / starke Farben
     public static final String ELECTRIC_BLUE = "\u001B[38;2;44;117;255m";

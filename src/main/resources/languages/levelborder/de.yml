@@ -1,7 +1,10 @@
-# LevelBorder DE Language
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: false
+filemanagement:
+  locked: false
+  protect-values: false
+
+# LevelBorder DE Language
 
 commands:
   levelborder:

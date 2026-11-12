@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -31,14 +29,7 @@ public final class PluginFileManager {
     private static final String WORLD_SETTINGS_RESOURCE = "core/gamesettings.yml";
     private static final String MANIFEST_NAME = ".filemanagement.properties";
     private static final String BASELINE_DIR = ".filemanagement/templates";
-    private static final String LOCK_KEY = "# filemanagement.locked:";
-    private static final String VALUES_KEY = "# filemanagement.protect-values:";
-    private static final Pattern CONTROL_LINE = Pattern.compile(
-            "(?m)^[ \\t]*#[ \\t]*filemanagement\\.(locked|protect-values)[ \\t]*:[ \\t]*(true|false)[ \\t]*(?:\\r?\\n|$)",
-            Pattern.CASE_INSENSITIVE);
-
-    private record Protection(boolean locked, boolean protectValues,
-                              boolean hasHeader, String header) {}
+    private record Protection(boolean locked, boolean protectValues, String header) {}
 
     private static final DateTimeFormatter BACKUP_DATE =
             DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
@@ -46,7 +37,9 @@ public final class PluginFileManager {
     private record GameFiles(String name, String folder, List<String> templates,
                              List<String> persistentFiles, boolean sharedWorldSettings) {}
 
-    private record Change(String path, boolean created) {}
+    private enum ChangeType { CREATED, UPDATED, MERGED, BLOCKED }
+
+    private record Change(String path, ChangeType type, String reason) {}
 
     private static final List<GameFiles> GAMES = List.of(
             new GameFiles("MobArmyBattle", "games/mobarmybattle",
@@ -70,6 +63,7 @@ public final class PluginFileManager {
     private final List<Change> changes = new ArrayList<>();
     private int created;
     private int updated;
+    private int merged;
     private int backups;
     private int errors;
 
@@ -79,7 +73,7 @@ public final class PluginFileManager {
 
     public void checkFilesOnStartup() {
         changes.clear();
-        created = updated = backups = errors = 0;
+        created = updated = merged = backups = errors = 0;
         manifest.clear();
 
         Path dataFolder = plugin.getDataFolder().toPath();
@@ -131,7 +125,7 @@ public final class PluginFileManager {
 
         log("        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-        if (updated > 0 || created > 0) {
+        if (updated > 0 || merged > 0 || created > 0) {
             StringBuilder summary = new StringBuilder("        ↻ ");
 
             if (updated > 0) {
@@ -140,9 +134,15 @@ public final class PluginFileManager {
                         .append(ConsoleColor.RESET);
             }
 
-            if (created > 0) {
+            if (merged > 0) {
                 if (updated > 0) summary.append("  ·  ");
+                summary.append(ConsoleColor.SOFT_ORANGE)
+                        .append(merged).append(" ergänzt")
+                        .append(ConsoleColor.RESET);
+            }
 
+            if (created > 0) {
+                if (updated > 0 || merged > 0) summary.append("  ·  ");
                 summary.append(ConsoleColor.BLOOD_ORANGE)
                         .append(created).append(" erstellt")
                         .append(ConsoleColor.RESET);
@@ -182,61 +182,77 @@ public final class PluginFileManager {
             return 0;
         }
 
-        String bundledContent = stripControlLines(new String(resourceBytes, StandardCharsets.UTF_8));
-        byte[] canonicalBytes = bundledContent.getBytes(StandardCharsets.UTF_8);
-        String bundledHash = sha256(canonicalBytes);
+        String bundled = new String(resourceBytes, StandardCharsets.UTF_8);
+        String bundledBody = stripControls(bundled);
+        String bundledHeader = extractControls(bundled);
+        String bundledHash = sha256(resourceBytes);
         Path baseline = plugin.getDataFolder().toPath()
                 .resolve(BASELINE_DIR).resolve(relativeTarget);
-        boolean jarChanged = !bundledHash.equals(manifest.getProperty(relativeTarget));
 
         try {
             if (Files.notExists(target)) {
                 if (!ensureDirectory(target.getParent())) return 1;
-                Protection defaults = defaultProtection(relativeTarget);
-                safeWrite(target, withHeader(defaults.header(), bundledContent).getBytes(StandardCharsets.UTF_8));
+                safeWrite(target, resourceBytes);
                 created++;
-                changes.add(new Change(relativeTarget, true));
+                changes.add(new Change(relativeTarget, ChangeType.CREATED, null));
             } else {
                 if (!Files.isRegularFile(target)) {
                     error("Kein regulärer Dateipfad: " + relativeTarget, null);
                     return 1;
                 }
 
-                String serverContent = Files.readString(target, StandardCharsets.UTF_8);
-                Protection protection = readProtection(serverContent, relativeTarget);
-                String serverBody = stripControlLines(serverContent);
+                String server = Files.readString(target, StandardCharsets.UTF_8);
+                String serverBody = stripControls(server);
+                Protection protection = readProtection(server);
 
+                // Erst das tatsaechlich zu speichernde Ergebnis bilden und vergleichen.
+                // Andernfalls wuerde das Verschieben des Steuerblocks bei jedem Start
+                // eine weitere Aktualisierung ausloesen.
                 if (protection.locked()) {
-                    if (jarChanged && !serverBody.equals(bundledContent)) {
-                        blocked(relativeTarget, "Schreibschutz aktiviert");
+                    if (!sameYamlValues(serverBody, bundledBody)) {
+                        blocked(relativeTarget, "Schreibschutz aktiv; Update ausstehend");
+                    }
+                } else if (protection.header().isEmpty()) {
+                    // Einmalige Migration alter Dateien ohne Steuerblock.
+                    // Vorher zwingend ein Backup; danach entscheidet die neue YAML-Steuerung.
+                    if (!server.equals(bundled)) {
+                        if (!backup(target)) return 1;
+                        safeWrite(target, resourceBytes);
+                        updated++;
+                        changes.add(new Change(relativeTarget, ChangeType.UPDATED, null));
                     }
                 } else if (protection.protectValues()) {
-                    MergeResult result = mergeYaml(serverBody, bundledContent);
-                    if (result.changed()) {
-                        if (!backup(target)) return 1;
-                        String merged = withHeader(protection.header(), result.content());
-                        safeWrite(target, merged.getBytes(StandardCharsets.UTF_8));
-                        updated++;
-                        changes.add(new Change(relativeTarget, false));
+                    MergeResult result = mergeYaml(serverBody, bundledBody);
+                    if (result.addedKeys() > 0) {
+                        String desired = withControls(protection.header(), result.content());
+                        if (!server.equals(desired)) {
+                            if (!backup(target)) return 1;
+                            safeWrite(target, desired.getBytes(StandardCharsets.UTF_8));
+                            merged++;
+                            changes.add(new Change(relativeTarget, ChangeType.MERGED,
+                                    result.addedKeys() + " neue Schlüssel"));
+                        }
                     }
-                    if (jarChanged && result.conflictingValues()) {
-                        blocked(relativeTarget, "Werteschutz aktiv; bestehende Werte erhalten");
+                    if (result.protectedKeys() > 0) {
+                        blocked(relativeTarget, "Werteschutz aktiv; "
+                                + result.protectedKeys() + " bestehende Werte behalten");
                     }
                 } else {
-                    // Ohne Schutz zählt der tatsächliche Dateivergleich,
-                    // nicht ausschließlich der zuletzt gespeicherte JAR-Hash.
-                    if (!serverBody.equals(bundledContent)) {
+                    // Bei deaktiviertem Werteschutz gilt die JAR als Vorlage.
+                    // Nur persoenliche Schutzeinstellungen der Serverdatei bleiben erhalten.
+                    String desired = withControls(protection.header(), bundledBody);
+                    if (!server.equals(desired)) {
                         if (!backup(target)) return 1;
-                        String replacement = withHeader(protection.header(), bundledContent);
-                        safeWrite(target, replacement.getBytes(StandardCharsets.UTF_8));
+                        safeWrite(target, desired.getBytes(StandardCharsets.UTF_8));
                         updated++;
-                        changes.add(new Change(relativeTarget, false));
+                        changes.add(new Change(relativeTarget, ChangeType.UPDATED, null));
                     }
                 }
+
             }
 
             if (!ensureDirectory(baseline.getParent())) return 1;
-            safeWrite(baseline, canonicalBytes);
+            safeWrite(baseline, resourceBytes);
             manifest.setProperty(relativeTarget, bundledHash);
         } catch (IOException | InvalidConfigurationException | IllegalArgumentException e) {
             error("Datei konnte nicht aktualisiert werden: " + relativeTarget, e);
@@ -244,14 +260,14 @@ public final class PluginFileManager {
         return 1;
     }
 
-    private record MergeResult(String content, boolean changed, boolean conflictingValues) {}
+    private record MergeResult(String content, int addedKeys, int protectedKeys) {}
 
     private MergeResult mergeYaml(String serverContent, String jarContent)
             throws InvalidConfigurationException {
-        YamlConfiguration latest = parseYaml(jarContent);
-        YamlConfiguration existing = parseYaml(serverContent);
-        boolean changed = false;
-        boolean conflicting = false;
+        YamlConfiguration latest = parseYaml(markNullLeaves(jarContent));
+        YamlConfiguration existing = parseYaml(markNullLeaves(serverContent));
+        int added = 0;
+        int protectedCount = 0;
 
         for (String path : latest.getKeys(true)) {
             if (latest.isConfigurationSection(path)) {
@@ -259,80 +275,151 @@ public final class PluginFileManager {
                         && latest.getConfigurationSection(path).getKeys(false).isEmpty()
                         && !hasScalarParent(existing, path)) {
                     existing.createSection(path);
-                    changed = true;
+                    added++;
+                } else if (hasScalarParent(existing, path)) {
+                    protectedCount++;
                 }
                 continue;
             }
 
             if (hasScalarParent(existing, path)) {
-                conflicting = true;
+                protectedCount++;
                 continue;
             }
             if (!existing.contains(path, true)) {
+                // NULL_MARKER stellt sicher, dass auch 'test:' als Schluessel bleibt.
                 existing.set(path, latest.get(path));
-                changed = true;
+                added++;
             } else if (existing.isConfigurationSection(path)
                     || !Objects.equals(existing.get(path), latest.get(path))) {
-                conflicting = true;
+                protectedCount++;
             }
         }
-        return new MergeResult(changed ? existing.saveToString() : serverContent,
-                changed, conflicting);
+
+        String content = added > 0
+                ? existing.saveToString().replace(": " + NULL_MARKER, ": null")
+                : serverContent;
+        return new MergeResult(content, added, protectedCount);
     }
 
-    private boolean isProtectedFile(String relative) {
-        if (relative.equals("config.yml") || relative.startsWith("languages/")) return true;
-        if (!relative.startsWith("games/")) return false;
-
-        String fileName = relative.substring(relative.lastIndexOf('/') + 1);
-        if (fileName.equals("gamedata.yml") || fileName.equals("gamesettings.yml")) return true;
-        if (relative.equals("games/mobarmybattle/team-equipment.yml")
-                || relative.equals("games/mobarmybattle/waves.yml")) return true;
-        return relative.equals("games/levelborder/config.yml");
-    }
-
-    private Protection defaultProtection(String relative) {
-        boolean protectValues = isProtectedFile(relative);
-        return new Protection(false, protectValues, false,
-                LOCK_KEY + " false\n" + VALUES_KEY + " " + protectValues + "\n");
-    }
-
-    private Protection readProtection(String text, String relative) {
-        Protection fallback = defaultProtection(relative);
-        boolean locked = fallback.locked();
-        boolean values = fallback.protectValues();
-        boolean hasHeader = false;
-
-        Matcher m = CONTROL_LINE.matcher(text);
-        while (m.find()) {
-            hasHeader = true;
-            boolean v = Boolean.parseBoolean(m.group(2).toLowerCase(java.util.Locale.ROOT));
-            if (m.group(1).equalsIgnoreCase("locked")) locked = v;
-            else values = v;
+    // Semantischer YAML-Vergleich fuer voll gesperrte Dateien.
+    // Zusatzschluessel in der Serverdatei gelten als Abweichung, geloeschte
+    // oder veraenderte Kommentare jedoch nicht.
+    private boolean sameYamlValues(String serverContent, String jarContent)
+            throws InvalidConfigurationException {
+        YamlConfiguration server = parseYaml(markNullLeaves(serverContent));
+        YamlConfiguration jar = parseYaml(markNullLeaves(jarContent));
+        if (!server.getKeys(true).equals(jar.getKeys(true))) return false;
+        for (String path : jar.getKeys(true)) {
+            if (jar.isConfigurationSection(path) != server.isConfigurationSection(path)) return false;
+            if (!jar.isConfigurationSection(path)
+                    && !Objects.equals(jar.get(path), server.get(path))) return false;
         }
-        // Fehlende Kopfzeilen nicht ungefragt in bestehende Serverdateien einfügen.
-        // Sind Steuerzeilen vorhanden, werden beide beim Schreiben erhalten/normalisiert.
-        String header = hasHeader
-                ? LOCK_KEY + " " + locked + "\n" + VALUES_KEY + " " + values + "\n"
-                : "";
-        return new Protection(locked, values, hasHeader, header);
+        return true;
     }
 
-    private String stripControlLines(String text) {
-        // Entfernt ausschließlich unsere beiden Steuerkommentare, keine normalen YAML-Kommentare.
-        return CONTROL_LINE.matcher(text).replaceAll("");
+    // Null oder leere Blaetter muessen beim YAML-Abgleich als Schluessel
+    // erkennbar bleiben. Bukkit stellt null-Werte sonst nicht verlässlich dar.
+    private static final String NULL_MARKER = "__filemanagement_internal_null__";
+
+    private String markNullLeaves(String yaml) {
+        String[] lines = yaml.split("\\R", -1);
+        java.util.regex.Pattern emptyKey = java.util.regex.Pattern.compile(
+                "^(\\s*)([^#\\s][^:]*):[ \t]*(?:#.*)?$");
+        java.util.regex.Pattern explicitNull = java.util.regex.Pattern.compile(
+                "^(\\s*)([^#\\s][^:]*):[ \t]*(?:null|Null|NULL|~)[ \t]*(?:#.*)?$");
+
+        for (int i = 0; i < lines.length; i++) {
+            java.util.regex.Matcher empty = emptyKey.matcher(lines[i]);
+            java.util.regex.Matcher nul = explicitNull.matcher(lines[i]);
+            if (nul.matches()) {
+                lines[i] = nul.group(1) + nul.group(2) + ": " + NULL_MARKER;
+                continue;
+            }
+            if (!empty.matches()) continue;
+
+            int indent = empty.group(1).length();
+            boolean hasChildren = false;
+            for (int j = i + 1; j < lines.length; j++) {
+                String line = lines[j];
+                if (line.isBlank() || line.stripLeading().startsWith("#")) continue;
+                int nextIndent = line.length() - line.stripLeading().length();
+                hasChildren = nextIndent > indent;
+                break;
+            }
+            if (!hasChildren) {
+                lines[i] = empty.group(1) + empty.group(2) + ": " + NULL_MARKER;
+            }
+        }
+        return String.join("\n", lines);
     }
 
-    private String withHeader(String header, String body) {
-        if (header.isEmpty()) return body;
-        // Kontrollzeilen werden beim Überschreiben immer beibehalten.
-        return header + stripControlLines(body).stripLeading();
+    private Protection readProtection(String serverText) throws InvalidConfigurationException {
+        YamlConfiguration config = parseYaml(serverText);
+
+        boolean locked = config.getBoolean("filemanagement.locked", false);
+        boolean values = config.getBoolean("filemanagement.protect-values", false);
+
+        // Steuerblock aus der bestehenden Serverdatei erhalten.
+        return new Protection(locked, values, extractControls(serverText));
     }
 
-    private void blocked(String relative, String why) {
-        log(ConsoleColor.ORANGE + "          ⚠ Update zurückgestellt: " + relative
-                + " (" + why + ")" + ConsoleColor.RESET);
+    private String stripControls(String text) {
+        // Entfernt die oberste YAML-Sektion "filemanagement:" und ggf. die alte
+        // flache Schreibweise "filemanagement.locked:" / "filemanagement.protect-values:".
+        // Alle anderen Werte und Kommentare bleiben unverändert.
+        StringBuilder result = new StringBuilder();
+        boolean inControlSection = false;
+        for (String line : text.split("(?<=\n)", -1)) {
+            String content = line.stripTrailing();
+            if (content.matches("^filemanagement:[ \t]*(?:#.*)?$")) {
+                inControlSection = true;
+                continue;
+            }
+            if (inControlSection) {
+                if (content.isBlank() || content.stripLeading().startsWith("#")) {
+                    // Nur eingerückte Kommentare gehören sicher zur Steuersektion.
+                    if (content.isBlank() || Character.isWhitespace(content.charAt(0))) continue;
+                }
+                if (!content.isEmpty() && Character.isWhitespace(content.charAt(0))) continue;
+                inControlSection = false;
+            }
+            if (content.matches("^filemanagement\\.(locked|protect-values):.*$")) continue;
+            result.append(line);
+        }
+        return result.toString();
     }
+
+    private String extractControls(String text) {
+        StringBuilder header = new StringBuilder();
+        boolean inControlSection = false;
+        for (String line : text.split("(?<=\n)", -1)) {
+            String content = line.stripTrailing();
+            if (content.matches("^filemanagement:[ \t]*(?:#.*)?$")) {
+                inControlSection = true;
+                header.append(line);
+                continue;
+            }
+            if (inControlSection) {
+                if (content.isBlank() || Character.isWhitespace(content.charAt(0))) {
+                    header.append(line);
+                    continue;
+                }
+                inControlSection = false;
+            }
+            if (content.matches("^filemanagement\\.(locked|protect-values):.*$")) {
+                header.append(line);
+            }
+        }
+        return header.toString();
+    }
+
+    private String withControls(String header, String body) {
+        if (header.isEmpty()) return body; // Alte Dateien nicht ungefragt mit Steuerzeilen versehen.
+        return header.stripTrailing() + "\n\n" + body.stripLeading();
+    }
+
+    private void blocked(String relative, String why) { }
 
     private boolean hasScalarParent(YamlConfiguration config, String path) {
         int dot = path.indexOf('.');
@@ -367,7 +454,7 @@ public final class PluginFileManager {
             if (!ensureDirectory(file.getParent())) return 0;
             Files.createFile(file);
             created++;
-            changes.add(new Change(relativePath, true));
+            changes.add(new Change(relativePath, ChangeType.CREATED, null));
         } catch (IOException e) {
             error("Konnte Datendatei nicht erstellen: " + relativePath, e);
         }
@@ -435,7 +522,7 @@ public final class PluginFileManager {
     private void saveManifest(Path file) {
         try {
             java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-            manifest.store(out, "BastiGHG Challenges FileManagement 2.1 - JAR resource SHA-256 hashes");
+            manifest.store(out, "BastiGHG Challenges FileManagement 2.4.0 - JAR resource SHA-256 hashes");
             safeWrite(file, out.toByteArray());
         } catch (IOException e) {
             error("Datei-Manifest konnte nicht gespeichert werden: " + file, e);
@@ -449,10 +536,51 @@ public final class PluginFileManager {
 
         for (int i = firstChange; i < changes.size(); i++) {
             Change change = changes.get(i);
-            String color = change.created() ? ConsoleColor.BLOOD_ORANGE : ConsoleColor.ORANGE;
-            String action = change.created() ? "erstellt" : "aktualisiert";
-            log("          " + color + "↳ " + action + ": "
-                    + change.path() + ConsoleColor.RESET);
+            String filename = Path.of(change.path()).getFileName().toString();
+
+            if (change.path().startsWith("languages/")) {
+                String[] parts = change.path().split("/");
+                if (parts.length >= 3) {
+                    String gameName = switch (parts[1]) {
+                        case "core" -> "Core";
+                        case "mobarmybattle" -> "MobArmyBattle";
+                        case "levelborder" -> "LevelBorder";
+                        case "levelblock" -> "LevelBlock";
+                        case "chunkrandomizer" -> "ChunkRandomizer";
+                        default -> parts[1];
+                    };
+                    filename = gameName + " – " + filename;
+                }
+            }
+
+            String message;
+            String color;
+            switch (change.type()) {
+                case CREATED -> {
+                    message = "↳ erstellt: ";
+                    color = ConsoleColor.BLOOD_ORANGE;
+                }
+                case UPDATED -> {
+                    message = "↳ aktualisiert: ";
+                    color = ConsoleColor.ORANGE;
+                }
+                case MERGED -> {
+                    message = "↳ ergänzt: ";
+                    color = ConsoleColor.SOFT_ORANGE;
+                }
+                case BLOCKED -> {
+                    message = "⚠ Update zurückgestellt: ";
+                    color = ConsoleColor.SOFT_BLUE;
+                }
+                default -> {
+                    message = "↳ ";
+                    color = ConsoleColor.SOFT_BLUE;
+                }
+            }
+            String detail = change.reason() == null ? "" : " (" + change.reason() + ")";
+            log("          " + color + message
+                    + ConsoleColor.SOFT_BLUE + filename
+                    + ConsoleColor.RESET + detail);
         }
     }
 

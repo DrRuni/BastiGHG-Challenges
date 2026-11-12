@@ -1,12 +1,16 @@
+# FileManagement Settings
+
+filemanagement:
+  locked: false
+  protect-values: true
+
+
 # Resume data for MobArmyBattle
 # event: Started and paused state
 # phase: 0=Lobby, 1=Team World, 2=Wave Selection, 3=Arena
 # arena: Currently selected arena
 # timer: Saved time and counting direction
 # players: Saved player positions and resume data
-
-filemanagement.locked: false
-filemanagement.protect-values: true
 
 event:
   started: false

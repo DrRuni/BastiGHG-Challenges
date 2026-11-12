@@ -1,7 +1,10 @@
-# MobArmyBattle DE Language
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: false
+filemanagement:
+  locked: false
+  protect-values: false
+
+# MobArmyBattle DE Language
 
 commands:
   arena-summary:

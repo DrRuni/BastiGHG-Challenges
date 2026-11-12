@@ -1,7 +1,11 @@
-# Data of ChunkRandomizer
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: true
+filemanagement:
+  locked: false
+  protect-values: true
+
+
+# Data of ChunkRandomizer
 
 game:
   event-started: false

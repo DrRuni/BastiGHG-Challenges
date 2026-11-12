@@ -1,7 +1,10 @@
-# Arena Data
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: false
+filemanagement:
+  locked: false
+  protect-values: false
+
+# Arena Data
 
 arenas:
   japanisches-dorf:

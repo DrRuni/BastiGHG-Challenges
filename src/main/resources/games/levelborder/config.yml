@@ -1,9 +1,10 @@
+# FileManagement Settings
+
+filemanagement:
+  locked: false
+  protect-values: true
+
 # LevelBorder Config
-
-filemanagement.locked: false
-filemanagement.protect-values: true
-
-file-version: 1
 
 mob-spawning:
   enabled: true

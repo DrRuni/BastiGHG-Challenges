@@ -1,7 +1,10 @@
-# Gamesettings
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: true
+filemanagement:
+  locked: false
+  protect-values: true
+
+# Gamesettings
 
 world-settings:
   keep-inventory: true
@@ -12,5 +15,3 @@ world-settings:
   world-time: 6000
 
 game-settings:
-
-  test:

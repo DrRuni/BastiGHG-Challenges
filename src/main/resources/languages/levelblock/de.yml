@@ -1,7 +1,10 @@
-# LevelBlock DE Language
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: false
+filemanagement:
+  locked: false
+  protect-values: false
+
+# LevelBlock DE Language
 
 loading:
   starting: "LevelBlock wird geladen..."

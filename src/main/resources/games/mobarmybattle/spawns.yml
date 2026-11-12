@@ -1,7 +1,10 @@
-# Lobby Spawn
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: false
+filemanagement:
+  locked: false
+  protect-values: false
+
+# Lobby Spawn
 
 lobbyspawn:
   world: world_mobarmy_lobby

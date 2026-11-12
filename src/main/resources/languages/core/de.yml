@@ -1,7 +1,10 @@
-# Core DE Languages
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: false
+filemanagement:
+  locked: false
+  protect-values: false
+
+# Core DE Languages
 
 commands:
   language:

@@ -1,7 +1,10 @@
-# Save for Wave Configuration
+# FileManagement Settings
 
-filemanagement.locked: false
-filemanagement.protect-values: true
+filemanagement:
+  locked: false
+  protect-values: true
+
+# Save for Wave Configuration
 
 waves:
   Blau:
