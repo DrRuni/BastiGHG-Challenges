@@ -4,7 +4,7 @@ version: '1.1.1'
 game-versions:
   mobarmybattle: '1.7.3'
   levelborder: '1.2.2'
-  levelblock: '0.9.2 Beta'
+  levelblock: '1.0.0 Stable Release'
   chunkrandomizer: '0.8.1 Beta'
 
 
