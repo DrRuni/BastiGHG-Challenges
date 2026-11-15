@@ -45,6 +45,7 @@ Durch das Ausgeben von Erfahrungsleveln können zusätzliche Blöcke freigeschal
 - Zentrale Welteinstellungen
 - Reset-System
 
+
 ## Befehle
 
 ### Hauptbefehle
@@ -57,7 +58,9 @@ Durch das Ausgeben von Erfahrungsleveln können zusätzliche Blöcke freigeschal
 ### Reset-Befehle
 
 - `/levelblock reset`
+- `/levelblock reset gamedata`
 - `/levelblock reset world`
+
 
 ## Spielablauf
 

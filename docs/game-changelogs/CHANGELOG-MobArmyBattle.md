@@ -1,5 +1,25 @@
 # MobArmyBattle Changelog
 
+## [1.7.3] - Update Release
+
+### Changed
+- Reworked the reset system and integrated it with the central reset management
+- Changed the reset command to `/reset gamedata`
+- Improved reset menus, buttons, icons, descriptions, and confirmation dialogs
+- Revised chat and status messages for reset operations and world regeneration
+
+### Fixed
+- **Rejoining:** Players returning from the central lobby during an active event are now teleported to the correct game world
+- **Respawn:** Players who die in the MobArmyBattle lobby now respawn in the same lobby
+- **Player Data:** Stored player data in the PlayerDataManager is now fully reset during a player reset
+- **Player State:** Player states are now correctly restored when rejoining MobArmyBattle after a reset
+- **Wave Selection:** Chests in the wave selection area are now emptied during a player reset
+- **Scoreboard:** The correct arena scoreboard is now displayed when returning from the central lobby via `/lobby`
+
+### Notes
+- Improved reliability of player and world resets
+- Optimized player data and player state management
+
 ## [1.7.2] - Bug Fix Release
 
 ### Changed

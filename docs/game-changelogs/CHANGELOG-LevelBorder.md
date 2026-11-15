@@ -1,5 +1,22 @@
 # LevelBorder Changelog
 
+## [1.2.2] - Update Release
+
+### Changed
+- Reworked the reset system and integrated it with the central reset management
+- Changed the reset command to `/reset gamedata`
+- Improved reset menus, buttons, icons, descriptions, and confirmation dialogs
+- Revised chat and status messages for reset operations and world regeneration
+- Improved coordination between player data, game data, and world border resets
+
+### Fixed
+- **Portal Registration:** Nether portals are no longer registered if no valid portal is created when attempting to ignite one
+- **Respawn:** Fixed issues with respawn anchors in the Nether
+- **Lobby Logo:** Fixed unwanted logo displays when switching between the Overworld and Nether
+
+### Notes
+- Improved reliability of player and world resets
+
 ## [1.2.1] - Bug Fix Release
 
 ### Changed

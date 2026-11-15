@@ -1,5 +1,25 @@
 # ChunkRandomizer Changelog
 
+## [0.8.1] - Beta Update
+
+### Hinzugefügt
+- Respawn-Unterstützung für ChunkRandomizer integriert
+
+### Geändert
+- Reset-System überarbeitet und an die zentrale Reset-Verwaltung angepasst
+- Reset-Befehl auf `/reset gamedata` geändert
+- Reset-Menüs, Buttons, Symbole, Beschreibungen und Bestätigungsdialoge verbessert
+- Chat- und Statusmeldungen bei Reset-Vorgängen und der Neugenerierung von Spielwelten überarbeitet
+- Zurücksetzen von Spielerdaten, Spieldaten und Spielwelten besser aufeinander abgestimmt
+
+### Behoben
+- **Mob-Spawning:** Fehler beim Erzeugen von Challenge-Mobs in Wasser-Chunks behoben
+- **Chunk-Randomisierung:** Blöcke werden jetzt zuerst randomisiert, bevor der Challenge-Mob erscheint
+
+### Hinweise
+- Verbesserte Zuverlässigkeit bei Spieler- und Welt-Resets
+- Optimiertes Zusammenspiel zwischen Chunk-Randomisierung und Mob-Spawning
+
 ## [0.8.0] - Beta – Erstveröffentlichung
 
 ### Hinzugefügt

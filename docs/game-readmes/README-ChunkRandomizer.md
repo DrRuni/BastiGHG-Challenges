@@ -80,13 +80,23 @@ This game is part of an unofficial fan project inspired by BastiGHG and is not a
 - Integrated into the central challenge lobby
 - Central world settings
 - Reset management system
-##  Commands
-###  Main Commands
-- /chunkrandomizer
-- /chunkrandomizer info
-- /chunkrandomizer start
-- /chunkrandomizer gamesettings
-###  Reset Commands
+- 
+
+## Commands
+
+### Main Commands
+
+- `/chunkrandomizer`
+- `/chunkrandomizer info`
+- `/chunkrandomizer start`
+- `/chunkrandomizer gamesettings`
+
+### Reset Commands
+
+- `/chunkrandomizer reset`
+- `/chunkrandomizer reset world`
+
+
 - Reset options are available through the central reset management system.
 ##  Gameplay Overview
 1. Enter the ChunkRandomizer world.

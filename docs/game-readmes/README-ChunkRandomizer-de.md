@@ -70,15 +70,26 @@ Dieses Game ist Teil eines inoffiziellen Fanprojekts, das von BastiGHG inspirier
 - Integration in die zentrale Challenge-Lobby
 - Zentrale Welteinstellungen
 - Reset-Verwaltung
-##  Befehle
-###  Hauptbefehle
-- /chunkrandomizer
-- /chunkrandomizer info
-- /chunkrandomizer start
-- /chunkrandomizer gamesettings
-###  Reset-Befehle
+
+## Befehle
+
+### Hauptbefehle
+
+- `/chunkrandomizer`
+- `/chunkrandomizer info`
+- `/chunkrandomizer start`
+- `/chunkrandomizer gamesettings`
+
+### Reset-Befehle
+
+- `/chunkrandomizer reset`
+- `/chunkrandomizer reset world`
+
+
 - Die Reset-Optionen sind über die zentrale Reset-Verwaltung verfügbar.
+- 
 ##  Spielablauf
+
 1. Betritt die ChunkRandomizer-Welt.
 2. Starte die Challenge.
 3. Alle teilnehmenden Spieler werden in den Startchunk teleportiert.

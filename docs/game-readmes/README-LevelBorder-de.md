@@ -49,6 +49,7 @@ Die Weltgrenze wächst abhängig von der Summe der Erfahrungslevel aller Spieler
 - Unterstützung für vollständige Welt-Resets
 - Eigenes Mob-Spawning-System für kleine Weltgrenzen
 
+
 ## Befehle
 
 ### Hauptbefehle
@@ -62,10 +63,19 @@ Die Weltgrenze wächst abhängig von der Summe der Erfahrungslevel aller Spieler
 - `/levelborder center`
 - `/levelborder gamesettings`
 
+### Scoreboard-Befehle
+
+- `/levelborder score`
+- `/levelborder score hide`
+- `/levelborder score reload`
+- `/levelborder score reset`
+
 ### Reset-Befehle
 
 - `/levelborder reset`
+- `/levelborder reset gamedata`
 - `/levelborder reset world`
+
 
 ## Spielablauf
 

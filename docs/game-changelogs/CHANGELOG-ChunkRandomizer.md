@@ -1,5 +1,25 @@
 # ChunkRandomizer Changelog
 
+## [0.8.1] - Beta Update
+
+### Added
+- Integrated respawn support for ChunkRandomizer
+
+### Changed
+- Reworked the reset system and integrated it with the central reset management
+- Changed the reset command to `/reset gamedata`
+- Improved reset menus, buttons, icons, descriptions, and confirmation dialogs
+- Revised chat and status messages for reset operations and world regeneration
+- Improved coordination between player data, game data, and game world resets
+
+### Fixed
+- **Mob Spawning:** Fixed issues with spawning challenge mobs in water chunks
+- **Chunk Randomization:** Blocks are now randomized before the challenge mob spawns
+
+### Notes
+- Improved reliability of player and world resets
+- Optimized interaction between chunk randomization and mob spawning
+
 ## [0.8.0] - Beta – Initial Release
 
 ### Added

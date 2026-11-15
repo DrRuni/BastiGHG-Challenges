@@ -57,6 +57,7 @@ Players can spend their experience levels to unlock additional blocks and gradua
 ### Reset Commands
 
 - `/levelblock reset`
+- `/levelblock reset gamedata`
 - `/levelblock reset world`
 
 ## Gameplay Overview

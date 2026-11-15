@@ -47,6 +47,7 @@ The challenge starts with a very small WorldBorder. The border grows based on th
 - Complete world reset support
 - Custom mob spawning support for small border areas
 
+
 ## Commands
 
 ### Main Commands
@@ -60,10 +61,19 @@ The challenge starts with a very small WorldBorder. The border grows based on th
 - `/levelborder center`
 - `/levelborder gamesettings`
 
+### Scoreboard Commands
+
+- `/levelborder score`
+- `/levelborder score hide`
+- `/levelborder score reload`
+- `/levelborder score reset`
+
 ### Reset Commands
 
 - `/levelborder reset`
+- `/levelborder reset gamedata`
 - `/levelborder reset world`
+
 
 ## Gameplay Overview
 

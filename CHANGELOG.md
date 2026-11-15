@@ -9,6 +9,37 @@
 
 ---
 
+## [1.1.1] - Update Release
+
+### Included Games
+- ⚔️ **MobArmyBattle v1.7.3**
+- 🌍 **LevelBorder v1.2.2**
+- 🧩 **LevelBlock v0.9.2 Beta**
+- 🎲 **ChunkRandomizer v0.8.1 Beta**
+
+### Added
+- New `/reset` command to display available reset functions
+- **FileManager 2.0:** Reworked file management system that detects changes in project files instead of relying solely on file versions
+- New configuration file protection mechanisms to prevent unintended changes to saved game progress and settings
+
+### Changed
+- Standardized reset commands: `/reset gamedata` replaces the previous game-specific reset commands
+- Further reworked and unified the reset system across all challenges
+- Improved reset menu labels, icons, confirmations, and chat messages
+- Optimized reset functions and player data management
+
+### Fixed
+- **MobArmyBattle:** Fixed issues when rejoining active games, respawning, and displaying scoreboards
+- **MobArmyBattle:** Improved player resets and cleanup of stored player data
+- **LevelBorder:** Fixed portal registration and world border reset issues
+- **LevelBorder & LevelBlock:** Fixed Nether respawn anchors and unwanted lobby logo displays
+- **ChunkRandomizer:** Fixed mob spawning to ensure mobs spawn reliably even in water chunks
+
+### Notes
+- Further improvements to the stability and reliability of the reset system
+
+---
+
 ## [1.1.0] - Feature Release
 
 ### Included Games

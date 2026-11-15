@@ -1,5 +1,22 @@
 # LevelBorder Changelog
 
+## [1.2.2] - Update-Release
+
+### Geändert
+- Reset-System überarbeitet und an die zentrale Reset-Verwaltung angepasst
+- Reset-Befehl auf `/reset gamedata` geändert
+- Reset-Menüs, Buttons, Symbole, Beschreibungen und Bestätigungsdialoge verbessert
+- Chat- und Statusmeldungen bei Reset-Vorgängen und der Neugenerierung von Spielwelten überarbeitet
+- Zurücksetzen von Spielerdaten, Spieldaten und Weltgrenze besser aufeinander abgestimmt
+
+### Behoben
+- **Portalregistrierung:** Netherportale werden nicht mehr registriert, wenn beim Entzünden kein gültiges Portal entsteht
+- **Respawn:** Fehler bei der Verwendung von Respawnankern im Nether behoben
+- **Lobby-Logo:** Unerwünschte Logo-Anzeige beim Wechsel zwischen Oberwelt und Nether behoben
+
+### Hinweise
+- Verbesserte Zuverlässigkeit bei Spieler- und Welt-Resets
+
 ## [1.2.1] - Fehlerbehebungen
 
 ### Geändert

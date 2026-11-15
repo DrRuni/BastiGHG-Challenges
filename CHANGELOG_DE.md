@@ -9,6 +9,37 @@
 
 ---
 
+## [1.1.1] - Update-Release
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle v1.7.3**
+- 🌍 **LevelBorder v1.2.2**
+- 🧩 **LevelBlock v0.9.2 Beta**
+- 🎲 **ChunkRandomizer v0.8.1 Beta**
+
+### Hinzugefügt
+- Neuer Befehl `/reset` zur Anzeige der verfügbaren Reset-Funktionen
+- **FileManager 2.0:** Überarbeitetes Dateiverwaltungssystem, das Änderungen an Projektdateien erkennt, statt sich ausschließlich auf Dateiversionen zu verlassen
+- Neue Schutzmechanismen für Konfigurationsdateien, um gespeicherte Spielstände und Einstellungen vor unbeabsichtigten Änderungen zu schützen
+
+### Geändert
+- Reset-Befehle vereinheitlicht: `/reset gamedata` ersetzt die bisherigen spielspezifischen Reset-Befehle
+- Reset-System aller Challenges weiter überarbeitet und vereinheitlicht
+- Beschriftungen, Symbole, Bestätigungen und Chatmeldungen beim Zurücksetzen verbessert
+- Reset-Funktionen und Verwaltung der Spielerdaten optimiert
+
+### Behoben
+- **MobArmyBattle:** Fehler beim Wiedereintritt in laufende Spiele, beim Respawn und bei der Scoreboard-Anzeige behoben
+- **MobArmyBattle:** Spieler-Reset und Bereinigung gespeicherter Spielerdaten verbessert
+- **LevelBorder:** Fehler bei der Portalregistrierung und beim Zurücksetzen der Weltgrenze behoben
+- **LevelBorder & LevelBlock:** Respawnanker im Nether korrigiert und unerwünschte Lobby-Logo-Anzeigen entfernt
+- **ChunkRandomizer:** Mob-Spawning korrigiert, sodass Mobs auch in Wasser-Chunks zuverlässig erscheinen
+
+### Hinweise
+- Weitere Verbesserungen der Stabilität und Zuverlässigkeit des Reset-Systems
+
+---
+
 ## [1.1.0] - Feature-Update
 
 ### Enthaltene Challenges

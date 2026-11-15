@@ -1,5 +1,22 @@
 # LevelBlock Changelog
 
+## [0.9.2] - Beta Update
+
+### Changed
+- Reworked the reset system and integrated it with the central reset management
+- Changed the reset command to `/reset gamedata`
+- Improved reset menus, buttons, icons, descriptions, and confirmation dialogs
+- Revised chat and status messages for reset operations and world regeneration
+- Improved coordination between player data and game data resets
+
+### Fixed
+- **Teleportation:** Fixed duplicate teleportation when leaving LevelBlock and returning to the central lobby
+- **Respawn:** Fixed issues with respawn anchors in the Nether
+- **Lobby Logo:** Fixed unwanted logo displays when switching between the Overworld and Nether
+
+### Notes
+- Improved reliability of player and world resets
+
 ## [0.9.1] - Beta Bug Fix Release
 
 ### Changed

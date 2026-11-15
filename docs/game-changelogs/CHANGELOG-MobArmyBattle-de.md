@@ -1,5 +1,27 @@
 # MobArmyBattle Changelog
 
+## [1.7.3] - Update-Release
+
+### Geändert
+- Reset-System überarbeitet und an die zentrale Reset-Verwaltung angepasst
+- Reset-Befehl auf `/reset gamedata` geändert
+- Reset-Menüs, Buttons, Symbole, Beschreibungen und Bestätigungsdialoge verbessert
+- Chat- und Statusmeldungen bei Reset-Vorgängen und der Neugenerierung von Spielwelten überarbeitet
+
+### Behoben
+- **Wiedereintritt:** Spieler werden beim Zurückkehren aus der zentralen Lobby während eines laufenden Events wieder in die richtige Spielwelt teleportiert
+- **Respawn:** Spieler erscheinen nach einem Tod in der MobArmyBattle-Lobby wieder in derselben Lobby
+- **Spielerdaten:** Beim Spieler-Reset werden auch die gespeicherten Daten im PlayerDataManager vollständig zurückgesetzt
+- **Spielerzustand:** Beim erneuten Betreten von MobArmyBattle wird der Spielerzustand nach einem Reset korrekt wiederhergestellt
+- **Wave-Auswahl:** Beim Spieler-Reset werden nun auch die Kisten im Wave-Auswahlbereich geleert
+- **Scoreboard:** Nach dem Wechsel von der Arena über `/lobby` und zurück wird wieder das korrekte Arena-Scoreboard angezeigt
+
+### Hinweise
+- Verbesserte Zuverlässigkeit bei Spieler- und Welt-Resets
+- Optimierte Verwaltung von Spielerdaten und Spielerzuständen
+
+---
+
 ## [1.7.2] - Fehlerbehebungen
 
 ### Geändert
