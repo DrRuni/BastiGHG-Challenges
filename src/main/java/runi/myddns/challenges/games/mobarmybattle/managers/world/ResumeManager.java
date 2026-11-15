@@ -434,7 +434,7 @@ public class ResumeManager {
         config.set("event.started", false);
         config.set("event.paused", false);
         config.set("phase", PHASE_LOBBY);
-        config.set("players", null);
+        config.set("players", new java.util.LinkedHashMap<String, Object>());
         config.set("timer.time", 3600);
         config.set("timer.forward", false);
 
