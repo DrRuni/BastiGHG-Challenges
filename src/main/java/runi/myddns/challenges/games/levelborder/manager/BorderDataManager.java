@@ -300,18 +300,34 @@ public class BorderDataManager {
     }
 
     private void save() {
-
         try {
+            String yaml = dataCfg.saveToString();
 
-            dataCfg.save(dataFile);
+            StringBuilder prefix = new StringBuilder("border:\n");
+
+            if (!dataCfg.contains("border.world")) {
+                prefix.append("  world: null\n");
+            }
+
+            if (!dataCfg.contains("border.center")) {
+                prefix.append("  center: null\n");
+            }
+
+            yaml = yaml.replaceFirst(
+                    "(?m)^border:\\r?\\n",
+                    java.util.regex.Matcher.quoteReplacement(prefix.toString())
+            );
+
+            java.nio.file.Files.writeString(
+                    dataFile.toPath(),
+                    yaml,
+                    java.nio.charset.StandardCharsets.UTF_8
+            );
 
         } catch (IOException exception) {
-
-            game.getPlugin()
-                    .getLogger()
-                    .warning(
-                            "Failed to save gamedata.yml"
-                    );
+            game.getPlugin().getLogger().warning(
+                    "Failed to save gamedata.yml"
+            );
         }
     }
 }
