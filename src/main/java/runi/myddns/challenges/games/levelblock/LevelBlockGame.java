@@ -650,17 +650,7 @@ public class LevelBlockGame implements ChallengeGame {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!isLevelBlockPlayer(player)) continue;
 
-            plugin.getPlayerGameDataManager()
-                    .clearPlayerState(player);
-
-            World overworld = Bukkit.getWorld(
-                    GameWorldDefinition.LEVEL_BLOCK_OVERWORLD.worldName()
-            );
-
-            if (overworld != null) {
-                player.teleport(overworld.getSpawnLocation());
-            }
-
+            plugin.getPlayerGameDataManager().clearPlayerState(player);
             player.updateInventory();
         }
 

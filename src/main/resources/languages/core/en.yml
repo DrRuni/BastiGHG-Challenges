@@ -75,25 +75,25 @@ game-info:
   close: "Close"
   no-information: "No information available."
 
+
 reset-management:
   load-first: "<red>Please load a game first."
-  unsupported-game: "<red>This game does not have reset management here."
+  unsupported-game: "<red>Reset management is not available for this game."
   title-prefix: "Reset » "
   data:
     name: "Reset Game Data"
     line-1: "Resets all game progress."
     line-2: "Inventories and worlds are preserved."
   player:
-    name: "Reset Player Data"
+    name: "Reset Game Data"
     line-1: "Clears inventories, armor and ender chests."
     line-2: "Resets experience and player status."
     line-3: "Resets the border to 3 × 3. Worlds are preserved."
   all:
-    name: "Reset Everything"
-    line-1: "Resets all game progress."
-    line-2: "Deletes all player data and inventories."
+    name: "Reset Worlds and Game Data"
+    line-1: "Resets all game data."
+    line-2: "Deletes all player saves and inventories."
     line-3: "Regenerates all game worlds."
-
   back:
     name: "Back"
     description: "Back to WorldSettings."
@@ -104,15 +104,15 @@ reset-management:
       description: "Deletes player and event data, teams and progress. Worlds are preserved."
     teamworlds:
       name: "Regenerate Team Worlds"
-      description: "Recreates Red and Blue team worlds. All building changes will be lost."
+      description: "Recreates the Red and Blue team worlds. All building changes will be lost."
     arena:
       name: "Reset Arena"
       line-1: "Completely recreates the arena world."
       line-2: "All building changes will be lost."
       line-3: ""
     all:
-      name: "Reset Everything"
-      description: "Deletes all player and world data. Recreates all MobArmyBattle worlds."
+      name: "Reset Worlds and Game Data"
+      description: "Deletes all player and world data. All MobArmyBattle worlds will be recreated."
 
   levelblock:
     player:
@@ -120,7 +120,7 @@ reset-management:
       line-1: "Clears inventories, XP and game progress."
       line-2: "Worlds are preserved."
     world:
-      name: "Reset Everything"
+      name: "Reset Worlds and Game Data"
       line-1: "Deletes all player and world data."
       line-2: "Recreates all challenge worlds."
 
@@ -130,7 +130,7 @@ reset-management:
       line-1: "Clears inventories, XP and game progress."
       line-2: "Resets the border. Worlds are preserved."
     world:
-      name: "Reset Everything"
+      name: "Reset Worlds and Game Data"
       line-1: "Deletes all player and world data."
       line-2: "Recreates all challenge worlds."
 

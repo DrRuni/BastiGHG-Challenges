@@ -24,5 +24,3 @@ worlds:
   world_levelblock_the_end:
     start: {}
     unlocked: []
-
-    test:

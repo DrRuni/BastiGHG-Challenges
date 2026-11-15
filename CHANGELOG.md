@@ -11,24 +11,34 @@
 
 ## [1.1.0] - Feature Release
 
+### Included Games
+- ⚔️ **MobArmyBattle v1.7.2**
+- 🌍 **LevelBorder v1.2.1**
+- 🧩 **LevelBlock v0.9.1 Beta**
+- 🎲 **ChunkRandomizer v0.8.0 Beta** (NEW)
+
 ### Added
 - Integrated ChunkRandomizer v0.8 Beta as the fourth challenge game
 - Added automatic player data saving to reduce data loss after server crashes
 - Improved player data recovery after server crashes
-- Added /chunkrandomizer reset and /chunkrandomizer reset world commands
-  Changed
+- Added `/chunkrandomizer reset` and `/chunkrandomizer reset world` commands
+
+### Changed
 - Extended central game, world, and reset management for ChunkRandomizer
 - Improved player data saving and game progress restoration
 - Extended world settings and reset voting for ChunkRandomizer
-  Fixed
-- Improved reliability of world and player data resets
-  Included Games
-  - MobArmyBattle v1.7.2
-  - LevelBorder v1.2.1
-  - LevelBlock v0.9.1 Beta
-  - ChunkRandomizer v0.8 Beta
 
-## [1.0.1] - Stable Release
+### Fixed
+- Improved reliability of world and player data resets
+
+---
+
+## [1.0.1] - Update Release
+
+### Included Games
+- ⚔️ **MobArmyBattle v1.7.2**
+- 🌍 **LevelBorder v1.2.1**
+- 🧩 **LevelBlock v0.9.1 Beta**
 
 ### Changed
 - Updated to Paper/Minecraft 26.3
@@ -36,10 +46,6 @@
 - Player inventories are now cleared during player data resets
 - Players are now switched to Survival Mode when entering a challenge or returning to the central lobby
 - Added inventory deletion warnings to reset confirmation dialogs
-- Updated internal game versions:
-    - MobArmyBattle v1.7.2 Stable
-    - LevelBorder v1.2.1 Stable
-    - LevelBlock v0.9.1 Beta
 
 ### Fixed
 - **MobArmyBattle:** Fixed player reset from the central lobby
@@ -52,7 +58,14 @@
 - Improved reset reliability and overall game behavior
 - Reset system improvements are still in progress and will continue in v1.0.2
 
+---
+
 ## [1.0.0] - Stable Release
+
+### Included Games
+- ⚔️ **MobArmyBattle v1.7.1**
+- 🌍 **LevelBorder v1.2**
+- 🧩 **LevelBlock v0.9**
 
 ### Added
 - Unified version display for all challenges using `plugin.yml`
@@ -73,9 +86,15 @@
 
 ### Notes
 - First stable release of BastiGHG Challenges
-- Includes MobArmyBattle V1.7.1, LevelBorder V1.2, and LevelBlock V0.9
+
+---
 
 ## [0.9.9] - Beta
+
+### Included Games
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
 
 ### Added
 - Centralized reset management for MobArmyBattle with four individual reset options
@@ -100,7 +119,14 @@
 ### Notes
 - Beta release
 
+---
+
 ## [0.9.8] - Beta
+
+### Included Games
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
 
 ### Added
 - Extended German and English language support across the central plugin and individual challenge games
@@ -124,7 +150,14 @@
 - Beta release
 - Further multiplayer testing, cleanup, and bug fixes are planned before version 1.0.0
 
+---
+
 ## [0.9.1] - Beta
+
+### Included Games
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
 
 ### Added
 - Central `/info` command for all challenge games
@@ -147,12 +180,16 @@
 - Beta release
 - Further language integration, command cleanup, and multiplayer testing planned before version 1.0.0
 
+---
+
 ## [0.9.0] - Beta
 
+### Included Games
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
+
 ### Added
-- MobArmyBattle
-- LevelBorder
-- LevelBlock
 - Central lobby and game selection
 - Central WorldSettings system
 - Separate player and game data

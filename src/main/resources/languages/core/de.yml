@@ -84,12 +84,12 @@ reset-management:
     line-1: "Setzt den gesamten Spielfortschritt zurück."
     line-2: "Inventare und Welten bleiben erhalten."
   player:
-    name: "Spielerdaten zurücksetzen"
+    name: "Spieldaten zurücksetzen"
     line-1: "Löscht Inventare, Rüstung und Enderchests."
     line-2: "Setzt Erfahrung und Spielerstatus zurück."
     line-3: "Setzt die Border auf 3 × 3. Welten bleiben erhalten."
   all:
-    name: "Alles zurücksetzen"
+    name: "Welten und Spieldaten zurücksetzen"
     line-1: "Setzt sämtliche Spieldaten zurück."
     line-2: "Löscht alle Spielerstände und Inventare."
     line-3: "Generiert alle Spielwelten neu."
@@ -110,7 +110,7 @@ reset-management:
       line-2: "Alle Bauänderungen gehen verloren."
       line-3: ""
     all:
-      name: "Alles zurücksetzen"
+      name: "Welten und Spieldaten zurücksetzen"
       description: "Löscht sämtliche Spieler- und Weltdaten. Alle MobArmyBattle-Welten werden neu erstellt."
 
   levelblock:
@@ -119,7 +119,7 @@ reset-management:
       line-1: "Löscht Inventare, XP und Spielfortschritt."
       line-2: "Welten bleiben erhalten."
     world:
-      name: "Alles zurücksetzen"
+      name: "Welten und Spieldaten zurücksetzen"
       line-1: "Löscht alle Spieler- und Weltdaten."
       line-2: "Erstellt alle Challenge-Welten neu."
 
@@ -129,8 +129,8 @@ reset-management:
       line-1: "Löscht Inventare, XP und Spielfortschritt."
       line-2: "Setzt die Border zurück. Welten bleiben erhalten."
     world:
-      name: "Alles zurücksetzen"
-      line-1: "Löscht sämtliche Spieler- und Weltdaten."
+      name: "Welten und Spieldaten zurücksetzen"
+      line-1: "Löscht alle Spieler- und Weltdaten."
       line-2: "Erstellt alle Challenge-Welten neu."
 
 reset-shortcut:

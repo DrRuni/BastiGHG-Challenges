@@ -297,7 +297,9 @@ public final class PluginFileManager {
         }
 
         String content = added > 0
-                ? existing.saveToString().replace(": " + NULL_MARKER, ": null")
+                ? existing.saveToString()
+                .replace(": " + EMPTY_MARKER, ":")
+                .replace(": " + NULL_MARKER, ": null")
                 : serverContent;
         return new MergeResult(content, added, protectedCount);
     }
@@ -318,9 +320,8 @@ public final class PluginFileManager {
         return true;
     }
 
-    // Null oder leere Blaetter muessen beim YAML-Abgleich als Schluessel
-    // erkennbar bleiben. Bukkit stellt null-Werte sonst nicht verlässlich dar.
     private static final String NULL_MARKER = "__filemanagement_internal_null__";
+    private static final String EMPTY_MARKER = "__filemanagement_internal_empty__";
 
     private String markNullLeaves(String yaml) {
         String[] lines = yaml.split("\\R", -1);
@@ -344,11 +345,13 @@ public final class PluginFileManager {
                 String line = lines[j];
                 if (line.isBlank() || line.stripLeading().startsWith("#")) continue;
                 int nextIndent = line.length() - line.stripLeading().length();
-                hasChildren = nextIndent > indent;
+                hasChildren = nextIndent > indent
+                        || (nextIndent == indent
+                        && line.stripLeading().matches("-(?:\\s.*)?"));
                 break;
             }
             if (!hasChildren) {
-                lines[i] = empty.group(1) + empty.group(2) + ": " + NULL_MARKER;
+                lines[i] = empty.group(1) + empty.group(2) + ": " + EMPTY_MARKER;
             }
         }
         return String.join("\n", lines);
@@ -415,8 +418,27 @@ public final class PluginFileManager {
     }
 
     private String withControls(String header, String body) {
-        if (header.isEmpty()) return body; // Alte Dateien nicht ungefragt mit Steuerzeilen versehen.
-        return header.stripTrailing() + "\n\n" + body.stripLeading();
+
+        if (header.isEmpty()) {
+            return body;
+        }
+
+        String cleanHeader = header.stripTrailing();
+        String cleanBody = body;
+
+        String title = "# FileManagement Settings";
+
+        if (cleanBody.contains(title)) {
+
+            cleanBody = cleanBody.replaceFirst(
+                    "(?m)^# FileManagement Settings\\R(?:[ \\t]*\\R)*",
+                    ""
+            );
+
+            cleanHeader = title + "\n\n" + cleanHeader;
+        }
+
+        return cleanHeader + "\n\n" + cleanBody.stripLeading();
     }
 
     private void blocked(String relative, String why) { }
@@ -522,7 +544,7 @@ public final class PluginFileManager {
     private void saveManifest(Path file) {
         try {
             java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-            manifest.store(out, "BastiGHG Challenges FileManagement 2.4.0 - JAR resource SHA-256 hashes");
+            manifest.store(out, "BastiGHG Challenges FileManagement 2.0 - JAR resource SHA-256 hashes");
             safeWrite(file, out.toByteArray());
         } catch (IOException e) {
             error("Datei-Manifest konnte nicht gespeichert werden: " + file, e);

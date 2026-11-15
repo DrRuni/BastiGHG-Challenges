@@ -9,26 +9,36 @@
 
 ---
 
-### [1.1.0] - Feature-Update
+## [1.1.0] - Feature-Update
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle v1.7.2**
+- 🌍 **LevelBorder v1.2.1**
+- 🧩 **LevelBlock v0.9.1 Beta**
+- 🎲 **ChunkRandomizer v0.8.0 Beta** (NEU)
 
 ### Hinzugefügt
 - ChunkRandomizer v0.8 Beta als viertes Challenge-Game integriert
 - Automatische Speicherung der Spielerdaten zur Absicherung bei Serverabstürzen
 - Verbesserte Wiederherstellung von Spielerdaten nach Serverabstürzen
-- Neue Befehle /chunkrandomizer reset und /chunkrandomizer reset world
-  Geändert
+- Neue Befehle `/chunkrandomizer reset` und `/chunkrandomizer reset world`
+
+### Geändert
 - Zentrale Spiel-, Welt- und Reset-Verwaltung für ChunkRandomizer erweitert
 - Speicherung von Spielerdaten und Wiederherstellung des Spielstands verbessert
 - Welteinstellungen und Reset-Abstimmung für ChunkRandomizer erweitert
-  Behoben
-- Zuverlässigkeit beim Zurücksetzen von Welten und Spielerdaten verbessert
-  Enthaltene Games
-  - MobArmyBattle v1.7.2
-  - LevelBorder v1.2.1
-  - LevelBlock v0.9.1 Beta
-  - ChunkRandomizer v0.8 Beta
 
-## [1.0.1] - Stabile Version
+### Behoben
+- Zuverlässigkeit beim Zurücksetzen von Welten und Spielerdaten verbessert
+
+---
+
+## [1.0.1] - Update Release
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle v1.7.2**
+- 🌍 **LevelBorder v1.2.1**
+- 🧩 **LevelBlock v0.9.1 Beta**
 
 ### Geändert
 - Aktualisiert auf Paper/Minecraft 26.3
@@ -36,10 +46,6 @@
 - Spielerinventare werden beim Zurücksetzen der Spielerdaten geleert
 - Spieler werden beim Betreten einer Challenge oder bei der Rückkehr in die zentrale Lobby automatisch in den Überlebensmodus versetzt
 - Warnhinweise zum Verlust des Inventarinhalts bei Reset-Bestätigungen hinzugefügt
-- Interne Spielversionen aktualisiert:
-  - MobArmyBattle v1.7.2 Stable
-  - LevelBorder v1.2.1 Stable
-  - LevelBlock v0.9.1 Beta
 
 ### Behoben
 - **MobArmyBattle:** Spieler-Reset aus der zentralen Lobby korrigiert
@@ -52,7 +58,14 @@
 - Zuverlässigkeit des Reset-Systems und allgemeines Spielverhalten verbessert
 - Weitere Verbesserungen am Reset-System sind in Arbeit und werden in v1.0.2 fortgesetzt
 
+---
+
 ## [1.0.0] - Stabile Version
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle v1.7.1**
+- 🌍 **LevelBorder v1.2**
+- 🧩 **LevelBlock v0.9**
 
 ### Hinzugefügt
 - Einheitliche Versionsanzeige für alle Challenges über `plugin.yml`
@@ -73,9 +86,15 @@
 
 ### Hinweise
 - Erste stabile Version von BastiGHG Challenges
-- Enthält MobArmyBattle v1.7.1, LevelBorder v1.2 und LevelBlock v0.9
+
+---
 
 ## [0.9.9] - Beta
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
 
 ### Hinzugefügt
 - Zentrale Reset-Verwaltung für MobArmyBattle mit vier individuellen Reset-Optionen
@@ -100,7 +119,14 @@
 ### Hinweise
 - Beta-Version
 
+---
+
 ## [0.9.8] - Beta
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
 
 ### Hinzugefügt
 - Deutsche und englische Sprachunterstützung im zentralen Plugin und in den einzelnen Challenge-Spielen erweitert
@@ -124,7 +150,14 @@
 - Beta-Version
 - Weitere Multiplayer-Tests, Codebereinigungen und Fehlerbehebungen sind vor Version 1.0.0 geplant
 
+---
+
 ## [0.9.1] - Beta
+
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
 
 ### Hinzugefügt
 - Zentraler `/info`-Befehl für alle Challenge-Spiele
@@ -147,12 +180,16 @@
 - Beta-Version
 - Weitere Sprachintegration, Bereinigung der Befehle und Multiplayer-Tests vor Version 1.0.0 geplant
 
+---
+
 ## [0.9.0] - Beta
 
+### Enthaltene Challenges
+- ⚔️ **MobArmyBattle**
+- 🌍 **LevelBorder**
+- 🧩 **LevelBlock**
+
 ### Hinzugefügt
-- MobArmyBattle
-- LevelBorder
-- LevelBlock
 - Zentrale Lobby und Spielauswahl
 - Zentrales WorldSettings-System
 - Getrennte Spieler- und Spieldaten

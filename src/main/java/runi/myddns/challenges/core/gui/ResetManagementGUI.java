@@ -337,13 +337,13 @@ public class ResetManagementGUI implements Listener {
             case 11 -> {
 
                 if (game instanceof LevelBorderGame) {
-                    Bukkit.dispatchCommand(player, "levelborder reset");
+                    Bukkit.dispatchCommand(player, "levelborder reset gamedata");
 
                 } else if (game.getId().equalsIgnoreCase("levelblock")) {
-                    Bukkit.dispatchCommand(player, "levelblock reset");
+                    Bukkit.dispatchCommand(player, "levelblock reset gamedata");
 
                 } else if (game.getId().equalsIgnoreCase("chunkrandomizer")) {
-                    Bukkit.dispatchCommand(player, "chunkrandomizer reset");
+                    Bukkit.dispatchCommand(player, "chunkrandomizer reset gamedata");
                 }
             }
 

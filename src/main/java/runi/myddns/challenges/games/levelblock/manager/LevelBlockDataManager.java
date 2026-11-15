@@ -442,53 +442,20 @@ public class LevelBlockDataManager {
         startLocations.clear();
         unlockedBlocks.clear();
 
-        config =
-                new YamlConfiguration();
+        config.set("event-started", false);
+        config.set("timer.seconds", 0);
 
-        config.set(
-                "file-version",
-                2
-        );
+        for (String worldName : List.of(
+                "world_levelblock",
+                "world_levelblock_nether",
+                "world_levelblock_the_end"
+        )) {
 
-        config.set(
-                "event-started",
-                false
-        );
+            String path = "worlds." + worldName;
 
-        config.set(
-                "timer.seconds",
-                0
-        );
-
-        config.set(
-                "worlds.world_levelblock.start",
-                null
-        );
-
-        config.set(
-                "worlds.world_levelblock.unlocked",
-                new ArrayList<>()
-        );
-
-        config.set(
-                "worlds.world_levelblock_nether.start",
-                null
-        );
-
-        config.set(
-                "worlds.world_levelblock_nether.unlocked",
-                new ArrayList<>()
-        );
-
-        config.set(
-                "worlds.world_levelblock_the_end.start",
-                null
-        );
-
-        config.set(
-                "worlds.world_levelblock_the_end.unlocked",
-                new ArrayList<>()
-        );
+            config.set(path + ".start", new LinkedHashMap<>());
+            config.set(path + ".unlocked", new ArrayList<>());
+        }
 
         saveFile();
     }
