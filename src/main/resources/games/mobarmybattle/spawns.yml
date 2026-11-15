@@ -6,7 +6,7 @@ filemanagement:
 
 # Lobby Spawn
 
-lobbyspawn:
+lobby-spawn:
   world: world_mobarmy_lobby
   min:
     x: 3.0
