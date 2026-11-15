@@ -9,7 +9,7 @@ filemanagement:
 border:
   world: null
   center: null
-  size: 3
+  size: 3.0
   active: false
   max-total-level: 0
 scoreboard:

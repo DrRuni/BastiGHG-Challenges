@@ -235,7 +235,7 @@ public final class ChallengeMain extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                      " + getDisplayVersion() + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                         " + getDisplayVersion() + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.COPPER + "                      L O A D I N G" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
@@ -245,7 +245,7 @@ public final class ChallengeMain extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════  BastiGHG Challenges  ═══════════════" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "  ═══════════════════  Fan Project  ═══════════════════" + ConsoleColor.RESET);
-        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                      " + getDisplayVersion() + ConsoleColor.RESET);
+        Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                         " + getDisplayVersion() + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ConsoleColor.DARK_GOLDEN_LIME + "                        R E A D Y" + ConsoleColor.RESET);
         Bukkit.getConsoleSender().sendMessage("");
